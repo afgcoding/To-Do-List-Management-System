@@ -44,8 +44,8 @@
                         </td>
                         <td class="px-5 py-4 text-slate-500">
                             @if ($log->created_at)
-                                <time datetime="{{ $log->created_at->toIso8601String() }}" title="{{ $log->created_at->format('M j, Y \a\t g:i A') }}">
-                                    {{ $log->created_at->diffForHumans() }}
+                                <time datetime="{{ $log->created_at->toIso8601String() }}" title="{{ format_date($log->created_at) }}">
+                                    {{ $log->created_at->diffForHumans() }} · {{ format_date($log->created_at) }}
                                 </time>
                             @else
                                 —

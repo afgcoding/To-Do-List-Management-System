@@ -70,7 +70,7 @@
 
         {{-- Created / updated --}}
         <p class="mt-3 text-xs text-slate-500">
-            Created {{ $task->created_at->format('M d, Y') }}
+            Created {{ format_date($task->created_at) }}
             by <span class="font-medium text-slate-700">{{ $task->creator->name ?? 'System' }}</span>
             <span class="mx-1.5 text-slate-300">·</span>
             Updated {{ $task->updated_at->diffForHumans() }}
@@ -213,7 +213,7 @@
                             <x-tasks.attachment-chip :attachment="$attachment" :can-delete="(int) $attachment->user_id === (int) $currentUserId" />
                             <p class="mt-1 text-[11px] text-slate-400">
                                 {{ $attachment->user->name ?? 'Unknown' }}
-                                · {{ $attachment->created_at?->format('M d, Y') }}
+                                · {{ format_date($attachment->created_at) }}
                             </p>
                         </div>
                     @empty
@@ -277,21 +277,21 @@
                         </div>
                         <div>
                             <dt class="text-[11px] font-medium uppercase tracking-wide text-slate-400">Start</dt>
-                            <dd class="mt-0.5 text-sm font-medium text-slate-800">{{ $task->start_date?->format('M d, Y') ?? '—' }}</dd>
+                            <dd class="mt-0.5 text-sm font-medium text-slate-800">{{ format_date($task->start_date) ?? '—' }}</dd>
                         </div>
                         <div>
                             <dt class="text-[11px] font-medium uppercase tracking-wide text-slate-400">Due</dt>
                             <dd @class(['mt-0.5 text-sm font-medium', 'text-rose-600' => $task->is_overdue, 'text-slate-800' => ! $task->is_overdue])>
-                                {{ $task->due_date?->format('M d, Y') ?? '—' }}
+                                {{ format_date($task->due_date) ?? '—' }}
                             </dd>
                         </div>
                         <div>
                             <dt class="text-[11px] font-medium uppercase tracking-wide text-slate-400">Created</dt>
-                            <dd class="mt-0.5 text-sm font-medium text-slate-800">{{ $task->created_at->format('M d, Y') }}</dd>
+                            <dd class="mt-0.5 text-sm font-medium text-slate-800">{{ format_date($task->created_at) }}</dd>
                         </div>
                         <div>
                             <dt class="text-[11px] font-medium uppercase tracking-wide text-slate-400">Updated</dt>
-                            <dd class="mt-0.5 text-sm font-medium text-slate-800">{{ $task->updated_at->format('M d, Y') }}</dd>
+                            <dd class="mt-0.5 text-sm font-medium text-slate-800">{{ format_date($task->updated_at) }}</dd>
                         </div>
                     </dl>
                 </div>

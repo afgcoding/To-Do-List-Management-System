@@ -16,7 +16,7 @@
     };
     $name = $log->user->name ?? 'System';
     $when = $log->created_at;
-    $absoluteTime = $when?->format('M j, Y \a\t g:i A');
+    $absoluteTime = format_date($when);
 @endphp
 
 <li class="relative pb-5 last:pb-0">

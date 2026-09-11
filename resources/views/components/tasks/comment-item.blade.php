@@ -1,14 +1,22 @@
 @props(['comment', 'mentionNames', 'currentUserId'])
 
 {{-- One comment in the discussion thread --}}
-@php($isOwner = (int) $comment->user_id === (int) $currentUserId)
+@php
+    $isOwner = (int) $comment->user_id === (int) $currentUserId;
+    $commentDate = format_date($comment->created_at);
+@endphp
 <article x-data="{ editing: false }" class="w-full overflow-hidden rounded-xl border border-slate-200/60 bg-white p-4 shadow-sm">
     <div class="flex min-w-0 items-start gap-3">
         <x-user-avatar :name="$comment->user->name ?? 'User'" size="md" />
         <div class="w-full min-w-0 flex-1 overflow-hidden break-words">
             <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
                 <p class="text-sm font-semibold text-slate-800">{{ $comment->user->name ?? 'Unknown' }}</p>
-                <time class="text-[11px] text-slate-400">{{ $comment->created_at?->diffForHumans() }}</time>
+                <time class="text-[11px] text-slate-400" datetime="{{ $comment->created_at?->toIso8601String() }}" title="{{ $commentDate }}">
+                    {{ $comment->created_at?->diffForHumans() }}
+                    @if ($commentDate)
+                        · {{ $commentDate }}
+                    @endif
+                </time>
                 @if ($comment->created_at?->ne($comment->updated_at))
                     <span class="text-[11px] italic text-slate-400">edited</span>
                 @endif

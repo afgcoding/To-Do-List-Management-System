@@ -28,6 +28,6 @@
                 <span class="text-xs italic text-slate-400">Unassigned</span>
             @endforelse
         </div>
-        <span class="text-xs text-slate-500">{{ $task->due_date?->format('M d, Y') ?? 'No due date' }}</span>
+        <span class="text-xs text-slate-500">{{ format_date($task->due_date) ?? 'No due date' }}</span>
     </div>
 </article>

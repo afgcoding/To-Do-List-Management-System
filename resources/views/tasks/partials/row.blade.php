@@ -29,7 +29,7 @@
     <td class="px-4 py-4"><x-tasks.priority-badge :priority="$task->priority" /></td>
     <td class="px-4 py-4"><x-tasks.status-badge :status="$task->status" /></td>
     <td class="px-4 py-4 text-xs text-slate-600">
-        {{ $task->due_date?->format('M d, Y') ?? 'No due date' }}
+        {{ format_date($task->due_date) ?? 'No due date' }}
     </td>
     <td class="px-4 py-4 w-40">
         <x-tasks.progress :percent="$task->progress" label="" />

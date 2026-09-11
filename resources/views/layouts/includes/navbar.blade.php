@@ -1,7 +1,7 @@
 <header
     class="sticky top-0 z-20 flex h-16 items-center justify-between gap-4 border-b border-slate-200 bg-white px-4 sm:px-6">
     <div class="min-w-0">
-        <p class="text-xs font-medium text-slate-500">Workspace / {{ $pageTitle ?? 'Dashboard' }}</p>
+        <p class="text-xs font-medium text-slate-500">{{ setting('company_name', 'Workspace') }} / {{ $pageTitle ?? 'Dashboard' }}</p>
         <h1 class="truncate text-sm font-semibold text-slate-800">{{ $pageTitle ?? 'Dashboard' }}</h1>
     </div>
     <div class="hidden max-w-md flex-1 md:block"><label class="relative block"><span class="sr-only">Quick

@@ -6,6 +6,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\SubtaskController;
+use App\Http\Controllers\SystemSettingController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\UserController;
@@ -22,6 +23,8 @@ Route::resource('tags', TagController::class);
 Route::resource('users', UserController::class);
 Route::resource('tasks', TaskController::class);
 Route::get('activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
+Route::get('system-settings', [SystemSettingController::class, 'index'])->name('system-settings.index');
+Route::put('system-settings', [SystemSettingController::class, 'update'])->name('system-settings.update');
 
 // Sidebar quick actions (Completed cannot be set here).
 Route::patch('tasks/{task}/status', [TaskController::class, 'updateStatus'])->name('tasks.status.update');

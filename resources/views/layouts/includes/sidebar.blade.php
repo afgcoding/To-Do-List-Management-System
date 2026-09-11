@@ -1,11 +1,15 @@
 <aside class="hidden w-64 shrink-0 bg-slate-900 text-slate-300 lg:block">
     <div class="sticky top-0 flex min-h-screen flex-col p-4">
-        <a href="{{ url('/') }}"
-            class="flex items-center gap-3 rounded-xl bg-gradient-to-br from-indigo-600 to-indigo-500 px-3 py-4 text-white shadow-lg shadow-indigo-950/30">
-            <span class="grid size-9 place-items-center rounded-lg bg-white/15">✓</span>
-            <span>
-                <span class="block text-sm font-bold">{{ config('app.name', 'TaskFlow') }}</span>
-                <span class="block text-xs text-indigo-100">Enterprise workspace</span>
+        <a href="{{ url('/') }}" class="flex items-center gap-2.5 px-2 py-2">
+            @if (setting('logo'))
+                <img src="{{ setting()->logoUrl() }}" alt=""
+                    class="h-9 w-9 min-w-[36px] max-h-[36px] rounded-lg border border-slate-700/60 bg-slate-800 object-contain p-1 shadow-sm">
+            @else
+                <span class="flex h-9 w-9 min-w-[36px] max-h-[36px] items-center justify-center rounded-lg border border-slate-700/60 bg-slate-800 text-xs font-semibold text-slate-200 shadow-sm">✓</span>
+            @endif
+            <span class="min-w-0">
+                <span dir="auto" class="bidi-auto block max-w-[150px] truncate text-sm font-semibold text-white">{{ setting('company_name', config('app.name', 'TaskFlow')) }}</span>
+                <span class="block truncate text-xs font-normal text-slate-400">Enterprise workspace</span>
             </span>
         </a>
 
