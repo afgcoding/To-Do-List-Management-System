@@ -41,7 +41,7 @@
             </label>
             <x-input-error :messages="$errors->get('is_active')" />
 
-            <div class="flex justify-end gap-3 border-t border-slate-100 pt-4">
+            <div class="flex justify-end gap-3 border-t border-slate-100 pt-5 pb-2">
                 <a href="{{ route('departments.index') }}" class="rounded-xl border border-slate-300 bg-slate-50 px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100">Cancel</a>
                 <button class="rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700">Save</button>
             </div>

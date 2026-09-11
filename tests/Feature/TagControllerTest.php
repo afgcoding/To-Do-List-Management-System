@@ -2,52 +2,33 @@
 
 use App\Models\Tag;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Schema;
 
 uses(RefreshDatabase::class);
 
-it('renders tags as colored pills with a linked task count', function () {
-    Tag::factory()->create([
-        'name' => 'Urgent-Fix',
-        'color' => '#EF4444',
-    ]);
+it('renders tags with a linked task count', function () {
+    Tag::factory()->create(['name' => 'Urgent-Fix']);
 
     $this->get(route('tags.index'))
         ->assertOk()
         ->assertSee('Urgent-Fix')
-        ->assertSee('#EF4444', false)
         ->assertSee('0 tasks');
 });
 
-it('stores a tag with a hex color', function () {
+it('stores a tag by unique name only', function () {
     $this->post(route('tags.store'), [
         'name' => 'Feature',
-        'color' => '#22C55E',
     ])->assertRedirect(route('tags.index'))->assertSessionHas('success');
 
-    $this->assertDatabaseHas('tags', [
-        'name' => 'Feature',
-        'color' => '#22C55E',
-    ]);
+    $this->assertDatabaseHas('tags', ['name' => 'Feature']);
 });
 
-it('rejects a tag color that is not a hex code', function () {
+it('ignores a color value when storing a tag', function () {
     $this->post(route('tags.store'), [
         'name' => 'Bug',
-        'color' => 'red',
-    ])->assertSessionHasErrors('color');
-});
-
-it('updates a tag color without changing a unique name', function () {
-    $tag = Tag::factory()->create(['name' => 'Bug', 'color' => '#EF4444']);
-
-    $this->put(route('tags.update', $tag), [
-        'name' => 'Bug',
-        'color' => '#6366F1',
+        'color' => '#22C55E',
     ])->assertRedirect(route('tags.index'));
 
-    $this->assertDatabaseHas('tags', [
-        'id' => $tag->id,
-        'name' => 'Bug',
-        'color' => '#6366F1',
-    ]);
+    $this->assertDatabaseHas('tags', ['name' => 'Bug']);
+    expect(Schema::hasColumn('tags', 'color'))->toBeFalse();
 });

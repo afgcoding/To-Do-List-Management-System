@@ -96,16 +96,25 @@ class TaskController extends Controller
             'assignedUsers',
             'tags',
             'subtasks.assignedUser',
-            'comments.user',
-            'attachments',
+            'comments' => fn ($query) => $query->with(['user', 'attachments'])->oldest(),
+            'attachments.user',
+            'activityLogs.user',
         ])->loadCount([
             'subtasks',
             'subtasks as completed_subtasks_count' => fn (Builder $query) => $query->where('is_completed', true),
         ]);
 
+        $users = User::query()->where('status', 'active')->orderBy('name')->get(['id', 'name']);
+
         return view('tasks.show', [
             'task' => $task,
-            'users' => User::query()->where('status', 'active')->orderBy('name')->get(['id', 'name']),
+            'users' => $users,
+            'currentUserId' => auth()->id() ?? User::query()->orderBy('id')->value('id'),
+            'mentionNames' => $users->pluck('name')
+                ->merge($task->comments->pluck('user.name'))
+                ->filter()
+                ->unique()
+                ->values(),
         ]);
     }
 
@@ -208,7 +217,7 @@ class TaskController extends Controller
             $task->update($validated);
         }
 
-        $task->assignedUsers()->sync($assignedUsers);
+        $task->syncAssignedUsers($assignedUsers);
         $task->tags()->sync($tags);
 
         return $task;

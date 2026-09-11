@@ -14,8 +14,8 @@ class Tag extends Model
     /** @use HasFactory<TagFactory> */
     use HasFactory;
 
-    // Unique label plus optional HEX color for pill badges on tasks.
-    protected $fillable = ['name', 'color'];
+    // Unique label used on tasks. Tags do not store a color.
+    protected $fillable = ['name'];
 
     public function tasks(): BelongsToMany
     {

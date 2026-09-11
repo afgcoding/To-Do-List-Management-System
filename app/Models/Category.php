@@ -14,7 +14,7 @@ class Category extends Model
     /** @use HasFactory<CategoryFactory> */
     use HasFactory;
 
-    // Work classification label with optional HEX color.
+    // Work classification label. Categories are the only lookup that stores a HEX color.
     protected $fillable = ['name', 'color'];
 
     public function tasks(): HasMany

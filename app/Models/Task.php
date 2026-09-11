@@ -6,7 +6,9 @@ namespace App\Models;
 
 use App\Enums\TaskPriority;
 use App\Enums\TaskStatus;
+use App\Observers\TaskObserver;
 use Database\Factories\TaskFactory;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -17,6 +19,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
+#[ObservedBy([TaskObserver::class])]
 class Task extends Model
 {
     /** @use HasFactory<TaskFactory> */
@@ -84,7 +87,34 @@ class Task extends Model
 
     public function activityLogs(): HasMany
     {
-        return $this->hasMany(ActivityLog::class);
+        return $this->hasMany(ActivityLog::class)->latest();
+    }
+
+    /**
+     * Sync assignees and log only when the member set actually changes.
+     *
+     * @param  list<int|string>  $userIds
+     */
+    public function syncAssignedUsers(array $userIds): void
+    {
+        $previous = $this->assignedUsers()
+            ->pluck('users.id')
+            ->map(fn (mixed $id): int => (int) $id)
+            ->sort()
+            ->values()
+            ->all();
+
+        $this->assignedUsers()->sync($userIds);
+
+        $next = collect($userIds)
+            ->map(fn (mixed $id): int => (int) $id)
+            ->sort()
+            ->values()
+            ->all();
+
+        if ($previous !== $next) {
+            ActivityLog::record($this->id, 'updated_assignment', 'updated assigned team members');
+        }
     }
 
     /**

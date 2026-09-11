@@ -17,7 +17,6 @@ class TagFactory extends Factory
     {
         return [
             'name' => fake()->unique()->word(),
-            'color' => fake()->hexColor(),
         ];
     }
 }

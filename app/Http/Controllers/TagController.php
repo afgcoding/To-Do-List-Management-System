@@ -12,7 +12,7 @@ use Illuminate\View\View;
 
 class TagController extends Controller
 {
-    // Tags with linked task counts and HEX colors for pill badges.
+    // Tags with linked task counts.
     public function index(): View
     {
         $tags = Tag::query()

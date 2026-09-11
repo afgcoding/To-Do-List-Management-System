@@ -17,6 +17,6 @@
             <h2 class="text-lg font-semibold text-slate-900">{{ $title }}</h2>
             <button type="button" @click="{{ $open }} = false" class="rounded-xl p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700" aria-label="Close">×</button>
         </div>
-        <div class="flex-1 overflow-y-auto px-6 py-5">{{ $slot }}</div>
+        <div class="flex-1 overflow-y-auto px-6 pt-5 pb-8">{{ $slot }}</div>
     </div>
 </div>

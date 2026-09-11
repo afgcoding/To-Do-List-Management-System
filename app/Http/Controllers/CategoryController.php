@@ -12,7 +12,7 @@ use Illuminate\View\View;
 
 class CategoryController extends Controller
 {
-    // Categories with task counts for the management table.
+    // Categories with optional HEX color and task counts.
     public function index(): View
     {
         $categories = Category::query()

@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\ActivityLogController;
+use App\Http\Controllers\AttachmentController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\SubtaskController;
 use App\Http\Controllers\TagController;
@@ -18,6 +21,7 @@ Route::resource('categories', CategoryController::class);
 Route::resource('tags', TagController::class);
 Route::resource('users', UserController::class);
 Route::resource('tasks', TaskController::class);
+Route::get('activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
 
 // Sidebar quick actions (Completed cannot be set here).
 Route::patch('tasks/{task}/status', [TaskController::class, 'updateStatus'])->name('tasks.status.update');
@@ -28,3 +32,8 @@ Route::resource('subtasks', SubtaskController::class)->only([
 ]);
 // Checkbox toggle; observer then syncs parent task completion.
 Route::patch('subtasks/{subtask}/toggle', [SubtaskController::class, 'toggle'])->name('subtasks.toggle');
+
+Route::resource('comments', CommentController::class)->only(['store', 'update', 'destroy']);
+Route::post('attachments', [AttachmentController::class, 'store'])->name('attachments.store');
+Route::get('attachments/{attachment}/download', [AttachmentController::class, 'download'])->name('attachments.download');
+Route::delete('attachments/{attachment}', [AttachmentController::class, 'destroy'])->name('attachments.destroy');

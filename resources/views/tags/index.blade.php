@@ -16,18 +16,17 @@
         open: {{ $openForm ? 'true' : 'false' }},
         isEdit: {{ $editing || old('edit_id') ? 'true' : 'false' }},
         id: {{ $editing?->id ?? (old('edit_id') ? (int) old('edit_id') : 'null') }},
-        name: @js(old('name', $editing?->name ?? '')),
-        color: @js(old('color', $editing?->color ?? '#6366F1'))
+        name: @js(old('name', $editing?->name ?? ''))
     }">
 
     {{-- Header --}}
     <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
             <h1 class="text-2xl font-bold tracking-tight text-slate-900">Tags</h1>
-            <p class="mt-1 text-sm text-slate-500">Reusable labels with a name and a color.</p>
+            <p class="mt-1 text-sm text-slate-500">Unique labels such as Bug, Feature, or Urgent-Fix.</p>
         </div>
         <button type="button"
-            @click="open = true; isEdit = false; id = null; name = ''; color = '#6366F1'"
+            @click="open = true; isEdit = false; id = null; name = ''"
             class="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700">
             Add tag
         </button>
@@ -48,14 +47,14 @@
                 @forelse ($tags as $tag)
                     <tr class="hover:bg-slate-50/70">
                         <td class="px-5 py-4">
-                            <x-color-pill :label="$tag->name" :color="$tag->color" />
+                            <span class="inline-flex rounded-full border border-slate-200 bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700">{{ $tag->name }}</span>
                         </td>
                         <td class="px-5 py-4 text-slate-600">{{ $tag->tasks_count }} {{ \Illuminate\Support\Str::plural('task', $tag->tasks_count) }}</td>
                         <td class="px-5 py-4 text-slate-500">{{ $tag->created_at?->format('M d, Y') }}</td>
                         <td class="px-5 py-4">
                             <div class="flex justify-end gap-3">
                                 <button type="button"
-                                    @click="open = true; isEdit = true; id = {{ $tag->id }}; name = {{ \Illuminate\Support\Js::from($tag->name) }}; color = {{ \Illuminate\Support\Js::from($tag->color ?: '#6366F1') }}"
+                                    @click="open = true; isEdit = true; id = {{ $tag->id }}; name = {{ \Illuminate\Support\Js::from($tag->name) }}"
                                     class="text-sm font-medium text-indigo-600 hover:text-indigo-800">Edit</button>
                                 <form method="POST" action="{{ route('tags.destroy', $tag) }}" onsubmit="return confirm('Delete this tag?')">
                                     @csrf
@@ -75,7 +74,7 @@
     </div>
     <div>{{ $tags->links() }}</div>
 
-    {{-- Create / edit form --}}
+    {{-- Create / edit form (name only) --}}
     <x-slide-over>
         <x-slot:title>
             <span x-show="!isEdit">Add tag</span>
@@ -96,9 +95,7 @@
                 <x-input-error :messages="$errors->get('name')" />
             </div>
 
-            <x-color-picker />
-
-            <div class="flex justify-end gap-3 border-t border-slate-100 pt-4">
+            <div class="flex justify-end gap-3 border-t border-slate-100 pt-5 pb-2">
                 <button type="button" @click="open = false" class="rounded-xl border border-slate-300 bg-slate-50 px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100">Cancel</button>
                 <button class="rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700">Save</button>
             </div>
