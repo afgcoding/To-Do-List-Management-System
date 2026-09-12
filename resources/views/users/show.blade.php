@@ -8,7 +8,7 @@
     <x-back-link :href="route('users.index')">Back to users</x-back-link>
     <div class="flex flex-col justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:flex-row sm:items-center">
         <div class="flex items-center gap-4">
-            <x-user-avatar :name="$user->name" :src="$user->avatar ? $user->avatar_url : null" size="xl" rounded="2xl" />
+            <x-user-avatar :user="$user" size="xl" rounded="2xl" />
             <div>
                 <h1 class="text-xl font-bold text-slate-900">{{ $user->name }}</h1>
                 <p class="text-sm text-slate-500">{{ $user->job_title ?: 'No job title' }}</p>

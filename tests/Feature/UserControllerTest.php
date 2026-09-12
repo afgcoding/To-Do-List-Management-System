@@ -29,7 +29,22 @@ it('renders users with job title role and contact details', function () {
         ->assertSee('+93 700 111 222')
         ->assertSee('Delivery')
         ->assertSee('Manager')
-        ->assertSee('Actions');
+        ->assertSee('Actions')
+        ->assertSee('>SA<', false);
+});
+
+it('renders a stored profile photo in the users table', function () {
+    Storage::fake('public');
+    $path = UploadedFile::fake()->image('sara.jpg')->store('avatars', 'public');
+
+    User::factory()->create([
+        'name' => 'Sara Ali',
+        'avatar' => $path,
+    ]);
+
+    $this->get(route('users.index'))
+        ->assertOk()
+        ->assertSee(Storage::disk('public')->url($path), false);
 });
 
 it('renders a back link on the create user page', function () {

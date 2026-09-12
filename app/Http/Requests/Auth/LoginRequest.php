@@ -62,10 +62,6 @@ class LoginRequest extends FormRequest
         }
 
         RateLimiter::clear($this->throttleKey());
-
-        if ($user instanceof User) {
-            $user->forceFill(['last_login_at' => now()])->save();
-        }
     }
 
     /**

@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Enums\UserRole;
 use App\Enums\UserStatus;
+use App\Support\TotpAuthenticator;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -16,10 +17,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Spatie\Permission\Traits\HasRoles;
 
-#[Hidden(['password', 'remember_token'])]
+#[Hidden(['password', 'remember_token', 'two_factor_secret', 'two_factor_recovery_codes'])]
 class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
@@ -51,6 +55,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return [
             'email_verified_at' => 'datetime',
             'last_login_at' => 'datetime',
+            'two_factor_confirmed_at' => 'datetime',
             'password' => 'hashed',
             'role' => UserRole::class,
             'status' => UserStatus::class,
@@ -136,5 +141,147 @@ class User extends Authenticatable implements MustVerifyEmail
     public function activityLogs(): HasMany
     {
         return $this->hasMany(ActivityLog::class);
+    }
+
+    public function hasTwoFactorEnabled(): bool
+    {
+        return filled($this->two_factor_secret) && $this->two_factor_confirmed_at !== null;
+    }
+
+    public function twoFactorSecretPlain(): ?string
+    {
+        if (blank($this->two_factor_secret)) {
+            return null;
+        }
+
+        return Crypt::decryptString($this->two_factor_secret);
+    }
+
+    public function startTwoFactorSetup(): string
+    {
+        $secret = TotpAuthenticator::generateSecret();
+
+        $this->forceFill([
+            'two_factor_secret' => Crypt::encryptString($secret),
+            'two_factor_recovery_codes' => null,
+            'two_factor_confirmed_at' => null,
+        ])->save();
+
+        return $secret;
+    }
+
+    /**
+     * @return list<string>|false
+     */
+    public function confirmTwoFactor(string $code): array|false
+    {
+        $secret = $this->twoFactorSecretPlain();
+
+        if ($secret === null || ! TotpAuthenticator::verify($secret, $code)) {
+            return false;
+        }
+
+        $codes = $this->makeRecoveryCodes();
+
+        $this->forceFill([
+            'two_factor_confirmed_at' => now(),
+            'two_factor_recovery_codes' => Crypt::encryptString(json_encode(
+                array_map(fn (string $recoveryCode): string => Hash::make($recoveryCode), $codes),
+            )),
+        ])->save();
+
+        return $codes;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public function freshRecoveryCodes(): array
+    {
+        $plain = $this->makeRecoveryCodes();
+
+        $this->forceFill([
+            'two_factor_recovery_codes' => Crypt::encryptString(json_encode(
+                array_map(fn (string $code): string => Hash::make($code), $plain),
+            )),
+        ])->save();
+
+        return $plain;
+    }
+
+    public function disableTwoFactor(): void
+    {
+        $this->forceFill([
+            'two_factor_secret' => null,
+            'two_factor_recovery_codes' => null,
+            'two_factor_confirmed_at' => null,
+        ])->save();
+    }
+
+    public function consumeTwoFactorCode(string $code): bool
+    {
+        $secret = $this->twoFactorSecretPlain();
+
+        if ($secret !== null && TotpAuthenticator::verify($secret, $code)) {
+            return true;
+        }
+
+        return $this->consumeRecoveryCode($code);
+    }
+
+    public function twoFactorOtpAuthUrl(): ?string
+    {
+        $secret = $this->twoFactorSecretPlain();
+
+        if ($secret === null) {
+            return null;
+        }
+
+        return TotpAuthenticator::otpAuthUrl(
+            (string) setting('company_name', config('app.name')),
+            $this->email,
+            $secret,
+        );
+    }
+
+    public function twoFactorQrImageUrl(): ?string
+    {
+        $otpAuthUrl = $this->twoFactorOtpAuthUrl();
+
+        return $otpAuthUrl === null ? null : TotpAuthenticator::qrImageUrl($otpAuthUrl);
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function makeRecoveryCodes(): array
+    {
+        return collect(range(1, 8))
+            ->map(fn (): string => strtoupper(Str::random(4).'-'.Str::random(4)))
+            ->all();
+    }
+
+    private function consumeRecoveryCode(string $code): bool
+    {
+        if (blank($this->two_factor_recovery_codes)) {
+            return false;
+        }
+
+        $normalized = strtoupper(str_replace(' ', '', $code));
+        /** @var list<string> $hashes */
+        $hashes = json_decode(Crypt::decryptString($this->two_factor_recovery_codes), true) ?: [];
+
+        foreach ($hashes as $index => $hash) {
+            if (Hash::check($normalized, $hash) || Hash::check($code, $hash)) {
+                unset($hashes[$index]);
+                $this->forceFill([
+                    'two_factor_recovery_codes' => Crypt::encryptString(json_encode(array_values($hashes))),
+                ])->save();
+
+                return true;
+            }
+        }
+
+        return false;
     }
 }

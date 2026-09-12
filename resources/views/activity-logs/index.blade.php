@@ -28,7 +28,7 @@
                     <tr class="hover:bg-slate-50/70">
                         <td class="px-5 py-4">
                             <div class="flex items-center gap-2.5">
-                                <x-user-avatar :name="$log->user->name ?? 'System'" size="sm" />
+                                <x-user-avatar :user="$log->user" :name="$log->user->name ?? 'System'" size="sm" />
                                 <span dir="auto" class="bidi-auto font-medium text-slate-800">{{ $log->user->name ?? 'System' }}</span>
                             </div>
                         </td>

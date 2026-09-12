@@ -1,8 +1,8 @@
 <x-guest-layout>
-    <h1 class="text-xl font-semibold tracking-tight text-slate-900">Create your account</h1>
+    <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Create your account</h1>
     <p class="mt-1 text-sm text-slate-500">New members join as employees. An admin can change your role later.</p>
 
-    <form method="POST" action="{{ route('register') }}" class="mt-6 space-y-4">
+    <form method="POST" action="{{ route('register') }}" class="mt-8 space-y-5">
         @csrf
 
         <div>
@@ -35,7 +35,7 @@
 
         <p class="text-center text-sm text-slate-500">
             Already registered?
-            <a href="{{ route('login') }}" class="font-medium text-indigo-600 hover:text-indigo-700">Sign in</a>
+            <a href="{{ route('login') }}" class="font-semibold hover:opacity-80" style="color: var(--brand)">Sign in</a>
         </p>
     </form>
 </x-guest-layout>

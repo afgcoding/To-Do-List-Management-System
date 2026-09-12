@@ -12,22 +12,29 @@ use App\Http\Controllers\SubtaskController;
 use App\Http\Controllers\SystemSettingController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\TwoFactorAuthenticationController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return redirect()->route('tasks.index');
-})->middleware('auth');
+})->middleware(['auth', 'verified']);
 
 Route::get('/dashboard', function () {
     return redirect()->route('tasks.index');
-})->middleware('auth')->name('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::delete('/profile/other-sessions', [ProfileController::class, 'destroyOtherSessions'])->name('profile.sessions.destroy');
+    Route::post('/profile/two-factor', [TwoFactorAuthenticationController::class, 'store'])->name('two-factor.enable');
+    Route::post('/profile/two-factor/confirm', [TwoFactorAuthenticationController::class, 'confirm'])->name('two-factor.confirm');
+    Route::delete('/profile/two-factor', [TwoFactorAuthenticationController::class, 'destroy'])->name('two-factor.disable');
+});
 
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('tasks', TaskController::class);
     Route::patch('tasks/{task}/status', [TaskController::class, 'updateStatus'])->name('tasks.status.update');
     Route::patch('tasks/{task}/priority', [TaskController::class, 'updatePriority'])->name('tasks.priority.update');

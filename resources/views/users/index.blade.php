@@ -36,7 +36,7 @@
                     <tr class="hover:bg-slate-50/70">
                         <td class="px-5 py-4">
                             <div class="flex items-center gap-3">
-                                <x-user-avatar :name="$user->name" :src="$user->avatar ? $user->avatar_url : null" size="lg" />
+                                <x-user-avatar :user="$user" size="lg" class="h-10 w-10 object-cover" />
                                 <div class="min-w-0">
                                     <p class="truncate font-semibold text-slate-800">{{ $user->name }}</p>
                                     <p class="truncate text-xs text-slate-500">{{ $user->job_title ?: 'No job title' }}</p>

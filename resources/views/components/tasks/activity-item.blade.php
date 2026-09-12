@@ -23,7 +23,7 @@
     <span @class(['absolute top-3 -left-[21px] size-2.5 rounded-full ring-4 ring-white', $isComplete ? 'bg-emerald-500' : 'bg-slate-300'])></span>
     <div class="flex items-start gap-2.5">
         <div class="relative shrink-0">
-            <x-user-avatar :name="$name" size="sm" />
+            <x-user-avatar :user="$log->user" :name="$name" size="sm" />
             <span @class(['absolute -right-1 -bottom-0.5 inline-flex size-4 items-center justify-center rounded-full ring-2 ring-white', $badge])>
                 @if ($isComplete)
                     <svg class="size-2.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M16.704 5.29a1 1 0 0 1 .006 1.414l-7.5 7.57a1 1 0 0 1-1.43-.01l-3.5-3.5A1 1 0 1 1 5.7 9.35l2.79 2.79 6.79-6.856a1 1 0 0 1 1.424.006Z" clip-rule="evenodd"/></svg>

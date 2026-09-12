@@ -53,3 +53,17 @@ if (! function_exists('format_date')) {
         return $carbon->timezone($timezone)->format($format);
     }
 }
+
+if (! function_exists('brand_color')) {
+    /**
+     * Hex accent color from system settings, falling back to indigo.
+     */
+    function brand_color(): string
+    {
+        $color = (string) setting('primary_color', SystemSetting::DEFAULT_PRIMARY_COLOR);
+
+        return preg_match('/^#[0-9A-Fa-f]{6}$/', $color) === 1
+            ? $color
+            : SystemSetting::DEFAULT_PRIMARY_COLOR;
+    }
+}

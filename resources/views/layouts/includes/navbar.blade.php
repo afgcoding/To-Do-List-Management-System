@@ -19,7 +19,7 @@
         @endcan
         <div class="relative" x-data="{ open: false }">
             <button type="button" @click="open = !open" class="flex items-center gap-2 rounded-lg p-1 transition hover:bg-slate-100">
-                <span class="grid size-8 place-items-center rounded-full bg-indigo-100 text-xs font-bold text-indigo-700">{{ strtoupper(substr(auth()->user()?->name ?? 'U', 0, 1)) }}</span>
+                <x-user-avatar :user="auth()->user()" size="nav" />
                 <span class="hidden text-left sm:block">
                     <span class="block text-xs font-semibold text-slate-700">{{ auth()->user()?->name ?? 'Guest' }}</span>
                     <span class="block text-[11px] text-slate-500">{{ auth()->user()?->getRoleNames()->first() ?? auth()->user()?->role?->label() ?? 'Account' }}</span>

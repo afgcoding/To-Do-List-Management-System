@@ -1,13 +1,12 @@
 @props(['label', 'color' => null])
 @php
     $color = $color ?: '#64748B';
-    $hex = ltrim($color, '#');
-    $luminance = 160;
-    if (strlen($hex) === 6) {
-        $luminance = (hexdec(substr($hex, 0, 2)) * 299 + hexdec(substr($hex, 2, 2)) * 587 + hexdec(substr($hex, 4, 2)) * 114) / 1000;
+    if (! str_starts_with($color, '#')) {
+        $color = '#'.$color;
     }
-    $text = $luminance > 165 ? '#0f172a' : '#ffffff';
 @endphp
-{{-- Colored name pill for tags and categories --}}
-<span {{ $attributes->merge(['class' => 'inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold shadow-sm']) }}
-    style="background-color: {{ $color }}; color: {{ $text }}">{{ $label }}</span>
+<span
+    {{ $attributes->merge(['class' => 'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium']) }}
+    style="background: {{ $color }}15; border: 1px solid {{ $color }}40; color: {{ $color }};">
+    <span class="mr-1 inline-block h-1.5 w-1.5 rounded-full" style="background-color: {{ $color }}"></span>{{ $label }}
+</span>

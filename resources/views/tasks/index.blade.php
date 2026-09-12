@@ -5,6 +5,9 @@
     $query = request()->except('layout');
     $listUrl = route('tasks.index', array_merge($query, ['layout' => 'list']));
     $gridUrl = route('tasks.index', array_merge($query, ['layout' => 'grid']));
+    $assigneeHeading = $tasks->getCollection()->contains(
+        fn ($task): bool => $task->assignedUsers->count() > 1,
+    ) ? 'Team' : 'Assignee';
 @endphp
 <div class="space-y-6">
     {{-- ==================== PAGE HEADER ==================== --}}
@@ -109,7 +112,7 @@
                 <thead>
                     <tr class="border-b border-slate-200 bg-slate-50 text-xs font-semibold uppercase text-slate-500">
                         <th class="px-4 py-3">Task</th>
-                        <th class="px-4 py-3">Team</th>
+                        <th class="px-4 py-3">{{ $assigneeHeading }}</th>
                         <th class="px-4 py-3">Priority</th>
                         <th class="px-4 py-3">Status</th>
                         <th class="px-4 py-3">Due</th>

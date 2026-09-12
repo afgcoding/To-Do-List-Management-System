@@ -15,6 +15,7 @@ class SystemSettingSeeder extends Seeder
                 'company_name' => SystemSetting::DEFAULT_COMPANY_NAME,
                 'date_format' => SystemSetting::DEFAULT_DATE_FORMAT,
                 'time_zone' => SystemSetting::DEFAULT_TIME_ZONE,
+                'primary_color' => SystemSetting::DEFAULT_PRIMARY_COLOR,
             ],
         );
     }

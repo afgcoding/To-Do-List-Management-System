@@ -85,6 +85,17 @@
                     <p class="mt-2 text-xs text-slate-400">PNG, JPG, SVG, or WebP up to 2 MB.</p>
                     <x-input-error :messages="$errors->get('logo')" />
                 </div>
+
+                <div>
+                    <label for="primary_color" class="mb-1.5 block text-xs font-semibold text-slate-700">Primary accent color</label>
+                    <div class="flex items-center gap-3">
+                        <input id="primary_color" name="primary_color" type="color"
+                            value="{{ old('primary_color', $settings->primary_color ?? \App\Models\SystemSetting::DEFAULT_PRIMARY_COLOR) }}"
+                            class="h-10 w-14 cursor-pointer rounded-lg border border-slate-300 bg-white p-1">
+                        <p class="text-xs text-slate-500">Used on sign-in and primary actions. Defaults to indigo if unset.</p>
+                    </div>
+                    <x-input-error :messages="$errors->get('primary_color')" />
+                </div>
             </div>
         </section>
 

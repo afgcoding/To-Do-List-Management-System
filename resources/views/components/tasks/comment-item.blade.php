@@ -7,7 +7,7 @@
 @endphp
 <article x-data="{ editing: false }" class="w-full overflow-hidden rounded-xl border border-slate-200/60 bg-white p-4 shadow-sm">
     <div class="flex min-w-0 items-start gap-3">
-        <x-user-avatar :name="$comment->user->name ?? 'User'" size="md" />
+        <x-user-avatar :user="$comment->user" :name="$comment->user->name ?? 'User'" size="md" />
         <div class="w-full min-w-0 flex-1 overflow-hidden break-words">
             <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
                 <p class="text-sm font-semibold text-slate-800">{{ $comment->user->name ?? 'Unknown' }}</p>

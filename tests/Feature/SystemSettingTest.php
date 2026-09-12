@@ -36,7 +36,27 @@ it('renders the system settings page', function () {
         ->assertViewIs('settings.index')
         ->assertSee('System Settings')
         ->assertSee('Task Management Enterprise')
+        ->assertSee('Primary accent color')
         ->assertSee('Asia/Kabul');
+});
+
+it('updates the primary accent color', function () {
+    $this->actingAs(User::factory()->superAdmin()->create());
+    SystemSetting::getSettings();
+
+    $this->from(route('system-settings.index'))
+        ->put(route('system-settings.update'), [
+            'company_name' => 'Task Management Enterprise',
+            'date_format' => 'Y-m-d',
+            'time_zone' => 'Asia/Kabul',
+            'primary_color' => '#0F766E',
+        ])
+        ->assertRedirect(route('system-settings.index'));
+
+    $this->assertDatabaseHas('system_settings', [
+        'id' => 1,
+        'primary_color' => '#0F766E',
+    ]);
 });
 
 it('updates branding timezone and date format and refreshes the cache', function () {

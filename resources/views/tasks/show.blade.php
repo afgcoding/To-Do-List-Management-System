@@ -62,10 +62,10 @@
                 <span class="inline-flex items-center rounded-full border border-rose-200 bg-rose-50 px-2.5 py-0.5 text-xs font-semibold text-rose-700">Overdue</span>
             @endif
             @if($task->category)
-                <x-color-pill class="rounded-md" :label="$task->category->name" :color="$task->category->color" />
+                <x-color-pill :label="$task->category->name" :color="$task->category->color" />
             @endif
             @foreach($task->tags as $tag)
-                <span class="rounded-md border border-slate-200/80 bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-700"># {{ $tag->name }}</span>
+                <x-tasks.tag-badge :name="$tag->name" />
             @endforeach
         </div>
 
@@ -310,7 +310,7 @@
                     <div class="space-y-2.5">
                         @forelse($task->assignedUsers as $user)
                             <div class="flex items-center gap-2.5">
-                                <x-user-avatar :name="$user->name" size="md" />
+                                <x-user-avatar :user="$user" size="md" />
                                 <div class="min-w-0">
                                     <p class="truncate text-sm font-medium text-slate-800">{{ $user->name }}</p>
                                     @if($user->pivot->assigned_at)

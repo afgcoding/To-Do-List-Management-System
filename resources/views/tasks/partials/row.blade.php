@@ -7,10 +7,10 @@
                 <x-color-pill :label="$task->category->name" :color="$task->category->color" />
             @endif
             @foreach($task->tags as $tag)
-                <x-color-pill :label="$tag->name" :color="$tag->color" />
+                <x-tasks.tag-badge :name="$tag->name" />
             @endforeach
             @if($task->department)
-                <span class="rounded bg-indigo-50 px-2 py-0.5 text-[11px] font-medium text-indigo-600">{{ $task->department->name }}</span>
+                <span class="inline-flex items-center rounded-md border border-indigo-100 bg-indigo-50 px-2.5 py-0.5 text-xs font-medium text-indigo-700">{{ $task->department->name }}</span>
             @endif
             @if($task->is_overdue)
                 <x-badge tone="rose">Overdue</x-badge>
@@ -18,13 +18,7 @@
         </div>
     </td>
     <td class="px-4 py-4">
-        <div class="flex -space-x-2">
-            @forelse($task->assignedUsers as $user)
-                <x-user-avatar :name="$user->name" />
-            @empty
-                <span class="text-xs italic text-slate-400">Unassigned</span>
-            @endforelse
-        </div>
+        <x-tasks.assignee-stack :users="$task->assignedUsers" />
     </td>
     <td class="px-4 py-4"><x-tasks.priority-badge :priority="$task->priority" /></td>
     <td class="px-4 py-4"><x-tasks.status-badge :status="$task->status" /></td>

@@ -3,10 +3,14 @@
 use App\Enums\TaskPriority;
 use App\Enums\TaskStatus;
 use App\Models\Category;
+use App\Models\Department;
 use App\Models\Subtask;
+use App\Models\Tag;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 uses(RefreshDatabase::class);
 
@@ -180,4 +184,67 @@ it('shows progress from completed subtasks', function () {
     $this->get(route('tasks.show', $task))
         ->assertOk()
         ->assertSee('50%');
+});
+
+it('labels the tasks column as assignee when every row has at most one assignee', function () {
+    $assignee = User::factory()->create(['name' => 'Solo Worker']);
+    $task = Task::factory()->create(['title' => 'Solo task']);
+    $task->assignedUsers()->sync([$assignee->id]);
+
+    $this->get(route('tasks.index'))
+        ->assertOk()
+        ->assertSee('>Assignee<', false)
+        ->assertDontSee('>Team<', false)
+        ->assertSee('title="Solo Worker"', false);
+});
+
+it('labels the tasks column as team when a row has multiple assignees', function () {
+    $first = User::factory()->create(['name' => 'Amina Karimi']);
+    $second = User::factory()->create(['name' => 'Omar Rahimi']);
+    $third = User::factory()->create(['name' => 'Lina Ahmadi']);
+    $fourth = User::factory()->create(['name' => 'Neda Ahmadi']);
+    $task = Task::factory()->create(['title' => 'Shared task']);
+    $task->assignedUsers()->sync([$first->id, $second->id, $third->id, $fourth->id]);
+
+    $this->get(route('tasks.index'))
+        ->assertOk()
+        ->assertSee('>Team<', false)
+        ->assertSee('title="Amina Karimi"', false)
+        ->assertSee('>+1<', false);
+});
+
+it('renders the navbar profile photo when the signed-in user has an avatar', function () {
+    Storage::fake('public');
+    $path = UploadedFile::fake()->image('me.jpg')->store('avatars', 'public');
+    $user = User::factory()->admin()->create([
+        'name' => 'Sara Hassan',
+        'avatar' => $path,
+    ]);
+
+    $this->actingAs($user)
+        ->get(route('tasks.index'))
+        ->assertOk()
+        ->assertSee(Storage::disk('public')->url($path), false);
+});
+
+it('renders soft category tags and a department badge on the task list', function () {
+    $department = Department::factory()->create(['name' => 'Engineering']);
+    $category = Category::factory()->create([
+        'name' => 'Delivery',
+        'color' => '#6366F1',
+    ]);
+    $tag = Tag::factory()->create(['name' => 'Urgent']);
+    $task = Task::factory()->create([
+        'title' => 'Badge task',
+        'category_id' => $category->id,
+        'department_id' => $department->id,
+    ]);
+    $task->tags()->sync([$tag->id]);
+
+    $this->get(route('tasks.index'))
+        ->assertOk()
+        ->assertSee('Delivery')
+        ->assertSee('#Urgent', false)
+        ->assertSee('#6366F115', false)
+        ->assertSee('Engineering');
 });

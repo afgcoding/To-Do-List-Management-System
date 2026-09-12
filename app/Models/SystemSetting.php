@@ -15,6 +15,8 @@ class SystemSetting extends Model
 
     public const DEFAULT_COMPANY_NAME = 'Task Management Enterprise';
 
+    public const DEFAULT_PRIMARY_COLOR = '#4F46E5';
+
     public const DEFAULT_DATE_FORMAT = 'Y-m-d';
 
     public const DEFAULT_TIME_ZONE = 'Asia/Kabul';
@@ -25,6 +27,7 @@ class SystemSetting extends Model
     protected $fillable = [
         'company_name',
         'logo',
+        'primary_color',
         'date_format',
         'time_zone',
     ];
@@ -70,6 +73,7 @@ class SystemSetting extends Model
             'date_format' => self::DEFAULT_DATE_FORMAT,
             'time_zone' => self::DEFAULT_TIME_ZONE,
             'logo' => null,
+            'primary_color' => self::DEFAULT_PRIMARY_COLOR,
         ];
     }
 

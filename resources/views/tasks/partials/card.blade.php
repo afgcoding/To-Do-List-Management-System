@@ -14,20 +14,17 @@
             <x-color-pill :label="$task->category->name" :color="$task->category->color" />
         @endif
         @foreach($task->tags as $tag)
-            <x-color-pill :label="$tag->name" :color="$tag->color" />
+            <x-tasks.tag-badge :name="$tag->name" />
         @endforeach
+        @if($task->department)
+            <span class="inline-flex items-center rounded-md border border-indigo-100 bg-indigo-50 px-2.5 py-0.5 text-xs font-medium text-indigo-700">{{ $task->department->name }}</span>
+        @endif
     </div>
     <div class="mt-4">
         <x-tasks.progress :percent="$task->progress" />
     </div>
     <div class="mt-auto flex items-center justify-between pt-4">
-        <div class="flex -space-x-2">
-            @forelse($task->assignedUsers as $user)
-                <x-user-avatar :name="$user->name" />
-            @empty
-                <span class="text-xs italic text-slate-400">Unassigned</span>
-            @endforelse
-        </div>
+        <x-tasks.assignee-stack :users="$task->assignedUsers" />
         <span class="text-xs text-slate-500">{{ format_date($task->due_date) ?? 'No due date' }}</span>
     </div>
 </article>

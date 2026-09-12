@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" style="--brand: {{ brand_color() }}">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ ($pageTitle ?? 'Dashboard') . ' · ' . config('app.name', 'TaskFlow') }}</title>
+    <title>{{ ($pageTitle ?? 'Dashboard') . ' · ' . setting('company_name', config('app.name', 'TaskFlow')) }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('styles')
 </head>

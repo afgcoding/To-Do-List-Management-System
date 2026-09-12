@@ -27,6 +27,7 @@ class UpdateSystemSettingRequest extends FormRequest
             'date_format' => ['required', 'string', Rule::in(SystemSetting::DATE_FORMATS)],
             'time_zone' => ['required', 'timezone:all'],
             'remove_logo' => ['sometimes', 'boolean'],
+            'primary_color' => ['nullable', 'regex:/^#[0-9A-Fa-f]{6}$/'],
         ];
     }
 }
