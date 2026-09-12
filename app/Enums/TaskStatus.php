@@ -32,7 +32,7 @@ enum TaskStatus: string
     }
 
     /**
-     * Statuses a person may choose. Completed is driven by subtask progress.
+     * Statuses offered on create/edit forms. The show-page dropdown includes Completed.
      *
      * @return list<self>
      */

@@ -118,26 +118,29 @@ it('rejects a due date before the start date', function () {
         ->assertSessionHasErrors('due_date');
 });
 
-it('rejects manually setting a task status to completed', function () {
-    $task = Task::factory()->create();
+it('completes every subtask when the status is set to completed', function () {
+    $task = Task::factory()->create(['status' => TaskStatus::InProgress]);
+    Subtask::factory()->for($task)->count(2)->create();
+    Subtask::factory()->for($task)->completed()->create();
 
     $this->from(route('tasks.show', $task))
         ->patch(route('tasks.status.update', $task), [
             'status' => TaskStatus::Completed->value,
         ])
-        ->assertRedirect(route('tasks.show', $task))
-        ->assertSessionHasErrors('status');
+        ->assertRedirect(route('tasks.show', $task));
 
-    expect($task->fresh()->status)->toBe(TaskStatus::Todo);
+    expect($task->fresh()->status)->toBe(TaskStatus::Completed)
+        ->and($task->fresh()->completed_at)->not->toBeNull()
+        ->and($task->subtasks()->where('is_completed', false)->exists())->toBeFalse();
 });
 
-it('does not offer completed as a manual status on the show page', function () {
+it('offers completed as a selectable status on the show page', function () {
     $task = Task::factory()->create();
 
     $this->get(route('tasks.show', $task))
         ->assertOk()
-        ->assertSee('Automated by Subtasks')
-        ->assertDontSee('value="completed"', false);
+        ->assertSee('value="completed"', false)
+        ->assertDontSee('Automated by Subtasks');
 });
 
 it('updates task status and priority from quick actions', function () {

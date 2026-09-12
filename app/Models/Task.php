@@ -278,6 +278,25 @@ class Task extends Model
         });
     }
 
+    public function applyStatus(TaskStatus $status): void
+    {
+        if ($status === TaskStatus::Completed) {
+            Subtask::withoutEvents(function (): void {
+                $this->subtasks()->where('is_completed', false)->update([
+                    'is_completed' => true,
+                    'completed_at' => now(),
+                ]);
+            });
+        }
+
+        $this->update([
+            'status' => $status,
+            'completed_at' => $status === TaskStatus::Completed
+                ? ($this->completed_at ?? now())
+                : null,
+        ]);
+    }
+
     // Auto-calculate completion from subtasks and set parent task status.
     public function syncCompletionFromSubtasks(): void
     {

@@ -11,6 +11,7 @@ use App\Http\Requests\UpdateUserRequest;
 use App\Models\Department;
 use App\Models\User;
 use App\Support\PermissionCatalog;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
@@ -59,16 +60,17 @@ class UserController extends Controller
                 'canUpdate' => $actor?->can('update', $user) ?? false,
                 'canToggle' => $actor?->can('toggleStatus', $user) ?? false,
                 'canDelete' => $actor?->can('delete', $user) ?? false,
+                'busy' => false,
                 'editUrl' => route('users.edit', $user),
                 'tasksUrl' => route('tasks.index', ['user_id' => $user->id]),
-                'toggleUrl' => route('users.status.toggle', $user),
+                'toggleUrl' => route('users.toggle-status', $user),
                 'deleteUrl' => route('users.destroy', $user),
             ]];
         });
 
         return view('users.index', [
             'users' => $users,
-            'directory' => $directory,
+            'directory' => $directory->all(),
         ]);
     }
 
@@ -135,7 +137,7 @@ class UserController extends Controller
         return redirect()->route('users.index')->with('success', 'User updated successfully!');
     }
 
-    public function toggleStatus(Request $request, User $user): RedirectResponse
+    public function toggleStatus(Request $request, User $user): RedirectResponse|JsonResponse
     {
         abort_if($request->user()?->is($user), 403);
         $this->authorize('toggleStatus', $user);
@@ -146,7 +148,19 @@ class UserController extends Controller
                 : UserStatus::Active,
         ]);
 
-        return back()->with('success', 'User status updated.');
+        $user->refresh();
+        $label = $user->isActive() ? 'Active' : 'Inactive';
+        $message = "User status updated to {$label}";
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'is_active' => $user->isActive(),
+                'status' => $label,
+                'message' => $message,
+            ]);
+        }
+
+        return back()->with('success', $message);
     }
 
     public function destroy(User $user): RedirectResponse

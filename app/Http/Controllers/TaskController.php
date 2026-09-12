@@ -158,16 +158,11 @@ class TaskController extends Controller
         return redirect()->route('tasks.show', $task)->with('success', 'Task updated successfully!');
     }
 
-    // Quick status change. Completed is rejected by validation.
+    // Quick status change. Choosing Completed also completes every subtask.
     public function updateStatus(UpdateTaskStatusRequest $request, Task $task): RedirectResponse
     {
         $this->authorize('updateStatus', $task);
-        $status = TaskStatus::from($request->validated('status'));
-
-        $task->update([
-            'status' => $status,
-            'completed_at' => $status === TaskStatus::Completed ? now() : null,
-        ]);
+        $task->applyStatus(TaskStatus::from($request->validated('status')));
 
         return back()->with('success', 'Task status updated.');
     }

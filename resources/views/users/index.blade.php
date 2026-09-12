@@ -6,38 +6,7 @@
 @section('content')
 <div
     class="mx-auto max-w-7xl space-y-6"
-    x-data="{
-        directory: {{ Js::from($directory) }},
-        menu: { id: null, top: 0, right: 0 },
-        profileId: null,
-        confirm: null,
-        get profile() {
-            return this.profileId ? this.directory[this.profileId] : null;
-        },
-        get selected() {
-            return this.menu.id ? this.directory[this.menu.id] : null;
-        },
-        get pending() {
-            return this.confirm ? this.directory[this.confirm.id] : null;
-        },
-        openMenu(id, event) {
-            const rect = event.currentTarget.getBoundingClientRect();
-            this.menu = this.menu.id === id
-                ? { id: null, top: 0, right: 0 }
-                : { id, top: rect.bottom + 8, right: window.innerWidth - rect.right };
-        },
-        closeMenu() {
-            this.menu = { id: null, top: 0, right: 0 };
-        },
-        openProfile(id) {
-            this.closeMenu();
-            this.profileId = id;
-        },
-        ask(id, type) {
-            this.closeMenu();
-            this.confirm = { id, type };
-        }
-    }"
+    x-data="usersIndex(@js($directory))"
     @keydown.escape.window="closeMenu(); profileId = null; confirm = null">
     <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
@@ -89,25 +58,54 @@
                             </div>
                         </td>
                         <td class="px-5 py-4">
-                            @if ($user->isActive())
-                                <span class="inline-flex items-center gap-1.5 text-sm font-medium text-emerald-700">
-                                    <span class="relative flex size-2">
-                                        <span class="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-60"></span>
-                                        <span class="relative inline-flex size-2 rounded-full bg-emerald-500"></span>
+                            @php($canToggle = auth()->user()?->can('toggleStatus', $user) ?? false)
+                            <div class="inline-flex items-center gap-2.5">
+                                <button
+                                    type="button"
+                                    role="switch"
+                                    @if ($canToggle)
+                                        @click="toggleStatus({{ $user->id }})"
+                                        :disabled="row({{ $user->id }})?.busy"
+                                    @else
+                                        disabled
+                                    @endif
+                                    :aria-checked="row({{ $user->id }})?.isActive ? 'true' : 'false'"
+                                    :aria-label="row({{ $user->id }})?.isActive ? 'Set status to Inactive' : 'Set status to Active'"
+                                    @class([
+                                        'relative inline-flex h-6 w-11 shrink-0 rounded-full border-0 p-0.5 shadow-inner transition focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2',
+                                        $user->isActive() ? 'bg-emerald-500' : 'bg-rose-500',
+                                        $canToggle ? 'cursor-pointer' : 'cursor-not-allowed opacity-60',
+                                    ])
+                                    :class="row({{ $user->id }})?.isActive ? 'bg-emerald-500' : 'bg-rose-500'">
+                                    <span
+                                        @class([
+                                            'pointer-events-none inline-flex size-5 items-center justify-center rounded-full bg-white shadow transition duration-200',
+                                            $user->isActive() ? 'translate-x-5' : 'translate-x-0',
+                                        ])
+                                        :class="{
+                                            'translate-x-5': row({{ $user->id }})?.isActive,
+                                            'translate-x-0': ! row({{ $user->id }})?.isActive,
+                                            'animate-pulse': row({{ $user->id }})?.busy,
+                                        }">
+                                        <svg x-show="row({{ $user->id }})?.busy" x-cloak class="size-3 animate-spin text-slate-400" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
+                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 0 1 8-8v3a5 5 0 0 0-5 5H4z"></path>
+                                        </svg>
                                     </span>
-                                    Active
-                                </span>
-                            @else
-                                <span class="inline-flex items-center gap-1.5 text-sm font-medium text-slate-500">
-                                    <span class="size-2 rounded-full bg-slate-400"></span>
-                                    Inactive
-                                </span>
-                            @endif
+                                </button>
+                                <span
+                                    @class([
+                                        'text-sm font-medium',
+                                        $user->isActive() ? 'text-emerald-600' : 'text-rose-600',
+                                    ])
+                                    :class="row({{ $user->id }})?.isActive ? 'text-emerald-600' : 'text-rose-600'"
+                                    x-text="row({{ $user->id }})?.isActive ? 'Active' : 'Inactive'">{{ $user->isActive() ? 'Active' : 'Inactive' }}</span>
+                            </div>
                         </td>
                         <td class="px-5 py-4 text-right">
                             <button
                                 type="button"
-                                @click="openMenu({{ $user->id }}, $event)"
+                                @click.stop="openMenu({{ $user->id }}, $event)"
                                 class="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-sm font-medium text-slate-600 shadow-sm hover:bg-slate-50">
                                 Actions
                                 <svg class="size-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -131,6 +129,7 @@
             x-show="selected"
             x-cloak
             @click.outside="closeMenu()"
+            @click.stop
             class="fixed z-[80] w-52 overflow-hidden rounded-xl border border-slate-200 bg-white py-1 text-left shadow-xl"
             :style="{ top: menu.top + 'px', right: menu.right + 'px' }">
             <template x-if="selected?.canView">
@@ -139,9 +138,6 @@
             <a x-show="selected" :href="selected?.tasksUrl" class="block px-3 py-2 text-sm text-slate-700 hover:bg-slate-50">View Tasks</a>
             <template x-if="selected?.canUpdate">
                 <a :href="selected.editUrl" class="block px-3 py-2 text-sm text-slate-700 hover:bg-slate-50">Edit</a>
-            </template>
-            <template x-if="selected?.canToggle">
-                <button type="button" @click="ask(selected.id, 'toggle')" class="block w-full px-3 py-2 text-left text-sm text-slate-700 hover:bg-slate-50" x-text="selected.isActive ? 'Deactivate' : 'Activate'"></button>
             </template>
             <template x-if="selected?.canDelete">
                 <button type="button" @click="ask(selected.id, 'delete')" class="block w-full px-3 py-2 text-left text-sm text-rose-600 hover:bg-rose-50">Delete</button>
@@ -244,21 +240,14 @@
         <div x-show="pending" x-cloak class="fixed inset-0 z-[90] flex items-center justify-center p-4" role="dialog" aria-modal="true">
             <div class="absolute inset-0 bg-slate-950/40" @click="confirm = null"></div>
             <div class="relative w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-5 shadow-xl">
-                <h3 class="text-base font-semibold text-slate-900" x-text="confirm?.type === 'delete' ? 'Delete user' : (pending?.isActive ? 'Deactivate user' : 'Activate user')"></h3>
+                <h3 class="text-base font-semibold text-slate-900">Delete user</h3>
                 <p class="mt-2 text-sm text-slate-600">
-                    <span x-show="confirm?.type === 'delete'">This permanently removes</span>
-                    <span x-show="confirm?.type === 'toggle' && pending?.isActive">This deactivates</span>
-                    <span x-show="confirm?.type === 'toggle' && !pending?.isActive">This reactivates</span>
+                    This permanently removes
                     <span class="font-semibold text-slate-800" x-text="pending?.name"></span>.
                 </p>
                 <div class="mt-5 flex justify-end gap-2">
                     <button type="button" @click="confirm = null" class="rounded-xl border border-slate-200 px-3.5 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50">Cancel</button>
-                    <form x-show="confirm?.type === 'toggle'" method="POST" :action="pending?.toggleUrl">
-                        @csrf
-                        @method('PATCH')
-                        <button type="submit" class="rounded-xl bg-slate-900 px-3.5 py-2 text-sm font-semibold text-white hover:bg-slate-800" x-text="pending?.isActive ? 'Deactivate' : 'Activate'"></button>
-                    </form>
-                    <form x-show="confirm?.type === 'delete'" method="POST" :action="pending?.deleteUrl">
+                    <form method="POST" :action="pending?.deleteUrl">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="rounded-xl bg-rose-600 px-3.5 py-2 text-sm font-semibold text-white hover:bg-rose-700">Delete</button>
@@ -267,5 +256,14 @@
             </div>
         </div>
     </template>
+
+    <div
+        x-show="toast"
+        x-cloak
+        x-transition
+        class="fixed right-5 bottom-5 z-[100] max-w-sm rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-800 shadow-lg"
+        role="status"
+        aria-live="polite"
+        x-text="toast"></div>
 </div>
 @endsection

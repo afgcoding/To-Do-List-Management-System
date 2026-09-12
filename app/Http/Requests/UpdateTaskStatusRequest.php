@@ -22,8 +22,7 @@ class UpdateTaskStatusRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // Block manually setting status to Completed.
-            'status' => ['required', Rule::enum(TaskStatus::class)->except(TaskStatus::Completed)],
+            'status' => ['required', Rule::enum(TaskStatus::class)],
         ];
     }
 }

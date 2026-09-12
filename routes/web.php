@@ -53,6 +53,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('tags', TagController::class);
     Route::resource('users', UserController::class);
     Route::patch('users/{user}/status', [UserController::class, 'toggleStatus'])->name('users.status.toggle');
+    Route::patch('users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggle-status');
     Route::resource('roles', RoleController::class)->except(['show']);
     Route::get('activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
     Route::get('system-settings', [SystemSettingController::class, 'index'])->name('system-settings.index');

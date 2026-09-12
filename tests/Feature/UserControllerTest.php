@@ -92,9 +92,34 @@ it('replaces an existing avatar and toggles status', function () {
     Storage::disk('public')->assertMissing($oldPath);
     Storage::disk('public')->assertExists($user->avatar);
 
-    $this->patch(route('users.status.toggle', $user))->assertRedirect();
+    $this->patch(route('users.status.toggle', $user))
+        ->assertRedirect()
+        ->assertSessionHas('success', 'User status updated to Inactive');
 
     expect($user->fresh()->status)->toBe(UserStatus::Inactive);
+});
+
+it('returns json when toggling user status with an ajax request', function () {
+    $user = User::factory()->create(['status' => UserStatus::Active]);
+
+    $this->patchJson(route('users.toggle-status', $user))
+        ->assertOk()
+        ->assertJson([
+            'is_active' => false,
+            'status' => 'Inactive',
+            'message' => 'User status updated to Inactive',
+        ]);
+
+    expect($user->fresh()->status)->toBe(UserStatus::Inactive);
+});
+
+it('renders an inline status switch and omits activate from the actions menu', function () {
+    $this->get(route('users.index'))
+        ->assertOk()
+        ->assertSee('role="switch"', false)
+        ->assertSee('usersIndex(', false)
+        ->assertSee('bg-emerald-500')
+        ->assertDontSee("ask(selected.id, 'toggle'");
 });
 
 it('lets a manager view and edit users without a delete grant', function () {

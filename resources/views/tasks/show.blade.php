@@ -235,15 +235,19 @@
                             @csrf
                             @method('PATCH')
                             <label class="mb-1 block text-xs font-medium text-slate-500">Status</label>
-                            <select name="status" onchange="this.form.submit()" class="w-full rounded-lg border-slate-200 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                @foreach(\App\Enums\TaskStatus::manualCases() as $status)
+                            <select
+                                name="status"
+                                @can('updateStatus', $task)
+                                    onchange="this.form.submit()"
+                                @else
+                                    disabled
+                                @endcan
+                                class="w-full rounded-lg border-slate-200 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500 {{ auth()->user()?->can('updateStatus', $task) ? '' : 'cursor-not-allowed bg-slate-50' }}">
+                                @foreach(\App\Enums\TaskStatus::cases() as $status)
                                     <option value="{{ $status->value }}" @selected($task->status === $status)>{{ $status->label() }}</option>
                                 @endforeach
-                                <option value="" disabled @selected($task->status === \App\Enums\TaskStatus::Completed)>
-                                    Completed — Automated by Subtasks
-                                </option>
                             </select>
-                            <p class="mt-1 text-[11px] text-slate-400">Completed is set automatically when every subtask is done.</p>
+                            <p class="mt-1 text-[11px] text-slate-400">Choosing Completed marks every subtask done. Completing all subtasks sets this to Completed.</p>
                         </form>
                         <form action="{{ route('tasks.priority.update', $task) }}" method="POST">
                             @csrf
