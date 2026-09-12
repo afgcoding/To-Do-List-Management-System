@@ -45,7 +45,7 @@ it('logs task creation and assignment changes', function () {
 });
 
 it('logs status and priority changes from quick actions', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->manager()->create();
     $task = Task::factory()->for($user, 'creator')->create([
         'status' => TaskStatus::Todo,
         'priority' => TaskPriority::Medium,
@@ -77,7 +77,7 @@ it('logs status and priority changes from quick actions', function () {
 });
 
 it('logs due date changes when a task is updated', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->manager()->create();
     $task = Task::factory()->for($user, 'creator')->create([
         'title' => 'Deadline move',
         'priority' => TaskPriority::Low,
@@ -107,7 +107,7 @@ it('logs due date changes when a task is updated', function () {
 it('logs comments and file uploads', function () {
     Storage::fake('public');
     $user = User::factory()->create();
-    $task = Task::factory()->create();
+    $task = Task::factory()->for($user, 'creator')->create();
 
     $this->actingAs($user)
         ->from(route('tasks.show', $task))
@@ -141,7 +141,9 @@ it('logs comments and file uploads', function () {
 });
 
 it('renders the paginated activity logs index', function () {
-    $user = User::factory()->create(['name' => 'Omar Rahimi']);
+    $user = User::factory()->admin()->create(['name' => 'Omar Rahimi']);
+    $this->actingAs($user);
+
     $task = Task::factory()->for($user, 'creator')->create(['title' => 'Ship audit feed']);
 
     $this->get(route('activity-logs.index'))
@@ -156,6 +158,7 @@ it('renders the paginated activity logs index', function () {
 
 it('renders the activity timeline on the task show page', function () {
     $user = User::factory()->create(['name' => 'Lina Ahmadi']);
+    $this->actingAs($user);
     $task = Task::factory()->for($user, 'creator')->create(['title' => 'Timeline task']);
 
     $this->actingAs($user)

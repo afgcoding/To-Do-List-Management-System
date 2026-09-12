@@ -13,5 +13,9 @@ trait PreparesTaskFormData
                 $this->merge([$field => null]);
             }
         }
+
+        $this->merge([
+            'is_recurring' => $this->boolean('is_recurring'),
+        ]);
     }
 }

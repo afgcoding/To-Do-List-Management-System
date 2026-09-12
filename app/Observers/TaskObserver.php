@@ -15,7 +15,13 @@ class TaskObserver
     // New tasks always get a created_task entry (factory, HTTP, or jobs).
     public function created(Task $task): void
     {
-        ActivityLog::record($task->id, 'created_task', 'created this task');
+        ActivityLog::record(
+            $task->id,
+            'created_task',
+            $task->createdFromRecurring
+                ? 'created automatically from recurring task schedule'
+                : 'created this task',
+        );
     }
 
     // Attribute-level diffs fire after save; pivot assignee changes are logged in Task::syncAssignedUsers().

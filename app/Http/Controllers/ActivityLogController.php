@@ -11,6 +11,8 @@ class ActivityLogController extends Controller
 {
     public function index(): View
     {
+        $this->authorize('viewAny', ActivityLog::class);
+
         $activityLogs = ActivityLog::query()
             ->with(['task', 'user'])
             ->latest()

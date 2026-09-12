@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreSubtaskRequest;
 use App\Http\Requests\UpdateSubtaskRequest;
 use App\Models\Subtask;
+use App\Models\Task;
 use Illuminate\Http\RedirectResponse;
 
 class SubtaskController extends Controller
@@ -15,6 +16,8 @@ class SubtaskController extends Controller
     public function store(StoreSubtaskRequest $request): RedirectResponse
     {
         $validated = $request->validated();
+        $task = Task::query()->findOrFail($validated['task_id']);
+        $this->authorize('update', $task);
 
         Subtask::query()->create([
             'task_id' => $validated['task_id'],
@@ -29,6 +32,8 @@ class SubtaskController extends Controller
     // Inline edit of subtask title and assignee.
     public function update(UpdateSubtaskRequest $request, Subtask $subtask): RedirectResponse
     {
+        $this->authorize('update', $subtask->task);
+
         $subtask->update($request->safe()->only(['title', 'assigned_to']));
 
         return back()->with('success', 'Subtask updated successfully!');
@@ -37,6 +42,7 @@ class SubtaskController extends Controller
     // Toggle subtask status (is_completed: true/false). Parent status is synced by SubtaskObserver.
     public function toggle(Subtask $subtask): RedirectResponse
     {
+        $this->authorize('updateStatus', $subtask->task);
         $subtask->toggleCompletion();
 
         return back()->with('success', 'Subtask status updated!');
@@ -45,6 +51,7 @@ class SubtaskController extends Controller
     // Remove a subtask; observer recalculates the parent task status.
     public function destroy(Subtask $subtask): RedirectResponse
     {
+        $this->authorize('update', $subtask->task);
         $subtask->delete();
 
         return back()->with('success', 'Subtask deleted!');

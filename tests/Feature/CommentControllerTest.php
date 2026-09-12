@@ -12,7 +12,7 @@ uses(RefreshDatabase::class);
 it('posts a comment on a task', function () {
     Storage::fake('public');
     $user = User::factory()->create();
-    $task = Task::factory()->create();
+    $task = Task::factory()->for($user, 'creator')->create();
 
     $this->actingAs($user)
         ->from(route('tasks.show', $task))
@@ -77,7 +77,7 @@ it('deletes a comment owned by the current user', function () {
 it('attaches files when posting a comment', function () {
     Storage::fake('public');
     $user = User::factory()->create();
-    $task = Task::factory()->create();
+    $task = Task::factory()->for($user, 'creator')->create();
     $file = UploadedFile::fake()->image('shot.png');
 
     $this->actingAs($user)

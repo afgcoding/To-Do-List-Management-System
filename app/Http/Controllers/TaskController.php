@@ -25,8 +25,13 @@ class TaskController extends Controller
     // List tasks with search, filters, sorting, and dashboard stats.
     public function index(Request $request): View
     {
+        $this->authorize('viewAny', Task::class);
+
+        $actor = $request->user();
+
         // Eager-load relations and subtask counts to avoid N+1 queries.
         $tasks = Task::query()
+            ->visibleTo($actor)
             ->with(['creator', 'assignedUsers', 'category', 'department', 'tags'])
             ->withCount([
                 'subtasks',
@@ -37,7 +42,11 @@ class TaskController extends Controller
             ->statusIs($request->string('status')->toString() ?: null)
             ->priorityIs($request->string('priority')->toString() ?: null)
             ->when($request->filled('category_id'), fn (Builder $query) => $query->where('category_id', $request->integer('category_id')))
-            ->assignedTo($request->filled('assigned_user_id') ? $request->integer('assigned_user_id') : null)
+            ->assignedTo(
+                $request->filled('assigned_user_id')
+                    ? $request->integer('assigned_user_id')
+                    : ($request->filled('user_id') ? $request->integer('user_id') : null),
+            )
             ->dueBetween(
                 $request->string('due_from')->toString() ?: null,
                 $request->string('due_to')->toString() ?: null,
@@ -51,6 +60,7 @@ class TaskController extends Controller
 
         // Dashboard counters: total, in progress, completed, overdue.
         $stats = Task::query()
+            ->visibleTo($actor)
             ->toBase()
             ->selectRaw('COUNT(*) as total')
             ->selectRaw("SUM(CASE WHEN status = 'in_progress' THEN 1 ELSE 0 END) as in_progress")
@@ -75,12 +85,16 @@ class TaskController extends Controller
     // Show the create-task form with departments, categories, tags, and users.
     public function create(): View
     {
+        $this->authorize('create', Task::class);
+
         return view('tasks.create', $this->formCatalog());
     }
 
     // Persist a new task (Completed status is not set from this form).
     public function store(StoreTaskRequest $request): RedirectResponse
     {
+        $this->authorize('create', Task::class);
+
         $task = $this->persistTask($request);
 
         return redirect()->route('tasks.show', $task)->with('success', 'Task created successfully!');
@@ -89,6 +103,7 @@ class TaskController extends Controller
     // Task detail page: relations plus subtask counts for the progress bar.
     public function show(Task $task): View
     {
+        $this->authorize('view', $task);
         $task->load([
             'creator',
             'department',
@@ -109,7 +124,7 @@ class TaskController extends Controller
         return view('tasks.show', [
             'task' => $task,
             'users' => $users,
-            'currentUserId' => auth()->id() ?? User::query()->orderBy('id')->value('id'),
+            'currentUserId' => auth()->id(),
             'mentionNames' => $users->pluck('name')
                 ->merge($task->comments->pluck('user.name'))
                 ->filter()
@@ -121,7 +136,8 @@ class TaskController extends Controller
     // Edit form, including currently assigned users and tags.
     public function edit(Task $task): View
     {
-        $task->load(['assignedUsers', 'tags']);
+        $this->authorize('update', $task);
+        $task->load(['assignedUsers', 'tags', 'recurringTask']);
         $catalog = $this->formCatalog();
         $catalog['departments'] = Department::query()->orderBy('name')->get();
 
@@ -136,6 +152,7 @@ class TaskController extends Controller
     // Save task edits; Completed remains automated by subtasks.
     public function update(UpdateTaskRequest $request, Task $task): RedirectResponse
     {
+        $this->authorize('update', $task);
         $this->persistTask($request, $task);
 
         return redirect()->route('tasks.show', $task)->with('success', 'Task updated successfully!');
@@ -144,6 +161,7 @@ class TaskController extends Controller
     // Quick status change. Completed is rejected by validation.
     public function updateStatus(UpdateTaskStatusRequest $request, Task $task): RedirectResponse
     {
+        $this->authorize('updateStatus', $task);
         $status = TaskStatus::from($request->validated('status'));
 
         $task->update([
@@ -157,6 +175,7 @@ class TaskController extends Controller
     // Quick priority change from the show-page sidebar.
     public function updatePriority(UpdateTaskPriorityRequest $request, Task $task): RedirectResponse
     {
+        $this->authorize('update', $task);
         $task->update([
             'priority' => $request->validated('priority'),
         ]);
@@ -167,6 +186,7 @@ class TaskController extends Controller
     // Delete a task and return to the index.
     public function destroy(Task $task): RedirectResponse
     {
+        $this->authorize('delete', $task);
         $task->delete();
 
         return redirect()->route('tasks.index')->with('success', 'Task deleted successfully!');
@@ -193,7 +213,15 @@ class TaskController extends Controller
         $validated = $request->validated();
         $assignedUsers = $validated['assigned_users'] ?? [];
         $tags = $validated['tags'] ?? [];
-        unset($validated['assigned_users'], $validated['tags']);
+        $isRecurring = $request->boolean('is_recurring');
+        unset(
+            $validated['assigned_users'],
+            $validated['tags'],
+            $validated['is_recurring'],
+            $validated['recurrence_type'],
+            $validated['repeat_interval'],
+            $validated['next_recurring_date'],
+        );
 
         // Never accept Completed from the form; subtasks own that status.
         if (array_key_exists('status', $validated)) {
@@ -205,10 +233,10 @@ class TaskController extends Controller
         }
 
         if ($task === null) {
-            $creatorId = auth()->id() ?? User::query()->orderBy('id')->value('id');
+            $creatorId = auth()->id();
 
             if ($creatorId === null) {
-                abort(422, 'A user is required before a task can be created.');
+                abort(403);
             }
 
             $validated['creator_id'] = $creatorId;
@@ -219,7 +247,31 @@ class TaskController extends Controller
 
         $task->syncAssignedUsers($assignedUsers);
         $task->tags()->sync($tags);
+        $this->syncRecurringSchedule($task, $request, $isRecurring);
 
         return $task;
+    }
+
+    private function syncRecurringSchedule(Task $task, StoreTaskRequest|UpdateTaskRequest $request, bool $isRecurring): void
+    {
+        if (! $request->user()?->can('tasks.edit')) {
+            return;
+        }
+
+        if (! $isRecurring) {
+            $task->recurringTask()->delete();
+
+            return;
+        }
+
+        $task->recurringTask()->updateOrCreate(
+            ['task_id' => $task->id],
+            [
+                'recurrence_type' => $request->validated('recurrence_type'),
+                'repeat_interval' => $request->integer('repeat_interval'),
+                'next_recurring_date' => $request->date('next_recurring_date')?->toDateString(),
+                'is_active' => true,
+            ],
+        );
     }
 }

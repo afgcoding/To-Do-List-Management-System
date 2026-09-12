@@ -15,6 +15,7 @@ class TagController extends Controller
     // Tags with linked task counts.
     public function index(): View
     {
+        $this->authorize('viewAny', Tag::class);
         $tags = Tag::query()
             ->withCount('tasks')
             ->latest()
@@ -25,11 +26,14 @@ class TagController extends Controller
 
     public function create(): RedirectResponse
     {
+        $this->authorize('create', Tag::class);
+
         return redirect()->route('tags.index');
     }
 
     public function store(StoreTagRequest $request): RedirectResponse
     {
+        $this->authorize('create', Tag::class);
         Tag::query()->create($request->validated());
 
         return redirect()->route('tags.index')->with('success', 'Tag created successfully!');
@@ -37,16 +41,21 @@ class TagController extends Controller
 
     public function show(Tag $tag): RedirectResponse
     {
+        $this->authorize('view', $tag);
+
         return redirect()->route('tags.index', ['edit' => $tag->id]);
     }
 
     public function edit(Tag $tag): RedirectResponse
     {
+        $this->authorize('update', $tag);
+
         return redirect()->route('tags.index', ['edit' => $tag->id]);
     }
 
     public function update(UpdateTagRequest $request, Tag $tag): RedirectResponse
     {
+        $this->authorize('update', $tag);
         $tag->update($request->validated());
 
         return redirect()->route('tags.index')->with('success', 'Tag updated successfully!');
@@ -54,6 +63,7 @@ class TagController extends Controller
 
     public function destroy(Tag $tag): RedirectResponse
     {
+        $this->authorize('delete', $tag);
         $tag->delete();
 
         return redirect()->route('tags.index')->with('success', 'Tag deleted successfully!');

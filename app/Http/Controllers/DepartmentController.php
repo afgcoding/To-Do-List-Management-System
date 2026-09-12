@@ -16,6 +16,7 @@ class DepartmentController extends Controller
     // List departments with search, active filter, and related counts.
     public function index(Request $request): View
     {
+        $this->authorize('viewAny', Department::class);
         $departments = Department::query()
             ->withCount(['users', 'tasks'])
             ->when($request->filled('search'), function ($query) use ($request): void {
@@ -34,11 +35,14 @@ class DepartmentController extends Controller
 
     public function create(): RedirectResponse
     {
+        $this->authorize('create', Department::class);
+
         return redirect()->route('departments.index');
     }
 
     public function store(StoreDepartmentRequest $request): RedirectResponse
     {
+        $this->authorize('create', Department::class);
         Department::query()->create($request->validated());
 
         return redirect()->route('departments.index')->with('success', 'Department created successfully!');
@@ -46,6 +50,7 @@ class DepartmentController extends Controller
 
     public function show(Department $department): View
     {
+        $this->authorize('view', $department);
         $department->load('users');
 
         return view('departments.show', compact('department'));
@@ -53,11 +58,14 @@ class DepartmentController extends Controller
 
     public function edit(Department $department): RedirectResponse
     {
+        $this->authorize('update', $department);
+
         return redirect()->route('departments.index', ['edit' => $department->id]);
     }
 
     public function update(UpdateDepartmentRequest $request, Department $department): RedirectResponse
     {
+        $this->authorize('update', $department);
         $department->update($request->validated());
 
         return redirect()->route('departments.index')->with('success', 'Department updated successfully!');
@@ -66,6 +74,7 @@ class DepartmentController extends Controller
     // Flip Active / Inactive without opening the edit drawer.
     public function toggleActive(Department $department): RedirectResponse
     {
+        $this->authorize('update', $department);
         $department->update([
             'is_active' => ! $department->is_active,
         ]);
@@ -75,6 +84,7 @@ class DepartmentController extends Controller
 
     public function destroy(Department $department): RedirectResponse
     {
+        $this->authorize('delete', $department);
         $department->delete();
 
         return redirect()->route('departments.index')->with('success', 'Department deleted successfully!');

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\Enums\RecurrenceType;
 use App\Enums\TaskPriority;
 use App\Enums\TaskStatus;
 use App\Http\Requests\Concerns\PreparesTaskFormData;
@@ -39,6 +40,10 @@ class StoreTaskRequest extends FormRequest
             'assigned_users.*' => ['integer', 'exists:users,id'],
             'tags' => ['nullable', 'array'],
             'tags.*' => ['integer', 'exists:tags,id'],
+            'is_recurring' => ['sometimes', 'boolean'],
+            'recurrence_type' => ['required_if:is_recurring,true', 'nullable', Rule::enum(RecurrenceType::class)],
+            'repeat_interval' => ['required_if:is_recurring,true', 'nullable', 'integer', 'min:1'],
+            'next_recurring_date' => ['required_if:is_recurring,true', 'nullable', 'date'],
         ];
     }
 }

@@ -12,7 +12,7 @@ uses(RefreshDatabase::class);
 it('uploads files to a task from the dropzone', function () {
     Storage::fake('public');
     $user = User::factory()->create();
-    $task = Task::factory()->create();
+    $task = Task::factory()->for($user, 'creator')->create();
     $file = UploadedFile::fake()->create('notes.txt', 20, 'text/plain');
 
     $this->actingAs($user)
@@ -35,7 +35,7 @@ it('uploads files to a task from the dropzone', function () {
 it('rejects an unsupported attachment type', function () {
     Storage::fake('public');
     $user = User::factory()->create();
-    $task = Task::factory()->create();
+    $task = Task::factory()->for($user, 'creator')->create();
 
     $this->actingAs($user)
         ->post(route('attachments.store'), [
@@ -48,7 +48,7 @@ it('rejects an unsupported attachment type', function () {
 it('downloads an attachment', function () {
     Storage::fake('public');
     $user = User::factory()->create();
-    $task = Task::factory()->create();
+    $task = Task::factory()->for($user, 'creator')->create();
     $path = UploadedFile::fake()->create('brief.pdf', 40, 'application/pdf')->store('attachments', 'public');
 
     $attachment = Attachment::factory()->create([
@@ -68,9 +68,11 @@ it('downloads an attachment', function () {
 it('lets the uploader delete an attachment', function () {
     Storage::fake('public');
     $user = User::factory()->create();
+    $task = Task::factory()->for($user, 'creator')->create();
     $path = UploadedFile::fake()->create('brief.pdf', 12)->store('attachments', 'public');
     $attachment = Attachment::factory()->create([
         'user_id' => $user->id,
+        'task_id' => $task->id,
         'file_path' => $path,
     ]);
 

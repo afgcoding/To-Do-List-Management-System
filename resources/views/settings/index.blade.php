@@ -35,9 +35,12 @@
             this.$refs.logoInput.value = '';
         }
     }">
-    <div>
-        <h1 class="text-2xl font-bold tracking-tight text-slate-900">System Settings</h1>
-        <p class="mt-1 text-sm text-slate-500">Brand the workspace and choose how dates and timezones appear across the platform.</p>
+    <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+        <div>
+            <h1 class="text-2xl font-bold tracking-tight text-slate-900">System Settings</h1>
+            <p class="mt-1 text-sm text-slate-500">Brand the workspace and choose how dates and timezones appear across the platform.</p>
+        </div>
+        <x-back-link :href="route('tasks.index')">Back to tasks</x-back-link>
     </div>
 
     <form method="POST" action="{{ route('system-settings.update') }}" enctype="multipart/form-data" class="space-y-6">

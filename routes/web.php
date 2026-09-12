@@ -5,6 +5,9 @@ use App\Http\Controllers\AttachmentController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RecurringTaskController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SubtaskController;
 use App\Http\Controllers\SystemSettingController;
 use App\Http\Controllers\TagController;
@@ -13,30 +16,47 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('layouts.app');
+    return redirect()->route('tasks.index');
+})->middleware('auth');
+
+Route::get('/dashboard', function () {
+    return redirect()->route('tasks.index');
+})->middleware('auth')->name('dashboard');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::resource('tasks', TaskController::class);
+    Route::patch('tasks/{task}/status', [TaskController::class, 'updateStatus'])->name('tasks.status.update');
+    Route::patch('tasks/{task}/priority', [TaskController::class, 'updatePriority'])->name('tasks.priority.update');
+
+    Route::resource('subtasks', SubtaskController::class)->only([
+        'store', 'update', 'destroy',
+    ]);
+    Route::patch('subtasks/{subtask}/toggle', [SubtaskController::class, 'toggle'])->name('subtasks.toggle');
+
+    Route::resource('comments', CommentController::class)->only(['store', 'update', 'destroy']);
+    Route::post('attachments', [AttachmentController::class, 'store'])->name('attachments.store');
+    Route::get('attachments/{attachment}/download', [AttachmentController::class, 'download'])->name('attachments.download');
+    Route::delete('attachments/{attachment}', [AttachmentController::class, 'destroy'])->name('attachments.destroy');
+
+    Route::get('recurring-tasks', [RecurringTaskController::class, 'index'])->name('recurring-tasks.index');
+    Route::put('recurring-tasks/{recurringTask}', [RecurringTaskController::class, 'update'])->name('recurring-tasks.update');
+    Route::patch('recurring-tasks/{recurringTask}/active', [RecurringTaskController::class, 'toggleActive'])->name('recurring-tasks.active.toggle');
+    Route::delete('recurring-tasks/{recurringTask}', [RecurringTaskController::class, 'destroy'])->name('recurring-tasks.destroy');
+
+    Route::resource('departments', DepartmentController::class);
+    Route::patch('departments/{department}/active', [DepartmentController::class, 'toggleActive'])->name('departments.active.toggle');
+    Route::resource('categories', CategoryController::class);
+    Route::resource('tags', TagController::class);
+    Route::resource('users', UserController::class);
+    Route::patch('users/{user}/status', [UserController::class, 'toggleStatus'])->name('users.status.toggle');
+    Route::resource('roles', RoleController::class)->except(['show']);
+    Route::get('activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
+    Route::get('system-settings', [SystemSettingController::class, 'index'])->name('system-settings.index');
+    Route::put('system-settings', [SystemSettingController::class, 'update'])->name('system-settings.update');
 });
 
-Route::resource('departments', DepartmentController::class);
-Route::patch('departments/{department}/active', [DepartmentController::class, 'toggleActive'])->name('departments.active.toggle');
-Route::resource('categories', CategoryController::class);
-Route::resource('tags', TagController::class);
-Route::resource('users', UserController::class);
-Route::resource('tasks', TaskController::class);
-Route::get('activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
-Route::get('system-settings', [SystemSettingController::class, 'index'])->name('system-settings.index');
-Route::put('system-settings', [SystemSettingController::class, 'update'])->name('system-settings.update');
-
-// Sidebar quick actions (Completed cannot be set here).
-Route::patch('tasks/{task}/status', [TaskController::class, 'updateStatus'])->name('tasks.status.update');
-Route::patch('tasks/{task}/priority', [TaskController::class, 'updatePriority'])->name('tasks.priority.update');
-
-Route::resource('subtasks', SubtaskController::class)->only([
-    'store', 'update', 'destroy',
-]);
-// Checkbox toggle; observer then syncs parent task completion.
-Route::patch('subtasks/{subtask}/toggle', [SubtaskController::class, 'toggle'])->name('subtasks.toggle');
-
-Route::resource('comments', CommentController::class)->only(['store', 'update', 'destroy']);
-Route::post('attachments', [AttachmentController::class, 'store'])->name('attachments.store');
-Route::get('attachments/{attachment}/download', [AttachmentController::class, 'download'])->name('attachments.download');
-Route::delete('attachments/{attachment}', [AttachmentController::class, 'destroy'])->name('attachments.destroy');
+require __DIR__.'/auth.php';

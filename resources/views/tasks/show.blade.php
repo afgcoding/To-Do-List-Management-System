@@ -4,10 +4,7 @@
 <div class="mx-auto max-w-7xl space-y-6">
     {{-- ==================== BACK TO TASK LIST ==================== --}}
     <div class="flex items-center">
-        <a href="{{ route('tasks.index') }}" class="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm font-medium text-slate-600 shadow-sm transition hover:bg-slate-50">
-            <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15.75 19.5 8.25 12l7.5-7.5"/></svg>
-            Back to tasks
-        </a>
+        <x-back-link :href="route('tasks.index')">Back to tasks</x-back-link>
     </div>
 
     {{-- ==================== HERO HEADER CARD ==================== --}}
@@ -32,10 +29,13 @@
         <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <h1 dir="auto" class="bidi-auto min-w-0 text-2xl font-bold tracking-tight text-slate-900">{{ $task->title }}</h1>
             <div class="flex shrink-0 items-center gap-2">
+                @can('update', $task)
                 <a href="{{ route('tasks.edit', $task) }}" class="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50">
                     <svg class="size-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L8.25 18.002H5.25v-3L16.862 4.487z"/></svg>
                     Edit Task
                 </a>
+                @endcan
+                @can('delete', $task)
                 <form action="{{ route('tasks.destroy', $task) }}" method="POST" onsubmit="return confirm('Delete this task?');">
                     @csrf
                     @method('DELETE')
@@ -44,6 +44,7 @@
                         Delete
                     </button>
                 </form>
+                @endcan
             </div>
         </div>
 

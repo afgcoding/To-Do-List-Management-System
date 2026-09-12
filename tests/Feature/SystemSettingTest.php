@@ -28,6 +28,7 @@ it('seeds the default system settings row when missing', function () {
 });
 
 it('renders the system settings page', function () {
+    $this->actingAs(User::factory()->superAdmin()->create());
     SystemSetting::getSettings();
 
     $this->get(route('system-settings.index'))
@@ -39,6 +40,7 @@ it('renders the system settings page', function () {
 });
 
 it('updates branding timezone and date format and refreshes the cache', function () {
+    $this->actingAs(User::factory()->superAdmin()->create());
     SystemSetting::getSettings();
 
     $this->from(route('system-settings.index'))
@@ -62,6 +64,7 @@ it('updates branding timezone and date format and refreshes the cache', function
 });
 
 it('stores a new logo and deletes the previous file', function () {
+    $this->actingAs(User::factory()->superAdmin()->create());
     Storage::fake('public');
     $settings = SystemSetting::getSettings();
     $oldPath = UploadedFile::fake()->image('old.png')->store('settings', 'public');
@@ -85,6 +88,7 @@ it('stores a new logo and deletes the previous file', function () {
 });
 
 it('removes the stored logo when requested', function () {
+    $this->actingAs(User::factory()->superAdmin()->create());
     Storage::fake('public');
     $settings = SystemSetting::getSettings();
     $path = UploadedFile::fake()->image('mark.png')->store('settings', 'public');
@@ -103,6 +107,7 @@ it('removes the stored logo when requested', function () {
 });
 
 it('rejects an invalid timezone and date format', function () {
+    $this->actingAs(User::factory()->superAdmin()->create());
     SystemSetting::getSettings();
 
     $this->from(route('system-settings.index'))

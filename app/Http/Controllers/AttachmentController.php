@@ -20,6 +20,7 @@ class AttachmentController extends Controller
     public function store(StoreAttachmentRequest $request): RedirectResponse
     {
         $task = Task::query()->findOrFail($request->validated('task_id'));
+        $this->authorize('view', $task);
 
         $this->storeUploadedFiles($task, $request->file('files', []), $this->actorId());
 
@@ -29,6 +30,7 @@ class AttachmentController extends Controller
     // Stream the original file through a named download route.
     public function download(Attachment $attachment): StreamedResponse
     {
+        $this->authorize('view', $attachment->task);
         abort_unless(Storage::disk('public')->exists($attachment->file_path), 404);
 
         return Storage::disk('public')->download($attachment->file_path, $attachment->file_name);
@@ -36,7 +38,9 @@ class AttachmentController extends Controller
 
     public function destroy(Attachment $attachment): RedirectResponse
     {
-        abort_unless($attachment->user_id === $this->actorId(), 403);
+        $this->authorize('view', $attachment->task);
+
+        abort_unless($attachment->user_id === $this->actorId() || $this->actor()?->isAdmin(), 403);
 
         $attachment->delete();
 

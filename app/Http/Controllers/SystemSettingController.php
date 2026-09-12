@@ -14,6 +14,8 @@ class SystemSettingController extends Controller
 {
     public function index(): View
     {
+        $this->authorize('viewAny', SystemSetting::class);
+
         return view('settings.index', [
             'settings' => SystemSetting::getSettings(),
             'timezones' => timezone_identifiers_list(),
@@ -23,6 +25,7 @@ class SystemSettingController extends Controller
     public function update(UpdateSystemSettingRequest $request): RedirectResponse
     {
         $settings = SystemSetting::getSettings();
+        $this->authorize('update', $settings);
         $data = $request->safe()->only(['company_name', 'date_format', 'time_zone']);
 
         // A new upload replaces the stored file; remove_logo clears branding without a replacement.

@@ -37,12 +37,16 @@
     <td class="px-4 py-4 text-right">
         <div class="inline-flex items-center gap-3">
             <a href="{{ route('tasks.show', $task) }}" class="text-xs font-medium text-slate-600 hover:text-indigo-600">View</a>
+            @can('update', $task)
             <a href="{{ route('tasks.edit', $task) }}" class="text-xs font-medium text-indigo-600 hover:text-indigo-800">Edit</a>
+            @endcan
+            @can('delete', $task)
             <form action="{{ route('tasks.destroy', $task) }}" method="POST" onsubmit="return confirm('Delete this task?');" class="inline">
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="text-xs font-medium text-rose-600 hover:text-rose-800">Delete</button>
             </form>
+            @endcan
         </div>
     </td>
 </tr>

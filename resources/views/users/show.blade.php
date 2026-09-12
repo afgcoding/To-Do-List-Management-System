@@ -1,29 +1,28 @@
 @extends('layouts.app')
+@php
+    $pageTitle = $user->name;
+@endphp
 
 @section('content')
-<div class="p-6 max-w-4xl mx-auto space-y-6">
-    <!-- User Card -->
-    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex items-center justify-between">
+<div class="mx-auto max-w-4xl space-y-6">
+    <x-back-link :href="route('users.index')">Back to users</x-back-link>
+    <div class="flex flex-col justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:flex-row sm:items-center">
         <div class="flex items-center gap-4">
-            <div class="w-16 h-16 rounded-full bg-indigo-100 text-indigo-700 font-bold text-xl flex items-center justify-center">
-                {{ strtoupper(substr($user->name, 0, 2)) }}
-            </div>
+            <x-user-avatar :name="$user->name" :src="$user->avatar ? $user->avatar_url : null" size="xl" rounded="2xl" />
             <div>
-                <h1 class="text-xl font-bold text-slate-800">{{ $user->name }}</h1>
-                <p class="text-sm text-slate-500">{{ $user->email }}</p>
-                <div class="flex items-center gap-2 mt-2">
-                    <span class="px-2.5 py-0.5 text-xs font-medium bg-slate-100 text-slate-700 rounded-md">
-                        {{ $user->department->name ?? 'No Department' }}
-                    </span>
-                    <span class="px-2.5 py-0.5 text-xs font-medium border rounded-full {{ $user->status === 'active' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-slate-100 text-slate-600 border-slate-200' }}">
-                        {{ ucfirst($user->status) }}
-                    </span>
+                <h1 class="text-xl font-bold text-slate-900">{{ $user->name }}</h1>
+                <p class="text-sm text-slate-500">{{ $user->job_title ?: 'No job title' }}</p>
+                <p class="mt-1 text-sm text-slate-600">{{ $user->email }}@if($user->phone) · {{ $user->phone }}@endif</p>
+                <div class="mt-2 flex flex-wrap gap-1.5">
+                    <x-badge>{{ $user->department->name ?? 'No department' }}</x-badge>
+                    <x-badge :tone="$user->role?->tone() ?? 'slate'">{{ $user->roles->first()?->name ?? $user->role?->label() ?? 'Employee' }}</x-badge>
+                    <x-badge :tone="$user->isActive() ? 'emerald' : 'slate'">{{ ucfirst($user->status?->value ?? 'inactive') }}</x-badge>
                 </div>
             </div>
         </div>
-        <div>
-            <a href="{{ route('users.edit', $user) }}" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm rounded-lg shadow-sm">Edit Profile</a>
-        </div>
+        @can('update', $user)
+            <a href="{{ route('users.edit', $user) }}" class="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700">Edit profile</a>
+        @endcan
     </div>
 </div>
 @endsection

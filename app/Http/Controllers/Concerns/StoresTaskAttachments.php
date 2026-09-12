@@ -36,12 +36,19 @@ trait StoresTaskAttachments
     // Match task creation: signed-in user, or the first user when auth is not required.
     protected function actorId(): int
     {
-        $id = auth()->id() ?? User::query()->orderBy('id')->value('id');
+        $id = auth()->id();
 
         if ($id === null) {
-            abort(422, 'A user is required before this action can be completed.');
+            abort(403);
         }
 
         return (int) $id;
+    }
+
+    protected function actor(): ?User
+    {
+        $user = auth()->user();
+
+        return $user instanceof User ? $user : null;
     }
 }

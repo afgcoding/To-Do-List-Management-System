@@ -8,10 +8,7 @@
     {{-- ==================== HEADER ==================== --}}
     <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-            <a href="{{ route('departments.index') }}" class="inline-flex items-center gap-1 text-sm font-medium text-indigo-600 hover:text-indigo-800">
-                <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15.75 19.5 8.25 12l7.5-7.5"/></svg>
-                Back to departments
-            </a>
+            <x-back-link :href="route('departments.index')">Back to departments</x-back-link>
             <h1 class="mt-2 text-2xl font-bold text-slate-900">{{ $department->name }}</h1>
             <div class="mt-2 flex flex-wrap gap-2">
                 @if($department->code)
@@ -38,7 +35,7 @@
                     <tr class="hover:bg-slate-50/70">
                         <td class="px-5 py-4 text-sm font-medium text-slate-800">{{ $user->name }}</td>
                         <td class="px-5 py-4 text-sm text-slate-500">{{ $user->email }}</td>
-                        <td class="px-5 py-4"><x-badge :tone="$user->status === 'active' ? 'emerald' : 'slate'">{{ ucfirst($user->status) }}</x-badge></td>
+                        <td class="px-5 py-4"><x-badge :tone="$user->isActive() ? 'emerald' : 'slate'">{{ ucfirst($user->status?->value ?? 'inactive') }}</x-badge></td>
                     </tr>
                 @empty
                     <tr>

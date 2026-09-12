@@ -5,12 +5,20 @@ namespace Tests\Feature;
 use App\Models\Category;
 use App\Models\Department;
 use App\Models\Tag;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class ResourceCrudTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->actingAs(User::factory()->admin()->create());
+    }
 
     public function test_department_can_be_created_updated_and_deleted(): void
     {

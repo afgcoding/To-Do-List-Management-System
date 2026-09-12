@@ -5,7 +5,8 @@
 @endphp
 
 @section('content')
-<div class="mx-auto max-w-xl" x-data="{ name: @js(old('name', '')), color: @js(old('color', '#6366F1')) }">
+<div class="mx-auto max-w-xl space-y-4" x-data="{ name: @js(old('name', '')), color: @js(old('color', '#6366F1')) }">
+    <x-back-link :href="route('categories.index')">Back to categories</x-back-link>
     <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <div class="border-b border-slate-100 bg-slate-50 px-6 py-4">
             <h1 class="text-lg font-semibold text-slate-900">Add category</h1>

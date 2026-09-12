@@ -5,9 +5,12 @@
 
 @section('content')
 <div class="mx-auto max-w-7xl space-y-6">
-    <div>
-        <h1 class="text-2xl font-bold tracking-tight text-slate-900">Activity Logs</h1>
-        <p class="mt-1 text-sm text-slate-500">Audit trail of task changes, comments, attachments, and assignments.</p>
+    <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+        <div>
+            <h1 class="text-2xl font-bold tracking-tight text-slate-900">Activity Logs</h1>
+            <p class="mt-1 text-sm text-slate-500">Audit trail of task changes, comments, attachments, and assignments.</p>
+        </div>
+        <x-back-link :href="route('tasks.index')">Back to tasks</x-back-link>
     </div>
 
     <div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">

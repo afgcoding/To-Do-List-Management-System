@@ -20,6 +20,7 @@ class CommentController extends Controller
     {
         $validated = $request->validated();
         $task = Task::query()->findOrFail($validated['task_id']);
+        $this->authorize('view', $task);
         $userId = $this->actorId();
 
         $comment = Comment::query()->create([

@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 
 class SystemSetting extends Model
@@ -34,33 +35,52 @@ class SystemSetting extends Model
 
         if (! is_array($cached) && ! $cached instanceof self) {
             Cache::forget(self::CACHE_KEY);
-            $cached = Cache::rememberForever(self::CACHE_KEY, function (): array {
-                return self::query()->firstOrCreate(
-                    ['id' => 1],
-                    [
-                        'company_name' => self::DEFAULT_COMPANY_NAME,
-                        'date_format' => self::DEFAULT_DATE_FORMAT,
-                        'time_zone' => self::DEFAULT_TIME_ZONE,
-                    ],
-                )->attributesToArray();
-            });
+
+            try {
+                if (! Schema::hasTable('system_settings')) {
+                    return self::fromCachedAttributes(self::defaultAttributes(), exists: false);
+                }
+
+                $cached = Cache::rememberForever(self::CACHE_KEY, function (): array {
+                    return self::query()->firstOrCreate(
+                        ['id' => 1],
+                        self::defaultAttributes(),
+                    )->attributesToArray();
+                });
+            } catch (\Throwable) {
+                return self::fromCachedAttributes(self::defaultAttributes(), exists: false);
+            }
         }
 
         if ($cached instanceof self) {
             return $cached;
         }
 
-        return self::fromCachedAttributes(is_array($cached) ? $cached : []);
+        return self::fromCachedAttributes(is_array($cached) ? $cached : self::defaultAttributes());
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private static function defaultAttributes(): array
+    {
+        return [
+            'id' => 1,
+            'company_name' => self::DEFAULT_COMPANY_NAME,
+            'date_format' => self::DEFAULT_DATE_FORMAT,
+            'time_zone' => self::DEFAULT_TIME_ZONE,
+            'logo' => null,
+        ];
     }
 
     /**
      * @param  array<string, mixed>  $attributes
      */
-    private static function fromCachedAttributes(array $attributes): self
+    private static function fromCachedAttributes(array $attributes, bool $exists = true): self
     {
         $settings = new self;
         $settings->setRawAttributes($attributes, true);
-        $settings->exists = true;
+        $settings->exists = $exists;
 
         return $settings;
     }

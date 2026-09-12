@@ -27,6 +27,8 @@ class Task extends Model
 
     protected $guarded = [];
 
+    public bool $createdFromRecurring = false;
+
     protected function casts(): array
     {
         return [
@@ -259,6 +261,21 @@ class Task extends Model
         }
 
         return $query->orderBy($column, $direction)->orderByDesc('id');
+    }
+
+    #[Scope]
+    protected function visibleTo(Builder $query, User $user): Builder
+    {
+        if ($user->can('tasks.view-all')) {
+            return $query;
+        }
+
+        return $query->where(function (Builder $builder) use ($user): void {
+            $builder->where('creator_id', $user->id)
+                ->orWhereHas('assignedUsers', function (Builder $assigned) use ($user): void {
+                    $assigned->where('users.id', $user->id);
+                });
+        });
     }
 
     // Auto-calculate completion from subtasks and set parent task status.
