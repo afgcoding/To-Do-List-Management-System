@@ -99,12 +99,12 @@
     </div>
     <div>
         <p class="mb-2 text-xs font-semibold text-slate-700">Account status</p>
-        <div class="flex gap-3">
-            <label class="flex cursor-pointer items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-sm has-[:checked]:border-indigo-500 has-[:checked]:bg-indigo-50/60">
+        <div class="flex flex-wrap gap-3">
+            <label class="flex flex-1 cursor-pointer items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-sm has-[:checked]:border-indigo-500 has-[:checked]:bg-indigo-50/60">
                 <input type="radio" name="status" value="active" class="text-indigo-600 focus:ring-indigo-500" @checked(old('status', $user?->status?->value ?? 'active') === 'active')>
                 Active
             </label>
-            <label class="flex cursor-pointer items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-sm has-[:checked]:border-indigo-500 has-[:checked]:bg-indigo-50/60">
+            <label class="flex flex-1 cursor-pointer items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-sm has-[:checked]:border-indigo-500 has-[:checked]:bg-indigo-50/60">
                 <input type="radio" name="status" value="inactive" class="text-indigo-600 focus:ring-indigo-500" @checked(old('status', $user?->status?->value) === 'inactive')>
                 Inactive
             </label>

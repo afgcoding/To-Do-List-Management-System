@@ -11,7 +11,7 @@
             <p class="mt-1 text-sm text-slate-500">Create workspace roles and assign granular permissions.</p>
         </div>
         @can('create', Spatie\Permission\Models\Role::class)
-            <a href="{{ route('roles.create') }}" class="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700">
+            <a href="{{ route('roles.create') }}" class="inline-flex w-full items-center justify-center rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 sm:w-auto">
                 New role
             </a>
         @endcan

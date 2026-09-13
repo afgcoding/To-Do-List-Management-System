@@ -5,7 +5,7 @@
     $isOwner = (int) $comment->user_id === (int) $currentUserId;
     $commentDate = format_date($comment->created_at);
 @endphp
-<article x-data="{ editing: false }" class="w-full overflow-hidden rounded-xl border border-slate-200/60 bg-white p-4 shadow-sm">
+<article x-data="{ editing: false }" class="w-full overflow-hidden rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm">
     <div class="flex min-w-0 items-start gap-3">
         <x-user-avatar :user="$comment->user" :name="$comment->user->name ?? 'User'" size="md" />
         <div class="w-full min-w-0 flex-1 overflow-hidden break-words">
@@ -32,7 +32,7 @@
                 @endif
             </div>
 
-            <div x-show="!editing" dir="auto" class="bidi-auto mt-2 w-full overflow-hidden break-words whitespace-pre-wrap text-sm leading-relaxed text-slate-700">
+            <div x-show="!editing" dir="auto" class="comment-body bidi-auto mt-2 w-full overflow-hidden break-words whitespace-pre-wrap text-sm leading-relaxed text-slate-700">
                 {!! $comment->highlightedHtml($mentionNames) !!}
             </div>
 
@@ -41,9 +41,9 @@
                 @method('PATCH')
                 <textarea name="comment" rows="3" required dir="auto"
                     class="bidi-auto w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500">{{ $comment->comment }}</textarea>
-                <div class="flex justify-end gap-2">
-                    <button type="button" @click="editing = false" class="rounded-xl border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-600">Cancel</button>
-                    <button class="rounded-xl bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-700">Save</button>
+                <div class="flex flex-col justify-end gap-2 sm:flex-row">
+                    <button type="button" @click="editing = false" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-600 sm:w-auto">Cancel</button>
+                    <button class="w-full rounded-xl bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-700 sm:w-auto">Save</button>
                 </div>
             </form>
 

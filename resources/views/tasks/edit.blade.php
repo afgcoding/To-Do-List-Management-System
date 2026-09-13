@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="mx-auto max-w-4xl">
-    <div class="mb-6 flex items-center justify-between">
+    <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
             <h1 class="text-2xl font-bold text-slate-800">Edit task</h1>
             <p class="text-sm text-slate-500">Update details, deadlines, status, and assignments.</p>
@@ -14,11 +14,11 @@
         @csrf
         @method('PUT')
         {{-- --- Main fields (title, description, dates) --- --}}
-        <div class="space-y-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm lg:col-span-2">
+        <div class="space-y-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6 lg:col-span-2">
             @include('tasks.partials.form-fields', ['task' => $task])
         </div>
         {{-- --- Sidebar (priority, status, assignment) --- --}}
-        <div class="space-y-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div class="space-y-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
             @include('tasks.partials.form-sidebar', [
                 'task' => $task,
                 'assignedUserIds' => $assignedUserIds,

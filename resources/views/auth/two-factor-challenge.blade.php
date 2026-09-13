@@ -9,7 +9,7 @@
 
         <div>
             <x-input-label for="code" :value="__('Authentication code')" />
-            <x-text-input id="code" class="mt-1 block w-full tracking-[0.3em]" type="text" name="code" required autofocus autocomplete="one-time-code" inputmode="numeric" />
+            <x-text-input id="code" class="mt-1 block w-full tracking-widest sm:tracking-[0.3em]" type="text" name="code" required autofocus autocomplete="one-time-code" inputmode="numeric" />
             <x-input-error :messages="$errors->get('code')" class="mt-2" />
         </div>
 

@@ -32,8 +32,8 @@
                 </div>
             </aside>
 
-            <div class="flex items-center justify-center px-4 py-10 sm:px-8">
-                <div class="w-full max-w-md rounded-3xl border border-white/60 bg-white/80 p-8 shadow-xl shadow-slate-200/70 backdrop-blur-xl sm:p-10">
+            <div class="flex items-center justify-center px-4 py-8 sm:px-8 sm:py-10">
+                <div class="w-full max-w-md rounded-3xl border border-white/60 bg-white/80 p-5 shadow-xl shadow-slate-200/70 backdrop-blur-xl sm:p-10">
                     <a href="{{ route('login') }}" class="mb-8 flex items-center gap-2.5 lg:hidden">
                         @if (setting('logo'))
                             <img src="{{ setting()->logoUrl() }}" alt="" class="h-10 w-10 rounded-xl border border-slate-200 bg-white object-contain p-1 shadow-sm">

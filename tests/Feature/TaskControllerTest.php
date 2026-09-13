@@ -248,3 +248,18 @@ it('renders soft category tags and a department badge on the task list', functio
         ->assertSee('#6366F115', false)
         ->assertSee('Engineering');
 });
+
+it('collapses extra tags on the task list row with a more badge', function () {
+    $task = Task::factory()->create(['title' => 'Many tags']);
+    $alpha = Tag::factory()->create(['name' => 'Alpha']);
+    $beta = Tag::factory()->create(['name' => 'Beta']);
+    $gamma = Tag::factory()->create(['name' => 'Gamma']);
+    $task->tags()->sync([$alpha->id, $beta->id, $gamma->id]);
+
+    $this->get(route('tasks.index'))
+        ->assertOk()
+        ->assertSee('#Alpha', false)
+        ->assertSee('#Beta', false)
+        ->assertSee('+1 more')
+        ->assertDontSee('#Gamma', false);
+});

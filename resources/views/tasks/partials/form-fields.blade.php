@@ -20,7 +20,7 @@
         placeholder="Detailed instructions for the team...">{{ old('description', $task?->description) }}</textarea>
 </div>
 
-<div class="grid grid-cols-2 gap-4">
+<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
     <div>
         <label class="mb-1 block text-sm font-medium text-slate-700">Start Date</label>
         <input type="date" name="start_date"

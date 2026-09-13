@@ -48,7 +48,7 @@
         @method('PUT')
         <input type="hidden" name="remove_logo" :value="removeLogo ? '1' : '0'">
 
-        <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <section class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
             <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-400">Branding</h2>
             <p class="mt-1 text-sm text-slate-500">Shown in the sidebar and the top navigation.</p>
 
@@ -99,7 +99,7 @@
             </div>
         </section>
 
-        <section class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <section class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
             <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-400">Localization</h2>
             <p class="mt-1 text-sm text-slate-500">Timezone defaults to Asia/Kabul. Date formats include a live preview.</p>
 
@@ -151,7 +151,7 @@
         </section>
 
         <div class="flex justify-end">
-            <button type="submit" class="inline-flex items-center rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700">
+            <button type="submit" class="inline-flex w-full items-center justify-center rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 sm:w-auto">
                 Save Changes
             </button>
         </div>

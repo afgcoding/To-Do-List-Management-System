@@ -29,7 +29,7 @@
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 
-        <div class="flex items-center justify-between gap-3">
+        <div class="flex flex-wrap items-center justify-between gap-2">
             <label for="remember_me" class="inline-flex items-center gap-2 text-sm text-slate-600">
                 <input id="remember_me" type="checkbox" class="size-4 rounded border-slate-300 shadow-sm" style="accent-color: var(--brand)" name="remember">
                 <span>{{ __('Remember me') }}</span>

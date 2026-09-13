@@ -47,7 +47,7 @@
 
         <div>
             <x-input-label for="otp-0" :value="__('Verification code')" />
-            <div x-ref="otpInputs" class="flex justify-between gap-2">
+            <div x-ref="otpInputs" class="flex justify-between gap-1 sm:gap-2">
                 @for ($index = 0; $index < 6; $index++)
                     <div class="min-w-0 flex-1">
                         <input

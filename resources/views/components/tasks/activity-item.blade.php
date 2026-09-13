@@ -14,13 +14,21 @@
         $action === 'uploaded_attachment' => 'bg-slate-100 text-slate-600',
         default => 'bg-slate-100 text-slate-600',
     };
+    $dot = match (true) {
+        $isComplete => 'bg-emerald-500',
+        $action === 'changed_status' => 'bg-sky-500',
+        $action === 'changed_priority' => 'bg-amber-500',
+        $action === 'updated_assignment' => 'bg-violet-500',
+        $action === 'added_comment' => 'bg-purple-500',
+        default => 'bg-slate-400',
+    };
     $name = $log->user->name ?? 'System';
     $when = $log->created_at;
     $absoluteTime = format_date($when);
 @endphp
 
-<li class="relative pb-5 last:pb-0">
-    <span @class(['absolute top-3 -left-[21px] size-2.5 rounded-full ring-4 ring-white', $isComplete ? 'bg-emerald-500' : 'bg-slate-300'])></span>
+<li class="relative">
+    <span @class(['absolute top-3 -left-[23px] size-2.5 rounded-full ring-4 ring-white', $dot])></span>
     <div class="flex items-start gap-2.5">
         <div class="relative shrink-0">
             <x-user-avatar :user="$log->user" :name="$name" size="sm" />
@@ -43,7 +51,7 @@
             </p>
             @if ($when)
                 <time datetime="{{ $when->toIso8601String() }}" class="mt-0.5 block text-[11px] text-slate-400" title="{{ $absoluteTime }}">
-                    {{ $when->diffForHumans() }} · {{ $absoluteTime }}
+                    {{ $when->diffForHumans() }}
                 </time>
             @endif
         </div>

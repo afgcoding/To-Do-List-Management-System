@@ -39,7 +39,7 @@
     @foreach ($permissionGroups as $group => $permissions)
         <section class="rounded-xl border border-slate-200 bg-slate-50/60 p-4"
             x-show="{{ collect($permissions)->map(fn ($p) => 'visible('.json_encode($p['label']).', '.json_encode($p['name']).')')->implode(' || ') ?: 'true' }}">
-            <div class="mb-3 flex items-center justify-between gap-3">
+            <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
                 <h3 class="text-sm font-semibold text-slate-800">{{ $group }}</h3>
                 <label class="inline-flex items-center gap-2 text-xs font-medium text-indigo-600">
                     <input type="checkbox"

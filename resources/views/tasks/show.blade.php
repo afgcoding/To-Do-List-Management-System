@@ -24,13 +24,13 @@
         ];
         $priorityStyle = $priorityStyles[$task->priority->value] ?? $priorityStyles['low'];
     @endphp
-    <section class="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm">
+    <section class="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm sm:p-6">
         {{-- Title + Edit / Delete --}}
         <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <h1 dir="auto" class="bidi-auto min-w-0 text-2xl font-bold tracking-tight text-slate-900">{{ $task->title }}</h1>
-            <div class="flex shrink-0 items-center gap-2">
+            <div class="flex w-full shrink-0 flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
                 @can('update', $task)
-                <a href="{{ route('tasks.edit', $task) }}" class="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50">
+                <a href="{{ route('tasks.edit', $task) }}" class="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 shadow-sm transition hover:border-slate-300 hover:bg-slate-50 sm:w-auto">
                     <svg class="size-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L8.25 18.002H5.25v-3L16.862 4.487z"/></svg>
                     Edit Task
                 </a>
@@ -39,7 +39,7 @@
                 <form action="{{ route('tasks.destroy', $task) }}" method="POST" onsubmit="return confirm('Delete this task?');">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="inline-flex items-center gap-1.5 rounded-lg border border-rose-100 bg-rose-50 px-3 py-1.5 text-sm font-medium text-rose-600 transition hover:bg-rose-100" aria-label="Delete task">
+                    <button type="submit" class="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-rose-100 bg-rose-50 px-3 py-1.5 text-sm font-medium text-rose-600 transition hover:bg-rose-100 sm:w-auto" aria-label="Delete task">
                         <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                         Delete
                     </button>
@@ -84,11 +84,11 @@
     </section>
 
     {{-- ==================== 2-COLUMN LAYOUT (66% main / 33% sidebar) ==================== --}}
-    <div class="grid grid-cols-1 items-start gap-6 lg:grid-cols-3">
+    <div class="grid grid-cols-1 items-start gap-6 lg:grid-cols-3 lg:gap-8">
         {{-- ==================== LEFT COLUMN: MAIN WORK AREA ==================== --}}
-        <div class="min-w-0 space-y-6 overflow-hidden lg:col-span-2">
+        <div class="min-w-0 space-y-6 lg:col-span-2">
             {{-- --- Task Description Section (RTL Supported) --- --}}
-            <section class="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm">
+            <section class="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm sm:p-6">
                 <div class="mb-3 flex items-center gap-2">
                     <span class="grid size-8 place-items-center rounded-lg bg-indigo-50 text-indigo-600">
                         <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
@@ -101,7 +101,7 @@
             </section>
 
             {{-- --- Subtask Checklist Card --- --}}
-            <section class="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm">
+            <section class="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm sm:p-6">
                 <div class="mb-4 flex items-center justify-between gap-3">
                     <div class="flex items-center gap-2">
                         <span class="grid size-8 place-items-center rounded-lg bg-blue-50 text-blue-600">
@@ -113,18 +113,18 @@
                 </div>
 
                 {{-- --- Add New Subtask Form --- --}}
-                <form action="{{ route('subtasks.store') }}" method="POST" class="mb-4 flex flex-col gap-2 sm:flex-row">
+    <form action="{{ route('subtasks.store') }}" method="POST" class="mb-4 flex flex-col gap-2 sm:flex-row">
                     @csrf
                     <input type="hidden" name="task_id" value="{{ $task->id }}">
                     <input type="text" name="title" placeholder="Add a new subtask..." required dir="auto"
                         class="bidi-auto min-w-0 flex-1 rounded-lg border-slate-200 bg-slate-50/80 text-sm shadow-sm focus:border-indigo-500 focus:bg-white focus:ring-indigo-500">
-                    <select name="assigned_to" class="rounded-lg border-slate-200 bg-white text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    <select name="assigned_to" class="w-full rounded-lg border-slate-200 bg-white text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:w-auto">
                         <option value="">Assignee</option>
                         @foreach($task->assignedUsers as $user)
                             <option value="{{ $user->id }}">{{ $user->name }}</option>
                         @endforeach
                     </select>
-                    <button type="submit" class="shrink-0 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-indigo-700">Add Subtask</button>
+                    <button type="submit" class="w-full shrink-0 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-indigo-700 sm:w-auto">Add Subtask</button>
                 </form>
                 <x-input-error class="mb-3" :messages="$errors->get('title')" />
 
@@ -139,7 +139,7 @@
             </section>
 
             {{-- ==================== DISCUSSION ==================== --}}
-            <section class="overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm">
+            <section class="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm sm:p-6">
                 <div class="mb-4 flex items-center gap-2">
                     <span class="grid size-8 place-items-center rounded-lg bg-violet-50 text-violet-600">
                         <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M7.5 8.25h9m-9 3H12m-6.75 3.75h12.75A2.25 2.25 0 0 0 21 12.75v-7.5A2.25 2.25 0 0 0 18.75 3H5.25A2.25 2.25 0 0 0 3 5.25v10.5A2.25 2.25 0 0 0 5.25 18Z"/></svg>
@@ -164,7 +164,7 @@
                                 @change="fileCount = $event.target.files.length">
                         </label>
                         <span class="text-[11px] text-slate-400" x-show="fileCount > 0" x-text="fileCount + ' file(s) selected'"></span>
-                        <button class="ml-auto rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700">Post comment</button>
+                        <button class="w-full rounded-xl bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 sm:ml-auto sm:w-auto">Post comment</button>
                     </div>
                     <x-input-error :messages="$errors->get('files')" />
                     <x-input-error :messages="$errors->get('files.0')" />
@@ -182,7 +182,7 @@
             </section>
 
             {{-- ==================== ALL TASK ATTACHMENTS ==================== --}}
-            <section class="overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm">
+            <section class="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm sm:p-6">
                 <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
                     <div class="flex items-center gap-2">
                         <span class="grid size-8 place-items-center rounded-lg bg-sky-50 text-sky-600">
@@ -197,7 +197,7 @@
                 <form method="POST" action="{{ route('attachments.store') }}" enctype="multipart/form-data" class="mb-4">
                     @csrf
                     <input type="hidden" name="task_id" value="{{ $task->id }}">
-                    <label class="flex cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center transition hover:border-indigo-400 hover:bg-indigo-50/40">
+                    <label class="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-300 bg-slate-50/50 p-6 text-center transition-colors hover:border-indigo-500">
                         <p class="text-sm font-medium text-slate-700">Drop files here or click to upload</p>
                         <p class="mt-1 text-[11px] text-slate-400">JPG, PNG, GIF, WEBP, PDF, DOC, XLS, ZIP, TXT • 10MB max</p>
                         <input type="file" name="files[]" multiple required class="sr-only"
@@ -225,8 +225,8 @@
         </div>
 
         {{-- ==================== RIGHT COLUMN: STICKY SIDEBAR ==================== --}}
-        <aside class="lg:sticky lg:top-6">
-            <div class="space-y-5 rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm">
+        <aside class="min-w-0 space-y-6 self-start lg:sticky lg:top-22 lg:col-span-1">
+            <div class="space-y-5 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm sm:p-5">
                 {{-- --- Quick Status & Priority Actions --- --}}
                 <div>
                     <h3 class="mb-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Quick actions</h3>
@@ -265,7 +265,7 @@
                 {{-- --- Task Metadata Properties (Dates, Category, Department) --- --}}
                 <div class="border-t border-slate-100 pt-5">
                     <h3 class="mb-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Properties</h3>
-                    <dl class="grid grid-cols-2 gap-x-3 gap-y-4">
+                    <dl class="grid grid-cols-1 gap-x-3 gap-y-4 sm:grid-cols-2">
                         <div>
                             <dt class="text-[11px] font-medium uppercase tracking-wide text-slate-400">Department</dt>
                             <dd class="mt-0.5 text-sm font-medium text-slate-800">{{ $task->department->name ?? '—' }}</dd>
@@ -303,7 +303,7 @@
 
                 {{-- --- Assigned Team Members List --- --}}
                 <div class="border-t border-slate-100 pt-5">
-                    <div class="mb-3 flex items-center justify-between">
+                    <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
                         <h3 class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Assigned team</h3>
                         <button type="button" data-modal-open="assign-team-modal" class="text-xs font-semibold text-indigo-600 hover:text-indigo-800">Assign / Reassign</button>
                     </div>
@@ -323,20 +323,22 @@
                         @endforelse
                     </div>
                 </div>
+            </div>
 
-                {{-- --- Activity & History Timeline --- --}}
-                <div class="border-t border-slate-100 pt-5">
-                    <h3 class="mb-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Activity &amp; History</h3>
-                    @if ($task->activityLogs->isEmpty())
-                        <p class="text-sm text-slate-400">No activity recorded yet.</p>
-                    @else
-                        <ol class="relative max-h-96 space-y-0 overflow-y-auto border-l-2 border-slate-200 ps-5">
+            {{-- --- Activity & History Timeline --- --}}
+            <div class="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm sm:p-5">
+                <h3 class="mb-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Activity &amp; History</h3>
+                @if ($task->activityLogs->isEmpty())
+                    <p class="text-sm text-slate-400">No activity recorded yet.</p>
+                @else
+                    <div class="custom-scrollbar max-h-[400px] space-y-4 overflow-y-auto pr-2 [scrollbar-width:thin]">
+                        <ol class="ml-3 space-y-3 border-l-2 border-slate-200 pl-4">
                             @foreach ($task->activityLogs as $log)
                                 <x-tasks.activity-item :log="$log" />
                             @endforeach
                         </ol>
-                    @endif
-                </div>
+                    </div>
+                @endif
             </div>
         </aside>
     </div>
@@ -345,9 +347,9 @@
 {{-- --- Assign / Reassign modal (opens edit screen) --- --}}
 <x-modal id="assign-team-modal" title="Assign / Reassign">
     <p class="text-sm leading-relaxed text-slate-600">Update the people responsible for this task from the edit screen. You can add or remove teammates without changing other task details.</p>
-    <div class="mt-5 flex justify-end gap-2">
-        <button type="button" data-modal-close="assign-team-modal" class="rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50">Cancel</button>
-        <a href="{{ route('tasks.edit', $task) }}" class="rounded-lg bg-indigo-600 px-3.5 py-2 text-sm font-medium text-white hover:bg-indigo-700">Open edit task</a>
+    <div class="mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-2">
+        <button type="button" data-modal-close="assign-team-modal" class="w-full rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 sm:w-auto">Cancel</button>
+        <a href="{{ route('tasks.edit', $task) }}" class="inline-flex w-full items-center justify-center rounded-lg bg-indigo-600 px-3.5 py-2 text-sm font-medium text-white hover:bg-indigo-700 sm:w-auto">Open edit task</a>
     </div>
 </x-modal>
 @endsection

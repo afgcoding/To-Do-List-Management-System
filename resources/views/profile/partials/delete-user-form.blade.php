@@ -9,7 +9,7 @@
         </p>
     </header>
 
-    <x-danger-button type="button" data-modal-open="confirm-user-deletion">
+    <x-danger-button type="button" class="w-full justify-center sm:w-auto" data-modal-open="confirm-user-deletion">
         {{ __('Delete Account') }}
     </x-danger-button>
 
@@ -34,11 +34,11 @@
                 <x-input-error :messages="$errors->userDeletion->get('password')" class="mt-2" />
             </div>
 
-            <div class="flex justify-end gap-2">
-                <button type="button" data-modal-close="confirm-user-deletion" class="rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50">
+            <div class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-2">
+                <button type="button" data-modal-close="confirm-user-deletion" class="w-full rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 sm:w-auto">
                     {{ __('Cancel') }}
                 </button>
-                <x-danger-button>
+                <x-danger-button class="w-full justify-center sm:w-auto">
                     {{ __('Delete Account') }}
                 </x-danger-button>
             </div>

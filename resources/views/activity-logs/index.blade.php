@@ -13,8 +13,42 @@
         <x-back-link :href="route('tasks.index')">Back to tasks</x-back-link>
     </div>
 
-    <div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-        <table class="w-full border-collapse text-left">
+    <div class="space-y-3 md:hidden">
+        @forelse ($activityLogs as $log)
+            <article class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                <div class="flex items-center gap-2.5">
+                    <x-user-avatar :user="$log->user" :name="$log->user->name ?? 'System'" size="sm" />
+                    <span dir="auto" class="bidi-auto font-medium text-slate-800">{{ $log->user->name ?? 'System' }}</span>
+                </div>
+                <p dir="auto" class="bidi-auto mt-2 text-sm text-slate-700">{{ $log->description }}</p>
+                <p class="mt-0.5 text-[11px] font-medium uppercase tracking-wide text-slate-400">{{ str_replace('_', ' ', $log->action) }}</p>
+                <div class="mt-2 text-sm">
+                    @if ($log->task)
+                        <a href="{{ route('tasks.show', $log->task) }}" dir="auto" class="bidi-auto font-medium text-indigo-600 hover:text-indigo-800">
+                            {{ $log->task->title }}
+                        </a>
+                    @else
+                        <span class="text-slate-400">—</span>
+                    @endif
+                </div>
+                <p class="mt-2 text-xs text-slate-500">
+                    @if ($log->created_at)
+                        <time datetime="{{ $log->created_at->toIso8601String() }}" title="{{ format_date($log->created_at) }}">
+                            {{ $log->created_at->diffForHumans() }} · {{ format_date($log->created_at) }}
+                        </time>
+                    @else
+                        —
+                    @endif
+                </p>
+            </article>
+        @empty
+            <div class="rounded-xl border border-dashed border-slate-200 bg-white py-10 text-center text-slate-400">No activity recorded yet.</div>
+        @endforelse
+    </div>
+
+    <div class="hidden overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm md:block">
+        <div class="w-full overflow-x-auto">
+        <table class="w-full min-w-[640px] border-collapse text-left">
             <thead>
                 <tr class="border-b border-slate-200 bg-slate-50 text-xs font-semibold uppercase tracking-wider text-slate-500">
                     <th class="px-5 py-3">Actor</th>
@@ -62,8 +96,9 @@
                 @endforelse
             </tbody>
         </table>
+        </div>
     </div>
 
-    <div>{{ $activityLogs->links() }}</div>
+    <div class="overflow-x-auto">{{ $activityLogs->links() }}</div>
 </div>
 @endsection

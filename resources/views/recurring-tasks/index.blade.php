@@ -21,16 +21,60 @@
             <h1 class="text-2xl font-bold tracking-tight text-slate-900">Recurring Tasks</h1>
             <p class="mt-1 text-sm text-slate-500">Schedules that automatically create new task copies when their next run date is due.</p>
         </div>
-        <div class="flex flex-wrap items-center justify-end gap-2">
+        <div class="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:flex-wrap sm:items-center sm:justify-end">
             <x-back-link :href="route('tasks.index')">Back to tasks</x-back-link>
-            <a href="{{ route('tasks.create') }}" class="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700">
+            <a href="{{ route('tasks.create') }}" class="inline-flex w-full items-center justify-center rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 sm:w-auto">
                 New recurring task
             </a>
         </div>
     </div>
 
-    <div class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-        <table class="w-full border-collapse text-left">
+    <div class="space-y-3 md:hidden">
+        @forelse ($recurringTasks as $schedule)
+            <article class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                @if ($schedule->task)
+                    <a href="{{ route('tasks.show', $schedule->task) }}" class="font-medium text-slate-800 hover:text-indigo-600">{{ $schedule->task->title }}</a>
+                @else
+                    <span class="text-slate-400">Deleted task</span>
+                @endif
+                <p class="mt-2 text-sm text-slate-600">{{ $schedule->frequencyLabel() }}</p>
+                <p class="text-sm text-slate-600">Next run: {{ format_date($schedule->next_recurring_date) ?? '—' }}</p>
+                <div class="mt-2">
+                    @if ($schedule->is_active)
+                        <x-badge tone="emerald">Active</x-badge>
+                    @else
+                        <x-badge tone="slate">Paused</x-badge>
+                    @endif
+                </div>
+                <div class="mt-3 flex flex-wrap gap-3">
+                    <form method="POST" action="{{ route('recurring-tasks.active.toggle', $schedule) }}">
+                        @csrf
+                        @method('PATCH')
+                        <button type="submit" class="text-sm font-medium text-slate-600 hover:text-indigo-600">
+                            {{ $schedule->is_active ? 'Pause' : 'Resume' }}
+                        </button>
+                    </form>
+                    <button type="button"
+                        @click="open = true; id = {{ $schedule->id }}; recurrenceType = @js($schedule->recurrence_type->value); repeatInterval = {{ $schedule->repeat_interval }}; nextDate = @js($schedule->next_recurring_date?->format('Y-m-d'))"
+                        class="text-sm font-medium text-indigo-600 hover:text-indigo-800">Edit schedule</button>
+                    @if ($schedule->task)
+                        <a href="{{ route('tasks.edit', $schedule->task) }}" class="text-sm font-medium text-slate-600 hover:text-indigo-600">Edit task</a>
+                    @endif
+                    <form method="POST" action="{{ route('recurring-tasks.destroy', $schedule) }}" onsubmit="return confirm('Remove this recurring schedule? The base task will be kept.')">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="text-sm font-medium text-rose-600 hover:text-rose-800">Delete</button>
+                    </form>
+                </div>
+            </article>
+        @empty
+            <div class="rounded-xl border border-dashed border-slate-200 bg-white py-14 text-center text-slate-500">No recurring schedules yet. Enable recurrence when creating or editing a task.</div>
+        @endforelse
+    </div>
+
+    <div class="hidden overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm md:block">
+        <div class="w-full overflow-x-auto">
+        <table class="w-full min-w-[720px] border-collapse text-left">
             <thead>
                 <tr class="border-b border-slate-200 bg-slate-50 text-xs font-semibold uppercase tracking-wider text-slate-500">
                     <th class="px-5 py-3">Base task</th>
@@ -89,8 +133,9 @@
                 @endforelse
             </tbody>
         </table>
+        </div>
     </div>
-    <div>{{ $recurringTasks->links() }}</div>
+    <div class="overflow-x-auto">{{ $recurringTasks->links() }}</div>
 
     <x-slide-over>
         <x-slot:title>Edit schedule</x-slot>
@@ -117,9 +162,9 @@
                 <input type="date" name="next_recurring_date" x-model="nextDate" class="{{ $field }}">
                 <x-input-error :messages="$errors->get('next_recurring_date')" />
             </div>
-            <div class="flex justify-end gap-3 border-t border-slate-100 pt-5 pb-2">
-                <button type="button" @click="open = false" class="rounded-xl border border-slate-300 bg-slate-50 px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100">Cancel</button>
-                <button class="rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700">Save</button>
+            <div class="flex flex-col-reverse gap-2 border-t border-slate-100 pt-5 pb-2 sm:flex-row sm:justify-end sm:gap-3">
+                <button type="button" @click="open = false" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-2.5 text-center text-sm font-semibold text-slate-600 hover:bg-slate-100 sm:w-auto">Cancel</button>
+                <button class="w-full rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 sm:w-auto">Save</button>
             </div>
         </form>
     </x-slide-over>

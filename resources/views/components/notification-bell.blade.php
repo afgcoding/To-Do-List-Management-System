@@ -106,8 +106,12 @@
         <span x-show="unreadCount > 0" x-cloak class="absolute -right-0.5 -top-0.5 inline-flex min-w-4 items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-semibold leading-4 text-white ring-2 ring-white" x-text="unreadCount > 99 ? '99+' : unreadCount"></span>
     </button>
 
-    <div x-show="open" x-cloak @click.outside="open = false" class="absolute right-0 z-40 mt-2 w-80 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg sm:w-96">
-        <div class="flex items-center justify-between border-b border-slate-100 px-3 py-2">
+    <div
+        x-show="open"
+        x-cloak
+        @click.outside="open = false"
+        class="fixed inset-x-3 top-16 z-50 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg sm:absolute sm:inset-x-auto sm:right-0 sm:top-auto sm:mt-2 sm:w-96">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 px-3 py-2">
             <p class="text-sm font-semibold text-slate-800">Notifications</p>
             <div class="flex items-center gap-2">
                 <button type="button" class="text-xs font-medium text-slate-500 hover:text-slate-800" @click="markAllRead()">Mark as read</button>

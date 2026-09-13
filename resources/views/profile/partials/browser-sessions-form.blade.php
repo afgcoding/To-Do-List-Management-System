@@ -14,8 +14,8 @@
 
     <div class="mt-6 space-y-3">
         @forelse ($sessions as $session)
-            <div class="flex items-start justify-between gap-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
-                <div>
+            <div class="flex flex-col items-start justify-between gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 sm:flex-row sm:items-start sm:gap-4">
+                <div class="min-w-0">
                     <p class="text-sm font-semibold text-slate-800">{{ $session->device }}</p>
                     <p class="mt-0.5 text-xs text-slate-500">
                         {{ $session->ip_address ?? 'Unknown IP' }}
@@ -43,6 +43,6 @@
             <x-text-input id="logout_other_sessions_password" name="password" type="password" class="mt-1 block w-full" autocomplete="current-password" />
             <x-input-error :messages="$errors->logoutOtherSessions->get('password')" class="mt-2" />
         </div>
-        <x-primary-button>{{ __('Log out other browser sessions') }}</x-primary-button>
+        <x-primary-button class="w-full sm:w-auto">{{ __('Log out other browser sessions') }}</x-primary-button>
     </form>
 </section>
