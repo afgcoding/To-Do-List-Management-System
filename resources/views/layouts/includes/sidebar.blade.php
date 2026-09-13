@@ -25,16 +25,17 @@
             <div>
                 <p class="px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-500">Main</p>
                 <div class="mt-2 space-y-1">
-                    @include('layouts.includes.nav-item', ['label' => 'Dashboard', 'path' => '/dashboard'])
+                    @include('layouts.includes.nav-item', ['label' => 'Dashboard', 'path' => '/dashboard', 'icon' => 'dashboard'])
                 </div>
             </div>
 
             <div>
                 <p class="px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-500">Task hub</p>
                 <div class="mt-2 space-y-1">
-                    @include('layouts.includes.nav-item', ['label' => 'Tasks', 'path' => '/tasks'])
+                    @include('layouts.includes.nav-item', ['label' => 'Tasks', 'path' => '/tasks', 'icon' => 'tasks'])
+                    @include('layouts.includes.nav-item', ['label' => 'Calendar', 'path' => '/calendar', 'icon' => 'calendar'])
                     @can('tasks.edit')
-                        @include('layouts.includes.nav-item', ['label' => 'Recurring Tasks', 'path' => '/recurring-tasks'])
+                        @include('layouts.includes.nav-item', ['label' => 'Recurring Tasks', 'path' => '/recurring-tasks', 'icon' => 'recurring'])
                     @endcan
                 </div>
             </div>
@@ -44,33 +45,36 @@
                     <p class="px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-500">Organization</p>
                     <div class="mt-2 space-y-1">
                         @canany(['departments.view', 'departments.manage'])
-                            @include('layouts.includes.nav-item', ['label' => 'Departments', 'path' => '/departments'])
+                            @include('layouts.includes.nav-item', ['label' => 'Departments', 'path' => '/departments', 'icon' => 'departments'])
                         @endcanany
                         @can('categories.manage')
-                            @include('layouts.includes.nav-item', ['label' => 'Categories', 'path' => '/categories'])
+                            @include('layouts.includes.nav-item', ['label' => 'Categories', 'path' => '/categories', 'icon' => 'categories'])
                         @endcan
                         @can('tags.manage')
-                            @include('layouts.includes.nav-item', ['label' => 'Tags', 'path' => '/tags'])
+                            @include('layouts.includes.nav-item', ['label' => 'Tags', 'path' => '/tags', 'icon' => 'tags'])
                         @endcan
                     </div>
                 </div>
             @endcanany
 
-            @canany(['users.view', 'roles.view', 'roles.manage', 'logs.view', 'settings.view'])
+            @canany(['users.view', 'roles.view', 'roles.manage', 'logs.view', 'settings.view', 'reports.view-team'])
                 <div>
                     <p class="px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-500">Administration</p>
                     <div class="mt-2 space-y-1">
                         @can('users.view')
-                            @include('layouts.includes.nav-item', ['label' => 'Users & Roles', 'path' => '/users'])
+                            @include('layouts.includes.nav-item', ['label' => 'Users & Roles', 'path' => '/users', 'icon' => 'users'])
                         @endcan
                         @canany(['roles.view', 'roles.manage'])
-                            @include('layouts.includes.nav-item', ['label' => 'Roles & Permissions', 'path' => '/roles'])
+                            @include('layouts.includes.nav-item', ['label' => 'Roles & Permissions', 'path' => '/roles', 'icon' => 'roles'])
                         @endcanany
+                        @can('reports.view-team')
+                            @include('layouts.includes.nav-item', ['label' => 'Reports', 'path' => '/reports', 'icon' => 'reports'])
+                        @endcan
                         @can('logs.view')
-                            @include('layouts.includes.nav-item', ['label' => 'Activity Logs', 'path' => '/activity-logs'])
+                            @include('layouts.includes.nav-item', ['label' => 'Activity Logs', 'path' => '/activity-logs', 'icon' => 'logs'])
                         @endcan
                         @can('settings.view')
-                            @include('layouts.includes.nav-item', ['label' => 'System Settings', 'path' => '/system-settings'])
+                            @include('layouts.includes.nav-item', ['label' => 'System Settings', 'path' => '/system-settings', 'icon' => 'settings'])
                         @endcan
                     </div>
                 </div>

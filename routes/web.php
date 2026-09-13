@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\AttachmentController;
+use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\DashboardController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RecurringTaskController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SubtaskController;
 use App\Http\Controllers\SystemSettingController;
@@ -58,6 +60,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('recurring-tasks/{recurringTask}/active', [RecurringTaskController::class, 'toggleActive'])->name('recurring-tasks.active.toggle');
     Route::delete('recurring-tasks/{recurringTask}', [RecurringTaskController::class, 'destroy'])->name('recurring-tasks.destroy');
 
+    Route::get('calendar', [CalendarController::class, 'index'])->name('calendar.index');
+    Route::patch('calendar/tasks/{task}', [CalendarController::class, 'updateDueDate'])->name('calendar.tasks.due-date');
+
+    Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
+    Route::get('reports/export.csv', [ReportController::class, 'csv'])->name('reports.csv');
+    Route::get('reports/print', [ReportController::class, 'print'])->name('reports.print');
+
     Route::resource('departments', DepartmentController::class);
     Route::patch('departments/{department}/active', [DepartmentController::class, 'toggleActive'])->name('departments.active.toggle');
     Route::resource('categories', CategoryController::class);
@@ -69,6 +78,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
     Route::get('system-settings', [SystemSettingController::class, 'index'])->name('system-settings.index');
     Route::put('system-settings', [SystemSettingController::class, 'update'])->name('system-settings.update');
+    Route::get('settings', [SystemSettingController::class, 'index'])->name('settings.index');
+    Route::put('settings', [SystemSettingController::class, 'update'])->name('settings.update');
 });
 
 require __DIR__.'/auth.php';

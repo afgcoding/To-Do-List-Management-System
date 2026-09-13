@@ -40,6 +40,18 @@ it('renders the system settings page', function () {
         ->assertSee('Asia/Kabul');
 });
 
+it('serves the same settings panel at the /settings alias', function () {
+    $this->actingAs(User::factory()->superAdmin()->create());
+    SystemSetting::getSettings();
+
+    $this->get(route('settings.index'))
+        ->assertOk()
+        ->assertViewIs('settings.index')
+        ->assertSee('Company name')
+        ->assertSee('Timezone')
+        ->assertSee('Date format');
+});
+
 it('updates the primary accent color', function () {
     $this->actingAs(User::factory()->superAdmin()->create());
     SystemSetting::getSettings();
