@@ -26,6 +26,8 @@ class SubtaskController extends Controller
             'is_completed' => false,
         ]);
 
+        $this->ensureParentAssignment($task, $validated['assigned_to'] ?? null);
+
         return back()->with('success', 'Subtask added successfully!');
     }
 
@@ -35,6 +37,8 @@ class SubtaskController extends Controller
         $this->authorize('update', $subtask->task);
 
         $subtask->update($request->safe()->only(['title', 'assigned_to']));
+
+        $this->ensureParentAssignment($subtask->task, $request->validated('assigned_to'));
 
         return back()->with('success', 'Subtask updated successfully!');
     }
@@ -55,5 +59,25 @@ class SubtaskController extends Controller
         $subtask->delete();
 
         return back()->with('success', 'Subtask deleted!');
+    }
+
+    private function ensureParentAssignment(Task $task, mixed $userId): void
+    {
+        if ($userId === null || $userId === '') {
+            return;
+        }
+
+        $userId = (int) $userId;
+        $assignedIds = $task->assignedUsers()
+            ->pluck('users.id')
+            ->map(fn (mixed $id): int => (int) $id)
+            ->all();
+
+        if (in_array($userId, $assignedIds, true)) {
+            return;
+        }
+
+        $assignedIds[] = $userId;
+        $task->syncAssignedUsers($assignedIds);
     }
 }

@@ -8,6 +8,7 @@ use App\Enums\TaskPriority;
 use App\Enums\TaskStatus;
 use App\Models\ActivityLog;
 use App\Models\Task;
+use App\Support\TaskNotifier;
 use Carbon\CarbonInterface;
 
 class TaskObserver
@@ -60,6 +61,8 @@ class TaskObserver
                 "changed due date to {$due}",
             );
         }
+
+        TaskNotifier::taskSaved($task);
     }
 
     private function statusLabel(mixed $value): string

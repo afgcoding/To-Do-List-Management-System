@@ -26,6 +26,20 @@ it('creates a subtask on a task', function () {
         'assigned_to' => $assignee->id,
         'is_completed' => false,
     ]);
+
+    expect($task->fresh()->assignedUsers->pluck('id')->all())->toContain($assignee->id);
+});
+
+it('limits the subtask assignee dropdown to the parent task team', function () {
+    $teammate = User::factory()->create(['name' => 'Team Only Assignee']);
+    $outsider = User::factory()->create(['name' => 'Outside Subtask Candidate']);
+    $task = Task::factory()->create();
+    $task->assignedUsers()->sync([$teammate->id]);
+
+    $this->get(route('tasks.show', $task))
+        ->assertOk()
+        ->assertSee('>Team Only Assignee</option>', false)
+        ->assertDontSee('>Outside Subtask Candidate</option>', false);
 });
 
 it('marks the parent task completed when every subtask is done', function () {
@@ -66,7 +80,8 @@ it('updates a subtask title and assignee inline', function () {
     ])->assertRedirect();
 
     expect($subtask->fresh()->title)->toBe('Revised title')
-        ->and($subtask->fresh()->assigned_to)->toBe($assignee->id);
+        ->and($subtask->fresh()->assigned_to)->toBe($assignee->id)
+        ->and($subtask->task->fresh()->assignedUsers->pluck('id')->all())->toContain($assignee->id);
 });
 
 it('deletes a subtask', function () {

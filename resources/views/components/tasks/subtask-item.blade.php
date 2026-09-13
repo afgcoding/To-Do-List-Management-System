@@ -1,4 +1,10 @@
 @props(['subtask', 'assignees'])
+@php
+    $assigneeOptions = collect($assignees);
+    if ($subtask->assignedUser && ! $assigneeOptions->contains('id', $subtask->assignedUser->id)) {
+        $assigneeOptions = $assigneeOptions->push($subtask->assignedUser);
+    }
+@endphp
 {{-- Subtask row: checkbox, title, assignee, status badge, hover actions --}}
 <div x-data="{ editing: false }" class="group rounded-xl border border-slate-200/60 bg-slate-50/60 px-3 py-2.5 transition hover:bg-slate-100/80">
     {{-- --- View mode --- --}}
@@ -56,7 +62,7 @@
             <input type="text" name="title" value="{{ $subtask->title }}" required dir="auto" class="bidi-auto min-w-0 flex-1 rounded-lg border-slate-200 bg-white px-2.5 py-1.5 text-sm focus:border-indigo-500 focus:ring-indigo-500">
             <select name="assigned_to" class="rounded-lg border-slate-200 bg-white px-2 py-1.5 text-xs">
                 <option value="">Assignee (optional)</option>
-                @foreach($assignees as $user)
+                @foreach($assigneeOptions as $user)
                     <option value="{{ $user->id }}" @selected($subtask->assigned_to === $user->id)>{{ $user->name }}</option>
                 @endforeach
             </select>

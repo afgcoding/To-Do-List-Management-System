@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Enums\TaskPriority;
 use App\Enums\TaskStatus;
 use App\Observers\TaskObserver;
+use App\Support\TaskNotifier;
 use Database\Factories\TaskFactory;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Attributes\Scope;
@@ -116,6 +117,7 @@ class Task extends Model
 
         if ($previous !== $next) {
             ActivityLog::record($this->id, 'updated_assignment', 'updated assigned team members');
+            TaskNotifier::assigneesChanged($this, $previous, $next);
         }
     }
 

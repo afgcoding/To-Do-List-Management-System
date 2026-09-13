@@ -10,8 +10,7 @@
                 class="absolute right-2 top-1/2 -translate-y-1/2 rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-medium text-slate-500">Ctrl
                 K</kbd></label></div>
     <div class="flex items-center gap-2">
-        <button type="button" class="relative rounded-lg p-2 text-slate-500 transition hover:bg-slate-100" aria-label="Notifications">🔔<span
-                class="absolute right-1 top-1 size-2 rounded-full bg-rose-500 ring-2 ring-white"></span></button>
+        <x-notification-bell />
         @can('create', App\Models\Task::class)
         <a href="{{ route('tasks.create') }}"
             class="hidden items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-indigo-700 sm:inline-flex">+

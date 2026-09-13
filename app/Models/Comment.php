@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\UserStatus;
 use App\Observers\CommentObserver;
 use Database\Factories\CommentFactory;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
@@ -71,5 +72,19 @@ class Comment extends Model
         ) ?? $safe;
 
         return new HtmlString($safe);
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function mentionedUsers(): Collection
+    {
+        $comment = $this->comment;
+
+        return User::query()
+            ->where('status', UserStatus::Active)
+            ->get()
+            ->filter(fn (User $user): bool => str_contains($comment, '@'.$user->name))
+            ->values();
     }
 }

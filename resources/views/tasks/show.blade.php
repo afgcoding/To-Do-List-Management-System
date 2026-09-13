@@ -120,7 +120,7 @@
                         class="bidi-auto min-w-0 flex-1 rounded-lg border-slate-200 bg-slate-50/80 text-sm shadow-sm focus:border-indigo-500 focus:bg-white focus:ring-indigo-500">
                     <select name="assigned_to" class="rounded-lg border-slate-200 bg-white text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                         <option value="">Assignee</option>
-                        @foreach($users as $user)
+                        @foreach($task->assignedUsers as $user)
                             <option value="{{ $user->id }}">{{ $user->name }}</option>
                         @endforeach
                     </select>
@@ -131,7 +131,7 @@
                 {{-- --- Subtask Items Loop --- --}}
                 <div class="space-y-1.5">
                     @forelse($task->subtasks as $subtask)
-                        <x-tasks.subtask-item :subtask="$subtask" :assignees="$users" />
+                        <x-tasks.subtask-item :subtask="$subtask" :assignees="$task->assignedUsers" />
                     @empty
                         <p class="rounded-xl bg-slate-50/80 py-8 text-center text-sm text-slate-400">No subtasks yet. Add the first one above.</p>
                     @endforelse
