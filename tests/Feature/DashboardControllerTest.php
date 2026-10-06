@@ -26,7 +26,9 @@ it('renders role-aware team analytics for an admin', function () {
     $this->actingAs($admin)
         ->get(route('dashboard'))
         ->assertOk()
-        ->assertSee('Reporting hub')
+        ->assertSee('>Dashboard</h1>', false)
+        ->assertDontSee('breadcrumb-header', false)
+        ->assertDontSee('Reporting hub')
         ->assertSee('Total Active Tasks')
         ->assertSee('My Assigned Tasks')
         ->assertSee('Team Workload')
@@ -70,6 +72,7 @@ it('embeds the task workspace with search and status tabs', function () {
         ->assertSee('Apply filters')
         ->assertSee('name="search"', false)
         ->assertSee('placeholder="Search tasks..."', false)
+        ->assertDontSee('breadcrumb-header', false)
         ->assertSee('>List</a>', false)
         ->assertSee('>Grid</a>', false);
 });

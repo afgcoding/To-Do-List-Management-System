@@ -2,6 +2,7 @@
 
 @php
     $pageTitle = 'Dashboard';
+    $hideLayoutPageHeader = true;
     $trend = $kpis['activeTrend'];
     $statusSlices = collect($distribution)->reject(fn (array $item): bool => $item['key'] === 'overdue');
     $statusTotal = max(1, $statusSlices->sum('count'));
@@ -12,6 +13,14 @@
 
 @section('content')
 <div class="space-y-6">
+    <div class="mb-4 flex items-center justify-between gap-3 sm:mb-6">
+        <div class="min-w-0">
+            <h1 class="text-lg font-bold tracking-tight text-gray-900 sm:text-2xl">Dashboard</h1>
+            <p class="mt-0.5 text-[11px] text-gray-500 sm:text-sm">{{ setting('company_name', config('app.name', 'TaskFlow')) }}</p>
+        </div>
+        <a href="{{ route('tasks.index') }}" class="inline-flex h-8 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-medium text-slate-700 shadow-sm hover:bg-slate-50 sm:h-9 sm:px-3.5 sm:text-sm">Open tasks</a>
+    </div>
+
     @include('dashboard.partials.task-workspace', [
         'tasks' => $workspaceTasks,
         'users' => $workspaceUsers,
@@ -19,15 +28,7 @@
         'layout' => $workspaceLayout,
     ])
 
-    <div class="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
-        <div>
-            <h1 class="text-xl font-semibold tracking-tight text-slate-900">Reporting hub</h1>
-            <p class="mt-1 text-sm text-slate-500">Live workload, completion velocity, and upcoming deadlines for your workspace.</p>
-        </div>
-        <a href="{{ route('tasks.index') }}" class="inline-flex w-full items-center justify-center rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 sm:w-auto">Open tasks</a>
-    </div>
-
-    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <article class="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm">
             <div class="flex items-start gap-3">
                 <span class="grid size-9 shrink-0 place-items-center rounded-lg bg-indigo-50 text-indigo-600">
@@ -80,7 +81,7 @@
         </article>
     </div>
 
-    <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+    <div class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
         <section class="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm lg:col-span-2">
             <h2 class="text-sm font-semibold text-slate-900">Task distribution by status</h2>
             <div class="mt-5 flex flex-col gap-6 sm:flex-row sm:items-center">

@@ -6,8 +6,8 @@
     $assigneeHeading = $tasks->getCollection()->contains(
         fn ($task): bool => $task->assignedUsers->count() > 1,
     ) ? 'Team' : 'Assignee';
-    $searchControl = 'h-9 w-64 max-w-full rounded-lg border border-gray-300 bg-gray-50 py-1.5 pr-3 pl-9 text-sm text-gray-700 transition focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500';
-    $selectControl = 'h-9 w-full rounded-md border border-gray-200 bg-white px-3 py-1.5 text-sm text-gray-700 transition focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500';
+    $searchControl = 'h-8 w-full rounded-lg border border-gray-300 bg-gray-50 py-1 pr-2.5 pl-8 text-[11px] text-gray-700 transition focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:h-9 sm:pl-9 sm:text-sm md:w-64';
+    $selectControl = 'h-8 w-full rounded-md border border-gray-200 bg-white px-2 py-1 text-[11px] text-gray-700 transition focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:h-9 sm:px-3 sm:text-sm';
     $activeFilterCount = collect(['status', 'priority', 'assigned_user_id', 'category_id', 'due_from', 'due_to'])
         ->filter(fn (string $key): bool => filled(request($key)))
         ->count();
@@ -20,44 +20,45 @@
     $activeStatus = request('status');
 @endphp
 
-<section class="mt-6 space-y-4 rounded-xl border border-gray-200/80 bg-white p-6 shadow-xs">
+<section class="space-y-3 rounded-xl border border-gray-200/80 bg-white p-3 shadow-xs sm:space-y-4 sm:p-6">
     <div>
-        <h2 class="text-base font-semibold tracking-tight text-gray-900">Task Management Workspace</h2>
-        <p class="mt-1 text-sm text-gray-500">Search, filter, and manage every assignment without leaving the dashboard.</p>
+        <h2 class="text-left text-sm font-semibold leading-snug tracking-tight text-gray-900 md:text-xl lg:text-2xl">Task Management Workspace</h2>
+        <p class="mt-0.5 hidden text-xs text-gray-500 md:block md:text-sm">Search, filter, and manage every assignment without leaving the dashboard.</p>
     </div>
 
-    <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-        <div class="flex gap-5 overflow-x-auto border-b border-slate-200 lg:border-0">
-            <a href="{{ route('dashboard', $tabQuery) }}" @class(['shrink-0 pb-2.5 text-sm font-medium', 'border-b-2 border-indigo-600 text-indigo-600' => ! $activeStatus, 'text-slate-500 hover:text-slate-700' => (bool) $activeStatus])>All tasks</a>
-            <a href="{{ route('dashboard', array_merge($tabQuery, ['status' => 'overdue'])) }}" @class(['shrink-0 pb-2.5 text-sm font-medium', 'border-b-2 border-indigo-600 text-indigo-600' => $activeStatus === 'overdue', 'text-slate-500 hover:text-slate-700' => $activeStatus !== 'overdue'])>Overdue</a>
-            <a href="{{ route('dashboard', array_merge($tabQuery, ['status' => 'completed'])) }}" @class(['shrink-0 pb-2.5 text-sm font-medium', 'border-b-2 border-indigo-600 text-indigo-600' => $activeStatus === 'completed', 'text-slate-500 hover:text-slate-700' => $activeStatus !== 'completed'])>Completed</a>
+    <div class="flex flex-col gap-2 border-b border-gray-100 pb-3 sm:gap-3 sm:pb-4 md:flex-row md:items-center md:justify-between">
+        <div class="no-scrollbar flex items-center gap-3 overflow-x-auto text-[11px] font-medium sm:gap-4 sm:text-sm">
+            <a href="{{ route('dashboard', $tabQuery) }}" @class(['shrink-0 pb-1.5 sm:pb-2.5', 'border-b-2 border-indigo-600 text-indigo-600' => ! $activeStatus, 'text-slate-500 hover:text-slate-700' => (bool) $activeStatus])>All tasks</a>
+            <a href="{{ route('dashboard', array_merge($tabQuery, ['status' => 'overdue'])) }}" @class(['shrink-0 pb-1.5 sm:pb-2.5', 'border-b-2 border-indigo-600 text-indigo-600' => $activeStatus === 'overdue', 'text-slate-500 hover:text-slate-700' => $activeStatus !== 'overdue'])>Overdue</a>
+            <a href="{{ route('dashboard', array_merge($tabQuery, ['status' => 'completed'])) }}" @class(['shrink-0 pb-1.5 sm:pb-2.5', 'border-b-2 border-indigo-600 text-indigo-600' => $activeStatus === 'completed', 'text-slate-500 hover:text-slate-700' => $activeStatus !== 'completed'])>Completed</a>
         </div>
 
-        <form method="GET" action="{{ route('dashboard') }}" class="flex flex-wrap items-center justify-end gap-3">
+        <form method="GET" action="{{ route('dashboard') }}" class="flex w-full flex-col gap-2 md:w-auto md:flex-row md:items-center">
             <input type="hidden" name="layout" value="{{ $layout }}">
-            <label class="relative min-w-0 shrink-0">
-                <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                    <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="m21 21-4.35-4.35M11 18a7 7 0 1 1 0-14 7 7 0 0 1 0 14Z"/></svg>
+            <label class="relative w-full min-w-0 md:w-auto">
+                <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2.5 text-gray-400 sm:pl-3">
+                    <svg class="size-3.5 sm:size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="m21 21-4.35-4.35M11 18a7 7 0 1 1 0-14 7 7 0 0 1 0 14Z"/></svg>
                 </span>
                 <span class="sr-only">Search tasks</span>
                 <input type="text" name="search" value="{{ request('search') }}" placeholder="Search tasks..." class="{{ $searchControl }}">
             </label>
 
-            <div class="relative shrink-0" x-data="{ open: false }" @click.outside="open = false" @keydown.escape.window="open = false">
-                <button type="button" @click="open = ! open" class="flex h-9 items-center gap-2 rounded-lg border border-gray-300 bg-gray-50 px-3 text-xs font-medium text-gray-700 hover:bg-gray-100">
+            <div class="flex w-full items-center gap-2 md:w-auto">
+            <div class="relative min-w-0 flex-1 md:flex-none" x-data="{ open: false }" @click.outside="open = false" @keydown.escape.window="open = false">
+                <button type="button" @click="open = ! open" class="flex h-8 w-full items-center justify-center gap-1.5 rounded-lg border border-gray-300 bg-gray-50 px-2.5 text-[11px] font-medium text-gray-700 hover:bg-gray-100 sm:h-9 sm:gap-2 sm:px-3 sm:text-xs md:w-auto">
                     <svg class="size-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 4.5h18l-6.75 7.89v4.86L9.75 19.5v-7.11L3 4.5Z"/></svg>
                     Filters
-                    <span class="rounded-full bg-indigo-100 px-2 py-0.5 text-xs font-semibold text-indigo-700">{{ $activeFilterCount }}</span>
+                    <span class="rounded-full bg-indigo-100 px-1.5 py-0.5 text-[10px] font-semibold text-indigo-700 sm:px-2 sm:text-xs">{{ $activeFilterCount }}</span>
                 </button>
 
-                <div x-show="open" x-cloak x-transition class="absolute right-0 z-30 mt-2 w-[22rem] max-w-[calc(100vw-2rem)] rounded-xl border border-gray-200 bg-white p-4 shadow-lg">
-                    <div class="mb-3 flex items-center justify-between">
-                        <p class="text-sm font-semibold text-gray-900">Filters</p>
-                        <a href="{{ route('dashboard', ['layout' => $layout]) }}" class="text-xs font-medium text-gray-500 hover:text-gray-700">Reset</a>
+                <div x-show="open" x-cloak x-transition class="absolute left-0 right-0 z-30 mt-2 max-h-[min(22rem,70vh)] w-full overflow-y-auto rounded-lg border border-gray-200 bg-white p-3 text-xs shadow-lg sm:left-auto sm:right-0 sm:w-72 sm:max-w-[calc(100vw-2rem)] sm:p-4 md:w-80">
+                    <div class="mb-2 flex items-center justify-between sm:mb-3">
+                        <p class="text-xs font-semibold text-gray-900 sm:text-sm">Filters</p>
+                        <a href="{{ route('dashboard', ['layout' => $layout]) }}" class="text-[11px] font-medium text-gray-500 hover:text-gray-700 sm:text-xs">Reset</a>
                     </div>
-                    <div class="grid grid-cols-1 gap-3">
+                    <div class="grid grid-cols-1 gap-2 sm:gap-3">
                         <label class="block">
-                            <span class="mb-1 block text-xs font-medium text-gray-500">Status</span>
+                            <span class="mb-1 block text-[11px] font-medium text-gray-500 sm:text-xs">Status</span>
                             <select name="status" class="{{ $selectControl }}">
                                 <option value="">All statuses</option>
                                 @foreach(\App\Enums\TaskStatus::cases() as $status)
@@ -67,7 +68,7 @@
                             </select>
                         </label>
                         <label class="block">
-                            <span class="mb-1 block text-xs font-medium text-gray-500">Priority</span>
+                            <span class="mb-1 block text-[11px] font-medium text-gray-500 sm:text-xs">Priority</span>
                             <select name="priority" class="{{ $selectControl }}">
                                 <option value="">All priorities</option>
                                 @foreach(\App\Enums\TaskPriority::cases() as $priority)
@@ -76,7 +77,7 @@
                             </select>
                         </label>
                         <label class="block">
-                            <span class="mb-1 block text-xs font-medium text-gray-500">Assignee</span>
+                            <span class="mb-1 block text-[11px] font-medium text-gray-500 sm:text-xs">Assignee</span>
                             <select name="assigned_user_id" class="{{ $selectControl }}">
                                 <option value="">All assignees</option>
                                 @foreach($users as $user)
@@ -85,7 +86,7 @@
                             </select>
                         </label>
                         <label class="block">
-                            <span class="mb-1 block text-xs font-medium text-gray-500">Category</span>
+                            <span class="mb-1 block text-[11px] font-medium text-gray-500 sm:text-xs">Category</span>
                             <select name="category_id" class="{{ $selectControl }}">
                                 <option value="">All categories</option>
                                 @foreach($filterCategories as $category)
@@ -93,18 +94,18 @@
                                 @endforeach
                             </select>
                         </label>
-                        <div class="grid grid-cols-2 gap-3">
-                            <label class="block">
-                                <span class="mb-1 block text-xs font-medium text-gray-500">Due from</span>
+                        <div class="grid grid-cols-2 gap-2 sm:gap-3">
+                            <label class="block min-w-0">
+                                <span class="mb-1 block text-[11px] font-medium text-gray-500 sm:text-xs">Due from</span>
                                 <input type="date" name="due_from" value="{{ request('due_from') }}" class="{{ $selectControl }}">
                             </label>
-                            <label class="block">
-                                <span class="mb-1 block text-xs font-medium text-gray-500">Due to</span>
+                            <label class="block min-w-0">
+                                <span class="mb-1 block text-[11px] font-medium text-gray-500 sm:text-xs">Due to</span>
                                 <input type="date" name="due_to" value="{{ request('due_to') }}" class="{{ $selectControl }}">
                             </label>
                         </div>
                         <label class="block">
-                            <span class="mb-1 block text-xs font-medium text-gray-500">Sort by</span>
+                            <span class="mb-1 block text-[11px] font-medium text-gray-500 sm:text-xs">Sort by</span>
                             <select name="sort_by" class="{{ $selectControl }}">
                                 <option value="created_at" @selected(request('sort_by', 'created_at') === 'created_at')>Created</option>
                                 <option value="due_date" @selected(request('sort_by') === 'due_date')>Due date</option>
@@ -113,23 +114,24 @@
                             </select>
                         </label>
                         <label class="block">
-                            <span class="mb-1 block text-xs font-medium text-gray-500">Order</span>
+                            <span class="mb-1 block text-[11px] font-medium text-gray-500 sm:text-xs">Order</span>
                             <select name="sort_order" class="{{ $selectControl }}">
                                 <option value="desc" @selected(request('sort_order', 'desc') === 'desc')>Newest / high first</option>
                                 <option value="asc" @selected(request('sort_order') === 'asc')>Oldest / low first</option>
                             </select>
                         </label>
                     </div>
-                    <div class="mt-4 flex items-center justify-between gap-3">
-                        <a href="{{ route('dashboard', ['layout' => $layout]) }}" class="px-2 py-1.5 text-xs font-medium text-gray-500 hover:text-gray-700">Reset</a>
-                        <button type="submit" class="inline-flex h-9 items-center justify-center rounded-lg bg-indigo-600 px-4 text-sm font-medium text-white transition-colors hover:bg-indigo-700">Apply filters</button>
+                    <div class="mt-3 flex items-center justify-end gap-2 sm:mt-4">
+                        <a href="{{ route('dashboard', ['layout' => $layout]) }}" class="inline-flex h-8 items-center px-2 text-[11px] font-medium text-gray-500 hover:text-gray-700 sm:text-xs">Reset</a>
+                        <button type="submit" class="inline-flex h-8 items-center justify-center rounded-lg bg-indigo-600 px-3 text-[11px] font-medium text-white transition-colors hover:bg-indigo-700 sm:h-9 sm:px-4 sm:text-sm">Apply filters</button>
                     </div>
                 </div>
             </div>
 
-            <div class="inline-flex h-9 shrink-0 items-center rounded-lg border border-gray-200 bg-gray-100 p-0.5">
+            <div class="inline-flex h-8 shrink-0 items-center rounded-lg border border-gray-200 bg-gray-100 p-0.5 sm:h-9">
                 <a href="{{ $listUrl }}" @class(['inline-flex h-full items-center rounded-md px-3 text-xs font-semibold', 'bg-white text-gray-900 shadow-xs' => $layout === 'list', 'text-gray-500 hover:text-gray-700' => $layout !== 'list'])>List</a>
                 <a href="{{ $gridUrl }}" @class(['inline-flex h-full items-center rounded-md px-3 text-xs font-semibold', 'bg-white text-gray-900 shadow-xs' => $layout === 'grid', 'text-gray-500 hover:text-gray-700' => $layout !== 'grid'])>Grid</a>
+            </div>
             </div>
         </form>
     </div>
@@ -143,27 +145,20 @@
             @endforelse
         </div>
     @else
-        <div class="grid grid-cols-1 items-stretch gap-4 sm:grid-cols-2 md:hidden">
-            @forelse($tasks as $task)
-                @include('tasks.partials.card', ['task' => $task])
-            @empty
-                <div class="py-16 text-center text-gray-500">No tasks created yet.</div>
-            @endforelse
-        </div>
-        <div class="hidden w-full overflow-x-auto md:block">
-            <table class="w-full min-w-[960px] border-collapse text-left">
+        <div class="w-full overflow-x-auto overflow-y-visible rounded-xl border border-gray-200/80">
+            <table class="w-full min-w-[720px] border-collapse text-left text-xs sm:min-w-[880px] sm:text-sm">
                 <thead>
-                    <tr class="border-b border-gray-200 bg-gray-50 text-[11px] font-semibold uppercase tracking-wider text-gray-500">
-                        <th class="min-w-[220px] px-4 py-2.5">Task</th>
-                        <th class="min-w-[120px] px-4 py-2.5">{{ $assigneeHeading }}</th>
-                        <th class="min-w-[110px] px-4 py-2.5">Priority</th>
-                        <th class="min-w-[120px] px-4 py-2.5">Status</th>
-                        <th class="min-w-[120px] px-4 py-2.5">Due Date</th>
-                        <th class="min-w-[160px] px-4 py-2.5">Progress</th>
-                        <th class="min-w-[72px] px-4 py-2.5 text-right">Actions</th>
+                    <tr class="border-b border-gray-200 bg-gray-50 text-[10px] font-semibold uppercase tracking-wider text-gray-500 sm:text-[11px]">
+                        <th class="min-w-[180px] whitespace-nowrap px-2 py-2.5 sm:min-w-[220px] sm:px-3 sm:py-3">Task</th>
+                        <th class="min-w-[88px] whitespace-nowrap px-2 py-2.5 sm:min-w-[120px] sm:px-3 sm:py-3">{{ $assigneeHeading }}</th>
+                        <th class="min-w-[72px] whitespace-nowrap px-2 py-2.5 sm:min-w-[110px] sm:px-3 sm:py-3">Priority</th>
+                        <th class="min-w-[88px] whitespace-nowrap px-2 py-2.5 sm:min-w-[120px] sm:px-3 sm:py-3">Status</th>
+                        <th class="min-w-[96px] whitespace-nowrap px-2 py-2.5 sm:min-w-[120px] sm:px-3 sm:py-3">Due Date</th>
+                        <th class="min-w-[120px] whitespace-nowrap px-2 py-2.5 sm:min-w-[140px] sm:px-3 sm:py-3">Progress</th>
+                        <th class="sticky right-0 min-w-[56px] whitespace-nowrap bg-gray-50 px-2 py-2.5 text-right sm:min-w-[72px] sm:px-3 sm:py-3">Actions</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-100 text-sm">
+                <tbody class="divide-y divide-gray-100">
                     @forelse($tasks as $task)
                         @include('tasks.partials.row', ['task' => $task])
                     @empty
@@ -176,8 +171,8 @@
         </div>
     @endif
 
-    <div class="flex flex-col gap-3 border-t border-gray-200 bg-white pt-4 sm:flex-row sm:items-center sm:justify-between">
-        <p class="text-sm font-medium leading-9 text-gray-600">
+    <div class="flex flex-col gap-2 overflow-x-auto border-t border-gray-200 bg-white pt-3 sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:pt-4">
+        <p class="text-[11px] font-medium leading-7 text-gray-600 sm:text-sm sm:leading-9">
             Showing {{ $tasks->firstItem() ?? 0 }} to {{ $tasks->lastItem() ?? 0 }} of {{ $tasks->total() }} results
         </p>
         <div class="flex items-center">{{ $tasks->links('pagination.task-table') }}</div>

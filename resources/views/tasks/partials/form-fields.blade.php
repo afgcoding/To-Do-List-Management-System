@@ -20,19 +20,19 @@
         placeholder="Detailed instructions for the team...">{{ old('description', $task?->description) }}</textarea>
 </div>
 
-<div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-    <div>
+<div class="grid grid-cols-1 gap-4 min-[400px]:grid-cols-2">
+    <div class="min-w-0">
         <label class="mb-1 block text-sm font-medium text-slate-700">Start Date</label>
         <input type="date" name="start_date"
             value="{{ old('start_date', $task?->start_date?->format('Y-m-d')) }}"
-            class="w-full rounded-lg border border-slate-200 p-2 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+            class="w-full min-w-0 rounded-lg border border-slate-200 p-2 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
         <x-input-error class="mt-1" :messages="$errors->get('start_date')" />
     </div>
-    <div>
+    <div class="min-w-0">
         <label class="mb-1 block text-sm font-medium text-slate-700">Due Date</label>
         <input type="date" name="due_date"
             value="{{ old('due_date', $task?->due_date?->format('Y-m-d')) }}"
-            class="w-full rounded-lg border border-slate-200 p-2 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+            class="w-full min-w-0 rounded-lg border border-slate-200 p-2 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
         <x-input-error class="mt-1" :messages="$errors->get('due_date')" />
     </div>
 </div>

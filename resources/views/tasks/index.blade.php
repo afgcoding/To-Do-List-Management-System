@@ -13,7 +13,7 @@
     $assigneeHeading = $tasks->getCollection()->contains(
         fn ($task): bool => $task->assignedUsers->count() > 1,
     ) ? 'Team' : 'Assignee';
-    $searchControl = 'h-9 w-64 rounded-lg border border-gray-300 bg-gray-50 py-1.5 pr-3 pl-9 text-sm text-gray-700 transition focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500';
+    $searchControl = 'h-9 w-full min-w-0 rounded-lg border border-gray-300 bg-gray-50 py-1.5 pr-3 pl-9 text-xs text-gray-700 transition focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:w-64 sm:text-sm';
     $selectControl = 'h-9 w-full rounded-md border border-gray-200 bg-white px-3 py-1.5 text-sm text-gray-700 transition focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500';
     $activeFilterCount = collect(['status', 'priority', 'assigned_user_id', 'category_id', 'due_from', 'due_to'])
         ->filter(fn (string $key): bool => filled(request($key)))
@@ -57,10 +57,10 @@
         <form
             method="GET"
             action="{{ route('tasks.index') }}"
-            class="flex items-center justify-end gap-3 border-b border-gray-200 bg-white p-4"
+            class="flex flex-col gap-2 border-b border-gray-200 bg-white p-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-end sm:gap-3 sm:p-4"
         >
             <input type="hidden" name="layout" value="{{ $layout }}">
-            <label class="relative shrink-0">
+            <label class="relative w-full min-w-0 sm:w-auto">
                 <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
                     <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="m21 21-4.35-4.35M11 18a7 7 0 1 1 0-14 7 7 0 0 1 0 14Z"/></svg>
                 </span>
@@ -69,11 +69,12 @@
                     class="{{ $searchControl }}">
             </label>
 
-            <div class="relative shrink-0" x-data="{ open: false }" @click.outside="open = false" @keydown.escape.window="open = false">
+            <div class="flex w-full items-center gap-2 sm:w-auto">
+            <div class="relative min-w-0 flex-1 sm:flex-none" x-data="{ open: false }" @click.outside="open = false" @keydown.escape.window="open = false">
                 <button
                     type="button"
                     @click="open = ! open"
-                    class="flex h-9 items-center gap-2 rounded-lg border border-gray-300 bg-gray-50 px-3 text-xs font-medium text-gray-700 hover:bg-gray-100"
+                    class="flex h-9 w-full items-center justify-center gap-2 rounded-lg border border-gray-300 bg-gray-50 px-3 text-xs font-medium text-gray-700 hover:bg-gray-100 sm:w-auto"
                 >
                     <svg class="size-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 4.5h18l-6.75 7.89v4.86L9.75 19.5v-7.11L3 4.5Z"/></svg>
                     Filters
@@ -84,7 +85,7 @@
                         x-show="open"
                         x-cloak
                         x-transition
-                        class="absolute right-0 z-30 mt-2 w-[22rem] max-w-[calc(100vw-2rem)] rounded-xl border border-gray-200 bg-white p-4 shadow-lg"
+                        class="absolute left-0 right-0 z-50 mt-2 max-h-[min(22rem,70vh)] w-full overflow-y-auto rounded-xl border border-gray-200 bg-white p-3 shadow-lg sm:left-auto sm:right-0 sm:w-[22rem] sm:max-w-[calc(100vw-2rem)] sm:p-4"
                     >
                         <div class="mb-3 flex items-center justify-between">
                             <p class="text-sm font-semibold text-gray-900">Filters</p>
@@ -166,6 +167,7 @@
                 <a href="{{ $listUrl }}" @class(['inline-flex h-full items-center rounded-md px-3 text-xs font-semibold', 'bg-white text-gray-900 shadow-xs' => $layout === 'list', 'text-gray-500 hover:text-gray-700' => $layout !== 'list'])>List</a>
                 <a href="{{ $gridUrl }}" @class(['inline-flex h-full items-center rounded-md px-3 text-xs font-semibold', 'bg-white text-gray-900 shadow-xs' => $layout === 'grid', 'text-gray-500 hover:text-gray-700' => $layout !== 'grid'])>Grid</a>
             </div>
+            </div>
         </form>
 
         @if($layout === 'grid')
@@ -185,7 +187,7 @@
                 @endforelse
             </div>
             <div class="hidden w-full overflow-x-auto md:block">
-                <table class="w-full min-w-[960px] border-collapse text-left">
+                <table class="w-full min-w-[880px] border-collapse text-left text-sm">
                     <thead>
                         <tr class="border-b border-gray-200 bg-gray-50 text-[11px] font-semibold uppercase tracking-wider text-gray-500">
                             <th class="min-w-[220px] px-4 py-2.5">Task</th>
@@ -193,11 +195,11 @@
                             <th class="min-w-[110px] px-4 py-2.5">Priority</th>
                             <th class="min-w-[120px] px-4 py-2.5">Status</th>
                             <th class="min-w-[120px] px-4 py-2.5">Due</th>
-                            <th class="min-w-[160px] px-4 py-2.5">Progress</th>
+                            <th class="min-w-[140px] px-4 py-2.5">Progress</th>
                             <th class="min-w-[72px] px-4 py-2.5 text-right">Actions</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-100 text-sm">
+                    <tbody class="divide-y divide-gray-100">
                         @forelse($tasks as $task)
                             @include('tasks.partials.row', ['task' => $task])
                         @empty
@@ -210,8 +212,8 @@
             </div>
         @endif
 
-        <div class="flex flex-col gap-3 border-t border-gray-200 bg-white px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
-            <p class="text-sm font-medium leading-9 text-gray-600">
+        <div class="flex flex-col gap-3 border-t border-gray-200 bg-white px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-4">
+            <p class="text-xs font-medium leading-7 text-gray-600 sm:text-sm sm:leading-9">
                 Showing {{ $tasks->firstItem() ?? 0 }} to {{ $tasks->lastItem() ?? 0 }} of {{ $tasks->total() }} results
             </p>
             <div class="flex items-center">{{ $tasks->links('pagination.task-table') }}</div>

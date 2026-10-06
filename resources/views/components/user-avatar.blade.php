@@ -7,7 +7,7 @@
     }
 
     $sizes = [
-        'sm' => 'size-7 text-[10px]',
+        'sm' => 'size-6 text-[10px] sm:size-7',
         'md' => 'size-8 text-[11px]',
         'nav' => 'h-9 w-9 text-[11px]',
         'lg' => 'size-10 text-xs',

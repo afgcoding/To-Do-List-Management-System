@@ -53,7 +53,8 @@
 @if(isset($tags) && $tags->isNotEmpty())
     <div>
         <label class="mb-2 block text-sm font-medium text-slate-700">Tags</label>
-        <div class="max-h-28 space-y-1.5 overflow-y-auto rounded-lg border border-slate-200 p-2.5">
+        <div class="max-h-28 overflow-y-auto rounded-lg border border-slate-200 p-2.5">
+            <div class="flex flex-wrap gap-x-3 gap-y-1.5">
             @foreach($tags as $tag)
                 <label class="flex cursor-pointer items-center gap-2 text-xs font-medium text-slate-700">
                     <input type="checkbox" name="tags[]" value="{{ $tag->id }}" @checked(in_array($tag->id, $selectedTagIds, false))
@@ -62,21 +63,22 @@
                     <span class="size-2.5 rounded-full border border-slate-200" style="background-color: {{ $tag->color ?: '#94A3B8' }}"></span>
                 </label>
             @endforeach
+            </div>
         </div>
     </div>
 @endif
 
 <div>
     <label class="mb-2 block text-sm font-medium text-slate-700">Assign / reassign team</label>
-    <div class="max-h-36 space-y-1.5 overflow-y-auto rounded-lg border border-slate-200 p-2.5">
+    <div class="max-h-44 overflow-y-auto rounded-lg border border-slate-200">
         @forelse($users as $user)
-            <label class="flex cursor-pointer items-center gap-2 text-xs font-medium text-slate-700">
+            <label class="!flex w-full min-w-0 cursor-pointer items-center gap-2 border-b border-slate-100 px-2.5 py-2 text-xs font-medium text-slate-700 last:border-b-0 hover:bg-slate-50">
                 <input type="checkbox" name="assigned_users[]" value="{{ $user->id }}" @checked(in_array($user->id, $assignedUserIds, false))
-                    class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
-                {{ $user->name }}
+                    class="size-4 shrink-0 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
+                <span class="min-w-0 flex-1 truncate">{{ $user->name }}</span>
             </label>
         @empty
-            <p class="text-xs text-slate-400">No active users available.</p>
+            <p class="px-2.5 py-2 text-xs text-slate-400">No active users available.</p>
         @endforelse
     </div>
 </div>
