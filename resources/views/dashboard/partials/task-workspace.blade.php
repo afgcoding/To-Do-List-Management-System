@@ -22,8 +22,10 @@
 
 <section class="space-y-3 rounded-xl border border-gray-200/80 bg-white p-3 shadow-xs sm:space-y-4 sm:p-6">
     <div>
-        <h2 class="text-left text-sm font-semibold leading-snug tracking-tight text-gray-900 md:text-xl lg:text-2xl">Task Management Workspace</h2>
-        <p class="mt-0.5 hidden text-xs text-gray-500 md:block md:text-sm">Search, filter, and manage every assignment without leaving the dashboard.</p>
+        <h2 style="font-size: 1rem !important; line-height: 1.25rem !important; font-weight: 700 !important;" class="text-base font-bold text-gray-900 tracking-tight">
+            Task Management Workspace
+        </h2>
+        <p class="mt-0.5 hidden text-[11px] text-gray-500 md:block">Search, filter, and manage every assignment without leaving the dashboard.</p>
     </div>
 
     <div class="flex flex-col gap-2 border-b border-gray-100 pb-3 sm:gap-3 sm:pb-4 md:flex-row md:items-center md:justify-between">
