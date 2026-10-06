@@ -58,6 +58,103 @@ it('hides other employees tasks from the employee dashboard', function () {
         ->assertDontSee('Department breakdown');
 });
 
+it('embeds the task workspace with search and status tabs', function () {
+    $admin = User::factory()->admin()->create();
+
+    $this->actingAs($admin)
+        ->get(route('dashboard'))
+        ->assertOk()
+        ->assertSee('Task Management Workspace')
+        ->assertSee('All tasks')
+        ->assertSee('Filters')
+        ->assertSee('Apply filters')
+        ->assertSee('name="search"', false)
+        ->assertSee('placeholder="Search tasks..."', false)
+        ->assertSee('>List</a>', false)
+        ->assertSee('>Grid</a>', false);
+});
+
+it('renders the task workspace above dashboard widgets', function () {
+    $admin = User::factory()->admin()->create();
+
+    $html = $this->actingAs($admin)
+        ->get(route('dashboard'))
+        ->assertOk()
+        ->getContent();
+
+    expect(strpos($html, 'Task Management Workspace'))->toBeLessThan(strpos($html, 'Total Active Tasks'))
+        ->and(strpos($html, 'Total Active Tasks'))->toBeLessThan(strpos($html, 'Task distribution by status'));
+});
+
+it('filters dashboard workspace tasks by title keyword', function () {
+    $admin = User::factory()->admin()->create();
+
+    Task::factory()->for($admin, 'creator')->create(['title' => 'Alpha report']);
+    Task::factory()->for($admin, 'creator')->create(['title' => 'Beta review']);
+
+    $this->actingAs($admin)
+        ->get(route('dashboard', ['search' => 'Alpha']))
+        ->assertOk()
+        ->assertSee('Alpha report')
+        ->assertViewHas('workspaceTasks', function ($tasks): bool {
+            $titles = $tasks->pluck('title');
+
+            return $titles->contains('Alpha report') && ! $titles->contains('Beta review');
+        });
+});
+
+it('filters dashboard workspace tasks by overdue status', function () {
+    $admin = User::factory()->admin()->create();
+
+    Task::factory()->for($admin, 'creator')->overdue()->create(['title' => 'Late invoice']);
+    Task::factory()->for($admin, 'creator')->completed()->create(['title' => 'Finished briefing']);
+
+    $this->actingAs($admin)
+        ->get(route('dashboard', ['status' => 'overdue']))
+        ->assertOk()
+        ->assertSee('Late invoice')
+        ->assertViewHas('workspaceTasks', function ($tasks): bool {
+            $titles = $tasks->pluck('title');
+
+            return $titles->contains('Late invoice') && ! $titles->contains('Finished briefing');
+        });
+});
+
+it('paginates dashboard workspace tasks ten records per page', function () {
+    $admin = User::factory()->admin()->create();
+
+    foreach (range(1, 11) as $number) {
+        Task::factory()->for($admin, 'creator')->create([
+            'title' => "Workspace page item {$number}",
+            'created_at' => now()->subSeconds(12 - $number),
+        ]);
+    }
+
+    $pageOne = $this->actingAs($admin)
+        ->get(route('dashboard'))
+        ->assertOk();
+
+    $pageOne
+        ->assertSee('Showing 1 to 10 of 11 results')
+        ->assertViewHas('workspaceTasks', function ($tasks): bool {
+            $titles = $tasks->pluck('title');
+
+            return $tasks->perPage() === 10
+                && $titles->contains('Workspace page item 11')
+                && ! $titles->contains('Workspace page item 1');
+        });
+
+    expect(substr_count($pageOne->getContent(), 'Showing 1 to 10 of 11 results'))->toBe(1);
+
+    $this->actingAs($admin)
+        ->get(route('dashboard', ['page' => 2]))
+        ->assertOk()
+        ->assertSee('Showing 11 to 11 of 11 results')
+        ->assertViewHas('workspaceTasks', function ($tasks): bool {
+            return $tasks->pluck('title')->contains('Workspace page item 1');
+        });
+});
+
 it('escapes task titles on the dashboard', function () {
     $user = User::factory()->admin()->create();
     $task = Task::factory()->create([

@@ -1,7 +1,7 @@
 {{-- --- List row: title, team, badges, due date, progress, actions --- --}}
 <tr @class(['transition hover:bg-slate-50/80', 'bg-rose-50/40' => $task->is_overdue, 'bg-emerald-50/20' => $task->status === \App\Enums\TaskStatus::Completed && ! $task->is_overdue])>
     <td class="min-w-[220px] max-w-[280px] px-4 py-2.5 align-middle">
-        <a href="{{ route('tasks.show', $task) }}" class="line-clamp-1 font-medium text-slate-900 transition hover:text-indigo-600">{{ $task->title }}</a>
+        <a href="{{ route('tasks.show', $task) }}" class="line-clamp-1 font-medium text-indigo-600 transition hover:text-indigo-800">{{ $task->title }}</a>
         <div class="mt-1 flex flex-wrap items-center gap-1">
             @if($task->department)
                 <span class="inline-flex max-w-[7rem] shrink-0 truncate items-center rounded-md border border-indigo-100 bg-indigo-50 px-1.5 py-0.5 text-[11px] font-medium text-indigo-700">{{ $task->department->name }}</span>

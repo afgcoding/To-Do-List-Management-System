@@ -12,6 +12,13 @@
 
 @section('content')
 <div class="space-y-6">
+    @include('dashboard.partials.task-workspace', [
+        'tasks' => $workspaceTasks,
+        'users' => $workspaceUsers,
+        'filterCategories' => $workspaceCategories,
+        'layout' => $workspaceLayout,
+    ])
+
     <div class="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
         <div>
             <h1 class="text-xl font-semibold tracking-tight text-slate-900">Reporting hub</h1>
