@@ -220,6 +220,21 @@ it('shows progress from completed subtasks', function () {
         ->assertSee('50%');
 });
 
+it('renders the task details page as a stacked layout with a compact back link', function () {
+    $task = Task::factory()->create(['title' => 'Show page layout task']);
+
+    $this->get(route('tasks.show', $task))
+        ->assertSee('Show page layout task')
+        ->assertSee('← Back to Tasks')
+        ->assertSee('grid w-full grid-cols-1 gap-6 lg:grid-cols-3', false)
+        ->assertSee('w-full min-w-0 space-y-3.5 lg:col-span-2', false)
+        ->assertSee('w-full min-w-0 space-y-3.5 self-start lg:sticky lg:top-22 lg:col-span-1', false)
+        ->assertSee('flex: 0 0 120px; width: 120px;', false)
+        ->assertSee('flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between', false)
+        ->assertSee('flex flex-col justify-between gap-3 sm:flex-row sm:items-center', false)
+        ->assertDontSee('breadcrumb-header', false);
+});
+
 it('labels the tasks column as assignee when every row has at most one assignee', function () {
     $assignee = User::factory()->create(['name' => 'Solo Worker']);
     $task = Task::factory()->create(['title' => 'Solo task']);

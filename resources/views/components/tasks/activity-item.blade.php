@@ -45,7 +45,7 @@
             </span>
         </div>
         <div class="min-w-0 flex-1 pt-0.5">
-            <p class="text-xs leading-relaxed text-slate-600">
+            <p class="break-words text-xs leading-relaxed text-slate-600 sm:text-sm">
                 <span dir="auto" class="bidi-auto font-semibold text-slate-800">{{ $name }}</span>
                 <span dir="auto" class="bidi-auto"> {{ $log->description }}</span>
             </p>

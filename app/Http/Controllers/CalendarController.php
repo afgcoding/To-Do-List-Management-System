@@ -58,6 +58,7 @@ class CalendarController extends Controller
                 'due' => $task->due_date?->toDateString(),
                 'priority' => $task->priority->value,
                 'priorityLabel' => $task->priority->label(),
+                'status' => $task->status->value,
                 'canMove' => $actor->can('update', $task),
                 'url' => route('tasks.show', $task),
             ])->values(),

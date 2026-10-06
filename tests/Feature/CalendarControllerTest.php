@@ -19,6 +19,8 @@ it('renders the task calendar for signed-in users', function () {
         ]))
         ->assertOk()
         ->assertSee('Calendar')
+        ->assertSee('Back to Dashboard')
+        ->assertDontSee('breadcrumb-header', false)
         ->assertSee('Calendar card')
         ->assertSee((string) $task->id, false);
 });
