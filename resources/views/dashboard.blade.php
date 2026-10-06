@@ -11,45 +11,73 @@
 @endphp
 
 @section('content')
-<div class="space-y-8">
+<div class="space-y-6">
     <div class="flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
         <div>
-            <h1 class="text-2xl font-semibold tracking-tight text-slate-900">Reporting hub</h1>
+            <h1 class="text-xl font-semibold tracking-tight text-slate-900">Reporting hub</h1>
             <p class="mt-1 text-sm text-slate-500">Live workload, completion velocity, and upcoming deadlines for your workspace.</p>
         </div>
         <a href="{{ route('tasks.index') }}" class="inline-flex w-full items-center justify-center rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 sm:w-auto">Open tasks</a>
     </div>
 
-    <div class="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <article class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
-            <p class="text-xs font-medium text-slate-500">Total Active Tasks</p>
-            <p class="mt-2 text-3xl font-semibold tracking-tight text-slate-900">{{ $kpis['active'] }}</p>
-            <p @class(['mt-2 inline-flex rounded-full px-2 py-0.5 text-[11px] font-semibold', 'bg-emerald-50 text-emerald-700' => $trend >= 0, 'bg-rose-50 text-rose-700' => $trend < 0])>
-                {{ $trend >= 0 ? '+' : '' }}{{ $trend }}% from last week
-            </p>
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <article class="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm">
+            <div class="flex items-start gap-3">
+                <span class="grid size-9 shrink-0 place-items-center rounded-lg bg-indigo-50 text-indigo-600">
+                    <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12"/></svg>
+                </span>
+                <div class="min-w-0">
+                    <p class="text-xs font-medium uppercase tracking-wider text-slate-500">Total Active Tasks</p>
+                    <p class="mt-1 text-2xl font-bold tracking-tight text-slate-900">{{ $kpis['active'] }}</p>
+                    <p @class(['mt-1 inline-flex rounded-full px-2 py-0.5 text-[11px] font-semibold', 'bg-emerald-50 text-emerald-700' => $trend >= 0, 'bg-rose-50 text-rose-700' => $trend < 0])>
+                        {{ $trend >= 0 ? '+' : '' }}{{ $trend }}% from last week
+                    </p>
+                </div>
+            </div>
         </article>
-        <article class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
-            <p class="text-xs font-medium text-slate-500">{{ $canViewTeamAnalytics ? 'My Assigned Tasks' : 'Assigned to Me' }}</p>
-            <p class="mt-2 text-3xl font-semibold tracking-tight text-slate-900">{{ $kpis['assigned'] }}</p>
-            <p class="mt-2 text-[11px] text-slate-400">Open tasks assigned to you</p>
+        <article class="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm">
+            <div class="flex items-start gap-3">
+                <span class="grid size-9 shrink-0 place-items-center rounded-lg bg-sky-50 text-sky-600">
+                    <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.5 20.118a7.5 7.5 0 0 1 15 0"/></svg>
+                </span>
+                <div class="min-w-0">
+                    <p class="text-xs font-medium uppercase tracking-wider text-slate-500">{{ $canViewTeamAnalytics ? 'My Assigned Tasks' : 'Assigned to Me' }}</p>
+                    <p class="mt-1 text-2xl font-bold tracking-tight text-slate-900">{{ $kpis['assigned'] }}</p>
+                    <p class="mt-1 text-[11px] text-slate-400">Open tasks assigned to you</p>
+                </div>
+            </div>
         </article>
-        <article class="rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm">
-            <p class="text-xs font-medium text-slate-500">{{ $canViewTeamAnalytics ? 'Team Workload' : 'Pending Tasks' }}</p>
-            <p class="mt-2 text-3xl font-semibold tracking-tight text-slate-900">{{ $kpis['pending'] }}</p>
-            <p class="mt-2 text-[11px] text-slate-400">To Do and In Progress</p>
+        <article class="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm">
+            <div class="flex items-start gap-3">
+                <span class="grid size-9 shrink-0 place-items-center rounded-lg bg-amber-50 text-amber-600">
+                    <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3.75 13.5 7.5 9.75m0 0 3.75 3.75M7.5 9.75v9m12.75-3-3.75-3.75m0 0-3.75 3.75M16.5 12v9"/></svg>
+                </span>
+                <div class="min-w-0">
+                    <p class="text-xs font-medium uppercase tracking-wider text-slate-500">{{ $canViewTeamAnalytics ? 'Team Workload' : 'Pending Tasks' }}</p>
+                    <p class="mt-1 text-2xl font-bold tracking-tight text-slate-900">{{ $kpis['pending'] }}</p>
+                    <p class="mt-1 text-[11px] text-slate-400">To Do and In Progress</p>
+                </div>
+            </div>
         </article>
-        <article class="rounded-xl border border-rose-100 bg-rose-50 p-5 shadow-sm">
-            <p class="text-xs font-medium text-rose-700">Critical Overdue</p>
-            <p class="mt-2 text-3xl font-semibold tracking-tight text-rose-700">{{ $kpis['overdue'] }}</p>
-            <p class="mt-2 text-[11px] text-rose-600">Past deadline and still open</p>
+        <article class="rounded-xl border border-rose-100 bg-rose-50 p-4 shadow-sm">
+            <div class="flex items-start gap-3">
+                <span class="grid size-9 shrink-0 place-items-center rounded-lg bg-rose-100 text-rose-600">
+                    <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/></svg>
+                </span>
+                <div class="min-w-0">
+                    <p class="text-xs font-medium uppercase tracking-wider text-rose-700">Critical Overdue</p>
+                    <p class="mt-1 text-2xl font-bold tracking-tight text-rose-700">{{ $kpis['overdue'] }}</p>
+                    <p class="mt-1 text-[11px] text-rose-600">Past deadline and still open</p>
+                </div>
+            </div>
         </article>
     </div>
 
-    <div class="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <section class="rounded-xl border border-slate-200/80 bg-white p-6 shadow-sm lg:col-span-2">
+    <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <section class="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm lg:col-span-2">
             <h2 class="text-sm font-semibold text-slate-900">Task distribution by status</h2>
             <div class="mt-5 flex flex-col gap-6 sm:flex-row sm:items-center">
-                <svg viewBox="0 0 96 96" class="mx-auto size-40 shrink-0" aria-hidden="true">
+                <svg viewBox="0 0 96 96" class="mx-auto size-32 shrink-0" aria-hidden="true">
                     <circle cx="48" cy="48" r="{{ $radius }}" fill="none" stroke="#e2e8f0" stroke-width="12" />
                     @foreach ($statusSlices as $slice)
                         @php
@@ -77,7 +105,7 @@
                                 <span class="font-medium text-slate-600">{{ $item['label'] }}</span>
                                 <span class="font-semibold text-slate-800">{{ $item['count'] }}</span>
                             </div>
-                            <div class="h-2 overflow-hidden rounded-full bg-slate-100">
+                            <div class="h-1.5 overflow-hidden rounded-full bg-slate-100">
                                 <div class="h-full rounded-full" style="width: {{ (int) round(($item['count'] / $barMax) * 100) }}%; background: {{ $item['color'] }}"></div>
                             </div>
                         </div>
@@ -86,15 +114,15 @@
             </div>
         </section>
 
-        <section class="rounded-xl border border-slate-200/80 bg-white p-6 shadow-sm lg:col-span-1">
+        <section class="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm lg:col-span-1">
             <h2 class="text-sm font-semibold text-slate-900">Task completion velocity</h2>
             <p class="mt-1 text-xs text-slate-500">Completed tasks and subtasks versus remaining work.</p>
             @php
                 $gauge = 2 * 3.1416 * 42;
                 $filled = ($velocity / 100) * $gauge;
             @endphp
-            <div class="mt-6 flex flex-col items-center">
-                <svg viewBox="0 0 120 80" class="w-48" aria-hidden="true">
+            <div class="mt-4 flex flex-col items-center">
+                <svg viewBox="0 0 120 80" class="w-40" aria-hidden="true">
                     <path d="M18 70 A42 42 0 0 1 102 70" fill="none" stroke="#e2e8f0" stroke-width="12" stroke-linecap="round" />
                     <path d="M18 70 A42 42 0 0 1 102 70" fill="none" stroke="#4f46e5" stroke-width="12" stroke-linecap="round"
                         stroke-dasharray="{{ $filled }} {{ $gauge }}" />
@@ -106,7 +134,7 @@
     </div>
 
     @if ($canViewTeamAnalytics)
-        <section class="mb-8 rounded-xl border border-slate-200/80 bg-white p-6 shadow-sm">
+        <section class="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm">
             <h2 class="text-sm font-semibold text-slate-900">Employee workload &amp; performance</h2>
             <div class="mt-4 space-y-4">
                 @forelse ($workload as $member)
@@ -129,7 +157,7 @@
                                 <span @class(['text-emerald-700' => $load === 'balanced', 'text-amber-700' => $load === 'high', 'text-rose-700' => $load === 'overloaded'])>{{ $load }}</span>
                                 <span class="text-slate-400">{{ $bar }}%</span>
                             </div>
-                            <div class="h-2 overflow-hidden rounded-full bg-slate-100">
+                            <div class="h-1.5 overflow-hidden rounded-full bg-slate-100">
                                 <div class="h-full rounded-full {{ $barColor }}" style="width: {{ $bar }}%"></div>
                             </div>
                         </div>
@@ -140,8 +168,8 @@
             </div>
         </section>
 
-        <div class="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2">
-            <section class="rounded-xl border border-slate-200/80 bg-white p-6 shadow-sm">
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <section class="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm">
                 <h2 class="text-sm font-semibold text-slate-900">Department breakdown</h2>
                 <div class="mt-4 space-y-2">
                     @forelse ($departments as $department)
@@ -154,7 +182,7 @@
                     @endforelse
                 </div>
             </section>
-            <section class="rounded-xl border border-slate-200/80 bg-white p-6 shadow-sm">
+            <section class="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm">
                 <h2 class="text-sm font-semibold text-slate-900">Category breakdown</h2>
                 <div class="mt-4 flex flex-wrap gap-2">
                     @forelse ($categories as $category)
@@ -170,8 +198,8 @@
         </div>
     @endif
 
-    <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <section class="rounded-xl border border-slate-200/80 bg-white p-6 shadow-sm lg:col-span-1">
+    <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <section class="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm lg:col-span-1">
             <h2 class="text-sm font-semibold text-slate-900">Upcoming deadlines</h2>
             <div class="mt-4 space-y-3">
                 @forelse ($upcoming as $task)
@@ -190,7 +218,7 @@
                 @endforelse
             </div>
         </section>
-        <section class="rounded-xl border border-slate-200/80 bg-white p-6 shadow-sm lg:col-span-2">
+        <section class="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm lg:col-span-2">
             <h2 class="text-sm font-semibold text-slate-900">Recent activity</h2>
             <div class="custom-scrollbar mt-4 max-h-[350px] space-y-3 overflow-y-auto pr-1">
                 @forelse ($activities as $log)

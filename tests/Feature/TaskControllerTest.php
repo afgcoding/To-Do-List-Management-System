@@ -23,11 +23,45 @@ it('renders the task index with stats and task titles', function () {
 
     $this->get(route('tasks.index'))
         ->assertOk()
+        ->assertSee('Tasks Workspace')
+        ->assertSee('Create task')
+        ->assertDontSee('breadcrumb-header', false)
         ->assertSee('Ship dashboard')
         ->assertSee('Total tasks')
         ->assertSee('In progress')
         ->assertSee('Completed')
-        ->assertSee('Overdue');
+        ->assertSee('Overdue')
+        ->assertSee('Filters')
+        ->assertSee('Apply filters')
+        ->assertSee('name="search"', false)
+        ->assertSee('name="status"', false)
+        ->assertSee('name="assigned_user_id"', false)
+        ->assertSee('Showing 1 to 3 of 3 results');
+});
+
+it('paginates the task index seven records per page', function () {
+    $user = User::factory()->create();
+
+    foreach (range(1, 8) as $number) {
+        Task::factory()->for($user, 'creator')->create([
+            'title' => "Paged task {$number}",
+            'created_at' => now()->subSeconds(9 - $number),
+        ]);
+    }
+
+    $pageOne = $this->get(route('tasks.index'))->assertOk();
+
+    $pageOne
+        ->assertSee('Showing 1 to 7 of 8 results')
+        ->assertSee('Paged task 8')
+        ->assertDontSee('Paged task 1');
+
+    expect(substr_count($pageOne->getContent(), 'Showing 1 to 7 of 8 results'))->toBe(1);
+
+    $this->get(route('tasks.index', ['page' => 2]))
+        ->assertOk()
+        ->assertSee('Showing 8 to 8 of 8 results')
+        ->assertSee('Paged task 1');
 });
 
 it('filters tasks by title keyword', function () {

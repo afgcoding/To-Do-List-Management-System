@@ -5,6 +5,12 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <title>{{ setting('company_name', config('app.name', 'TaskFlow')) }}</title>
+        @php
+            $tabIcon = setting('logo') ? setting()->logoUrl() : asset('svg/logo-8.svg');
+        @endphp
+        <link rel="icon" href="{{ $tabIcon }}">
+        <link rel="shortcut icon" href="{{ $tabIcon }}">
+        <link rel="apple-touch-icon" href="{{ $tabIcon }}">
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="min-h-screen bg-slate-100 font-sans text-slate-800 antialiased">

@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use App\Models\RecurringTask;
-use Illuminate\Console\Attributes\Description;
-use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
-#[Signature('tasks:process-recurring')]
-#[Description('Duplicate due recurring tasks and advance their next run dates')]
 class ProcessRecurringTasks extends Command
 {
+    protected $signature = 'tasks:process-recurring';
+
+    protected $description = 'Duplicate due recurring tasks and advance their next run dates';
+
     public function handle(): int
     {
         $processed = 0;

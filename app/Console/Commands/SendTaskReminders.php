@@ -11,16 +11,16 @@ use App\Notifications\DeadlineApproachingNotification;
 use App\Notifications\TaskAlertNotification;
 use App\Notifications\TaskOverdueNotification;
 use App\Support\TaskNotifier;
-use Illuminate\Console\Attributes\Description;
-use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 
-#[Signature('tasks:send-reminders')]
-#[Description('Send approaching-deadline and overdue task reminders')]
 class SendTaskReminders extends Command
 {
+    protected $signature = 'tasks:send-reminders';
+
+    protected $description = 'Send approaching-deadline and overdue task reminders';
+
     public function handle(): int
     {
         $sent = 0;

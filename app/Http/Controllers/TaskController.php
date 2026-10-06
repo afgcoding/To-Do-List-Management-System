@@ -55,7 +55,7 @@ class TaskController extends Controller
                 $request->string('sort_by', 'created_at')->toString(),
                 $request->string('sort_order', 'desc')->toString(),
             )
-            ->paginate(12)
+            ->paginate(7)
             ->withQueryString();
 
         // Dashboard counters: total, in progress, completed, overdue.

@@ -1,10 +1,10 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Profile') }}
-        </h2>
-    </x-slot>
+@extends('layouts.app')
 
+@php
+    $pageTitle = 'Profile';
+@endphp
+
+@section('content')
     <div>
         <div class="mx-auto max-w-7xl space-y-6">
             <x-back-link :href="route('tasks.index')">Back to tasks</x-back-link>
@@ -39,4 +39,4 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+@endsection
