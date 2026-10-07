@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdateCalendarDueDateRequest;
+use App\Models\RecurringTask;
 use App\Models\Task;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -40,6 +41,13 @@ class CalendarController extends Controller
             $day->addDay();
         }
 
+        $recurringSchedules = RecurringTask::query()
+            ->with(['task:id,title,status,priority'])
+            ->where('is_active', true)
+            ->whereHas('task', fn ($query) => $query->visibleTo($actor))
+            ->orderBy('next_recurring_date')
+            ->get();
+
         return view('calendar.index', [
             'pageTitle' => 'Calendar',
             'cursor' => $cursor,
@@ -62,6 +70,7 @@ class CalendarController extends Controller
                 'canMove' => $actor->can('update', $task),
                 'url' => route('tasks.show', $task),
             ])->values(),
+            'recurringSchedules' => $recurringSchedules,
         ]);
     }
 
@@ -73,9 +82,9 @@ class CalendarController extends Controller
             $due->setTimeFrom($task->due_date);
         }
 
-        $task->update([
-            'due_date' => $due,
-        ]);
+        $task->due_date = $due;
+        $task->save();
+        $task->refresh();
 
         return response()->json([
             'ok' => true,

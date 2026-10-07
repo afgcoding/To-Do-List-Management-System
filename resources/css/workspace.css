@@ -41,6 +41,18 @@
     margin-top: 0.5rem !important;
 }
 
+.app-page-content .calendar-sidebar-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-bottom: 0.75rem;
+}
+
+.app-page-content .calendar-sidebar-tabs .btn {
+    flex: 1 1 auto;
+    margin: 0;
+}
+
 .app-page-content .task-show-toolbar {
     display: flex;
     width: 100%;

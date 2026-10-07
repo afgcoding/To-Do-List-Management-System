@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\TaskStatus;
+use App\Models\RecurringTask;
 use App\Models\Task;
 use App\Models\User;
 
@@ -22,7 +23,50 @@ it('renders the task calendar for signed-in users', function () {
         ->assertSee('Back to Dashboard')
         ->assertDontSee('breadcrumb-header', false)
         ->assertSee('Calendar card')
-        ->assertSee((string) $task->id, false);
+        ->assertSee((string) $task->id, false)
+        ->assertSee('Unscheduled')
+        ->assertSee('Recurring Schedules')
+        ->assertSee('calendar-sidebar-tabs', false)
+        ->assertSee('lg:col-span-1', false)
+        ->assertSee(':draggable="task.canMove"', false);
+});
+
+it('lists active recurring templates in the calendar sidebar', function () {
+    $user = User::factory()->manager()->create();
+    $active = Task::factory()->create(['title' => 'Weekly invoice template']);
+    RecurringTask::factory()->for($active, 'task')->create(['is_active' => true]);
+    $paused = Task::factory()->create([
+        'title' => 'Paused archive template',
+        'due_date' => now()->addYear(),
+    ]);
+    RecurringTask::factory()->for($paused, 'task')->paused()->create();
+
+    $this->actingAs($user)
+        ->get(route('calendar.index'))
+        ->assertOk()
+        ->assertSee('Weekly invoice template')
+        ->assertDontSee('Paused archive template');
+});
+
+it('persists a due date when an unscheduled task is dropped on the calendar', function () {
+    $user = User::factory()->manager()->create();
+    $task = Task::factory()->create([
+        'start_date' => now()->subDay(),
+        'due_date' => null,
+        'status' => TaskStatus::Todo,
+    ]);
+    $due = now()->toDateString();
+
+    $this->actingAs($user)
+        ->patchJson(route('calendar.tasks.due-date', $task), [
+            'due_date' => $due,
+        ])
+        ->assertOk()
+        ->assertJsonPath('ok', true)
+        ->assertJsonPath('due_date', $due);
+
+    expect($task->fresh()->due_date)->not->toBeNull()
+        ->and($task->fresh()->due_date->toDateString())->toBe($due);
 });
 
 it('updates a deadline through the calendar ajax endpoint', function () {

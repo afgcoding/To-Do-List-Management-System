@@ -8,6 +8,7 @@
 <div
     class="space-y-6"
     x-data="{
+        sidebarTab: 'unscheduled',
         tasks: {{ \Illuminate\Support\Js::from($calendarTasks) }},
         draggingId: null,
         error: '',
@@ -27,9 +28,11 @@
         statusClass(task) {
             return 'status-' + (task.status || 'todo');
         },
-        async dropOn(date) {
-            const task = this.tasks.find((item) => item.id === this.draggingId);
+        async dropOn(date, event) {
+            const transferredId = event?.dataTransfer?.getData('text/plain');
+            const rawId = transferredId || this.draggingId;
             this.draggingId = null;
+            const task = this.tasks.find((item) => String(item.id) === String(rawId));
             if (! task || ! task.canMove || task.due === date) {
                 return;
             }
@@ -37,7 +40,7 @@
             task.due = date;
             this.error = '';
             try {
-                const response = await fetch(@js(url('/calendar/tasks')) + '/' + task.id, {
+                const response = await fetch(@js(route('calendar.tasks.due-date', ['task' => 0])).replace(/\/0$/, '/' + task.id), {
                     method: 'PATCH',
                     credentials: 'same-origin',
                     headers: {
@@ -78,19 +81,47 @@
 
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-4">
         <section class="card flat workspace-card lg:col-span-1">
-            <h2 class="text-sm font-semibold text-slate-900">Unscheduled</h2>
-            <p class="mt-1 text-xs text-slate-400">Drop onto a day to set a deadline.</p>
-            <div class="mt-3 min-h-24 space-y-2">
-                <template x-for="task in unscheduled()" :key="task.id">
-                    <button type="button" class="unscheduled-card mb-2 w-full rounded-lg border p-3 text-left text-sm shadow-xs"
-                        :class="statusClass(task)"
-                        :draggable="task.canMove"
-                        @dragstart="startDrag(task); $event.dataTransfer.setData('text/plain', String(task.id))"
-                        @dragend="draggingId = null">
-                        <span class="block truncate font-medium" x-text="task.title"></span>
-                        <span class="text-[11px] opacity-80" x-text="task.priorityLabel"></span>
-                    </button>
-                </template>
+            <div class="calendar-sidebar-tabs">
+                <button type="button" class="btn btn-sm" :class="sidebarTab === 'unscheduled' ? 'btn-primary' : 'btn-secondary'" @click="sidebarTab = 'unscheduled'">
+                    Unscheduled
+                </button>
+                <button type="button" class="btn btn-sm" :class="sidebarTab === 'recurring' ? 'btn-primary' : 'btn-secondary'" @click="sidebarTab = 'recurring'">
+                    Recurring Schedules
+                </button>
+            </div>
+
+            <div x-show="sidebarTab === 'unscheduled'">
+                <h2 class="text-sm font-semibold text-slate-900">Unscheduled</h2>
+                <p class="mt-1 text-xs text-slate-400">Drop onto a day to set a deadline.</p>
+                <div class="mt-3 min-h-24 space-y-2">
+                    <template x-for="task in unscheduled()" :key="task.id">
+                        <button type="button" class="unscheduled-card mb-2 w-full rounded-lg border p-3 text-left text-sm shadow-xs"
+                            :class="statusClass(task)"
+                            :draggable="task.canMove"
+                            @dragstart="startDrag(task); $event.dataTransfer.setData('text/plain', String(task.id))"
+                            @dragend="draggingId = null">
+                            <span class="block truncate font-medium" x-text="task.title"></span>
+                            <span class="text-[11px] opacity-80" x-text="task.priorityLabel"></span>
+                        </button>
+                    </template>
+                </div>
+            </div>
+
+            <div x-show="sidebarTab === 'recurring'" x-cloak>
+                <h2 class="text-sm font-semibold text-slate-900">Recurring Schedules</h2>
+                <p class="mt-1 text-xs text-slate-400">Active templates. These are not draggable.</p>
+                <div class="mt-3 min-h-24 space-y-2">
+                    @forelse ($recurringSchedules as $schedule)
+                        @continue($schedule->task === null)
+                        <a href="{{ route('tasks.show', $schedule->task) }}" class="unscheduled-card mb-2 block w-full rounded-lg border p-3 text-left text-sm shadow-xs status-{{ $schedule->task->status->value }}">
+                            <span class="block truncate font-medium">{{ $schedule->task->title }}</span>
+                            <span class="block text-[11px] opacity-80">{{ $schedule->frequencyLabel() }}</span>
+                            <span class="block text-[11px] opacity-80">Next: {{ format_date($schedule->next_recurring_date) ?? '—' }}</span>
+                        </a>
+                    @empty
+                        <p class="text-xs text-slate-400">No active recurring schedules.</p>
+                    @endforelse
+                </div>
             </div>
         </section>
 
@@ -114,7 +145,7 @@
                     <div
                         class="min-h-28 bg-white p-1.5 {{ $inMonth ? '' : 'bg-slate-50' }} {{ $day->isToday() ? 'ring-1 ring-inset ring-indigo-200' : '' }}"
                         @dragover.prevent
-                        @drop.prevent="dropOn(@js($dateKey))"
+                        @drop.prevent="dropOn(@js($dateKey), $event)"
                     >
                         <p class="mb-1 text-[11px] font-semibold {{ $inMonth ? 'text-slate-600' : 'text-slate-300' }}">{{ $day->day }}</p>
                         <div class="space-y-1">
