@@ -181,6 +181,29 @@ it('offers completed as a selectable status on the show page', function () {
         ->assertDontSee('Automated by Subtasks');
 });
 
+it('disables the status dropdown when every subtask is complete and the task is completed', function () {
+    $task = Task::factory()->create(['status' => TaskStatus::Completed]);
+    Subtask::factory()->for($task)->completed()->create();
+
+    $html = $this->get(route('tasks.show', $task))
+        ->assertOk()
+        ->assertSee('✓ Task is 100% complete. Uncheck any subtask to re-enable manual status change.')
+        ->getContent();
+
+    expect($html)->toContain('name="status"')
+        ->and($html)->toContain('disabled')
+        ->and($html)->not->toContain('Choosing Completed marks every subtask done.');
+});
+
+it('keeps the status dropdown enabled when a completed task has no subtasks', function () {
+    $task = Task::factory()->create(['status' => TaskStatus::Completed]);
+
+    $this->get(route('tasks.show', $task))
+        ->assertOk()
+        ->assertSee('Choosing Completed marks every subtask done.')
+        ->assertDontSee('Uncheck any subtask to re-enable manual status change.');
+});
+
 it('updates task status and priority from quick actions', function () {
     $task = Task::factory()->create();
 
@@ -229,6 +252,8 @@ it('renders the task details page as a stacked layout with a compact back link',
         ->assertSee('← Back to Tasks')
         ->assertSee('card flat workspace-card', false)
         ->assertSee('task-show-toolbar', false)
+        ->assertSee('task-show-header', false)
+        ->assertSee('task-show-body', false)
         ->assertSee('header-actions', false)
         ->assertSee('subtask-create-row subtask-add-row', false)
         ->assertSee('subtask-add-row subtask-edit-row', false)

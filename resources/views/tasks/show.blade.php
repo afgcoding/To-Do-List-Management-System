@@ -46,7 +46,7 @@
             @endcan
         </div>
     </div>
-    <section class="{{ $cardClass }} mb-0">
+    <section class="{{ $cardClass }} task-show-header">
         <h1 dir="auto" class="workspace-title bidi-auto">{{ $task->title }}</h1>
 
         {{-- Status, priority, category, tags --}}
@@ -85,7 +85,7 @@
     </section>
 
     {{-- ==================== 2-COLUMN LAYOUT (66% main / 33% sidebar) ==================== --}}
-    <div class="grid w-full grid-cols-1 gap-4 sm:gap-5 lg:grid-cols-3">
+    <div class="task-show-body grid w-full grid-cols-1 gap-4 sm:gap-5 lg:grid-cols-3">
         {{-- ==================== LEFT COLUMN: MAIN WORK AREA ==================== --}}
         <div class="w-full min-w-0 space-y-4 sm:space-y-5 lg:col-span-2">
             {{-- --- Task Description Section (RTL Supported) --- --}}
@@ -239,19 +239,32 @@
                             @csrf
                             @method('PATCH')
                             <label class="mb-1 block text-xs font-medium text-slate-500">Status</label>
+                            @php
+                                $isAllSubtasksComplete = $task->subtasks_count > 0
+                                    && $task->completed_subtasks_count === $task->subtasks_count;
+                                $isTaskLocked = $isAllSubtasksComplete
+                                    && $task->status === \App\Enums\TaskStatus::Completed;
+                            @endphp
                             <select
                                 name="status"
-                                @can('updateStatus', $task)
-                                    onchange="this.form.submit()"
-                                @else
+                                @if($isTaskLocked || ! auth()->user()?->can('updateStatus', $task))
                                     disabled
+                                @endif
+                                @can('updateStatus', $task)
+                                    @if(! $isTaskLocked)
+                                        onchange="this.form.submit()"
+                                    @endif
                                 @endcan
-                                class="form-control {{ auth()->user()?->can('updateStatus', $task) ? '' : 'cursor-not-allowed bg-slate-50' }}">
+                                class="form-control {{ ($isTaskLocked || ! auth()->user()?->can('updateStatus', $task)) ? 'cursor-not-allowed bg-slate-50' : '' }}">
                                 @foreach(\App\Enums\TaskStatus::cases() as $status)
                                     <option value="{{ $status->value }}" @selected($task->status === $status)>{{ $status->label() }}</option>
                                 @endforeach
                             </select>
-                            <p class="mt-1 text-[11px] text-slate-400">Choosing Completed marks every subtask done. Completing all subtasks sets this to Completed.</p>
+                            @if($isTaskLocked)
+                                <p class="mt-1 text-[11px] text-emerald-600 font-medium">✓ Task is 100% complete. Uncheck any subtask to re-enable manual status change.</p>
+                            @else
+                                <p class="mt-1 text-[11px] text-slate-400">Choosing Completed marks every subtask done. Completing all subtasks sets this to Completed.</p>
+                            @endif
                         </form>
                         <form action="{{ route('tasks.priority.update', $task) }}" method="POST">
                             @csrf

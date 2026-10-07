@@ -33,6 +33,14 @@
     color: #111827;
 }
 
+.app-page-content .task-show-header {
+    margin-bottom: 1.25rem !important;
+}
+
+.app-page-content .task-show-body {
+    margin-top: 0.5rem !important;
+}
+
 .app-page-content .task-show-toolbar {
     display: flex;
     width: 100%;
