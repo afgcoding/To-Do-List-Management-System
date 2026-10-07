@@ -15,10 +15,10 @@
 <div class="space-y-6">
     <div class="mb-4 flex items-center justify-between gap-3 sm:mb-6">
         <div class="min-w-0">
-            <h1 class="text-lg font-bold tracking-tight text-gray-900 sm:text-2xl">Dashboard</h1>
+            <h1 class="workspace-title">Dashboard</h1>
             <p class="mt-0.5 text-[11px] text-gray-500 sm:text-sm">{{ setting('company_name', config('app.name', 'TaskFlow')) }}</p>
         </div>
-        <a href="{{ route('tasks.index') }}" class="inline-flex h-8 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-medium text-slate-700 shadow-sm hover:bg-slate-50 sm:h-9 sm:px-3.5 sm:text-sm">Open tasks</a>
+        <a href="{{ route('tasks.index') }}" class="btn btn-sm btn-secondary">Open tasks</a>
     </div>
 
     @include('dashboard.partials.task-workspace', [
@@ -29,7 +29,7 @@
     ])
 
     <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <article class="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm">
+        <article class="card flat workspace-card">
             <div class="flex items-start gap-3">
                 <span class="grid size-9 shrink-0 place-items-center rounded-lg bg-indigo-50 text-indigo-600">
                     <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12"/></svg>
@@ -43,7 +43,7 @@
                 </div>
             </div>
         </article>
-        <article class="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm">
+        <article class="card flat workspace-card">
             <div class="flex items-start gap-3">
                 <span class="grid size-9 shrink-0 place-items-center rounded-lg bg-sky-50 text-sky-600">
                     <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.5 20.118a7.5 7.5 0 0 1 15 0"/></svg>
@@ -55,7 +55,7 @@
                 </div>
             </div>
         </article>
-        <article class="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm">
+        <article class="card flat workspace-card">
             <div class="flex items-start gap-3">
                 <span class="grid size-9 shrink-0 place-items-center rounded-lg bg-amber-50 text-amber-600">
                     <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3.75 13.5 7.5 9.75m0 0 3.75 3.75M7.5 9.75v9m12.75-3-3.75-3.75m0 0-3.75 3.75M16.5 12v9"/></svg>
@@ -67,7 +67,7 @@
                 </div>
             </div>
         </article>
-        <article class="rounded-xl border border-rose-100 bg-rose-50 p-4 shadow-sm">
+        <article class="card flat workspace-card">
             <div class="flex items-start gap-3">
                 <span class="grid size-9 shrink-0 place-items-center rounded-lg bg-rose-100 text-rose-600">
                     <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/></svg>
@@ -82,7 +82,7 @@
     </div>
 
     <div class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <section class="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm lg:col-span-2">
+        <section class="card flat workspace-card lg:col-span-2">
             <h2 class="text-sm font-semibold text-slate-900">Task distribution by status</h2>
             <div class="mt-5 flex flex-col gap-6 sm:flex-row sm:items-center">
                 <svg viewBox="0 0 96 96" class="mx-auto size-32 shrink-0" aria-hidden="true">
@@ -122,7 +122,7 @@
             </div>
         </section>
 
-        <section class="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm lg:col-span-1">
+        <section class="card flat workspace-card lg:col-span-1">
             <h2 class="text-sm font-semibold text-slate-900">Task completion velocity</h2>
             <p class="mt-1 text-xs text-slate-500">Completed tasks and subtasks versus remaining work.</p>
             @php
@@ -142,7 +142,7 @@
     </div>
 
     @if ($canViewTeamAnalytics)
-        <section class="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm">
+        <section class="card flat workspace-card">
             <h2 class="text-sm font-semibold text-slate-900">Employee workload &amp; performance</h2>
             <div class="mt-4 space-y-4">
                 @forelse ($workload as $member)
@@ -177,7 +177,7 @@
         </section>
 
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <section class="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm">
+            <section class="card flat workspace-card">
                 <h2 class="text-sm font-semibold text-slate-900">Department breakdown</h2>
                 <div class="mt-4 space-y-2">
                     @forelse ($departments as $department)
@@ -190,7 +190,7 @@
                     @endforelse
                 </div>
             </section>
-            <section class="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm">
+            <section class="card flat workspace-card">
                 <h2 class="text-sm font-semibold text-slate-900">Category breakdown</h2>
                 <div class="mt-4 flex flex-wrap gap-2">
                     @forelse ($categories as $category)
@@ -207,7 +207,7 @@
     @endif
 
     <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <section class="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm lg:col-span-1">
+        <section class="card flat workspace-card lg:col-span-1">
             <h2 class="text-sm font-semibold text-slate-900">Upcoming deadlines</h2>
             <div class="mt-4 space-y-3">
                 @forelse ($upcoming as $task)
@@ -226,7 +226,7 @@
                 @endforelse
             </div>
         </section>
-        <section class="rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm lg:col-span-2">
+        <section class="card flat workspace-card lg:col-span-2">
             <h2 class="text-sm font-semibold text-slate-900">Recent activity</h2>
             <div class="custom-scrollbar mt-4 max-h-[350px] space-y-3 overflow-y-auto pr-1">
                 @forelse ($activities as $log)

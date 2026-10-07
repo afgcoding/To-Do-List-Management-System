@@ -1,0 +1,318 @@
+/**
+ * Workspace pages (dashboard, tasks, calendar) — extend Nozha cards/buttons/forms.
+ * Do not target .bmd-layout-* shell selectors.
+ */
+
+.app-page-content .card.flat.workspace-card {
+    min-width: 0;
+    width: 100%;
+    padding: 1rem;
+    background: #fff;
+}
+
+@media (min-width: 640px) {
+    .app-page-content .card.flat.workspace-card {
+        padding: 1.25rem;
+    }
+}
+
+.app-page-content .workspace-title {
+    margin: 0;
+    font-size: 1.25rem !important;
+    font-weight: 700 !important;
+    line-height: 1.75rem !important;
+    letter-spacing: -0.02em;
+    color: #111827;
+}
+
+.app-page-content .workspace-title-sm {
+    margin: 0;
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+    line-height: 1.25rem !important;
+    color: #111827;
+}
+
+.app-page-content .task-show-toolbar {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+}
+
+.app-page-content .header-actions {
+    display: flex !important;
+    flex-shrink: 0 !important;
+    align-items: center !important;
+    gap: 10px !important;
+    margin-left: auto;
+}
+
+.app-page-content .header-actions form {
+    display: flex !important;
+    width: auto !important;
+    margin: 0 !important;
+}
+
+.app-page-content .header-actions .btn {
+    margin: 0 !important;
+}
+
+.app-page-content .btn.btn-primary {
+    background-color: var(--brand, #007bff);
+    border-color: var(--brand, #007bff);
+    color: #fff;
+    display: flex;
+    justify-content: center !important;
+    align-items: center !important;
+    text-align: center !important;
+    padding: 0.5rem 1rem !important;
+    border-radius: 0.5rem !important;
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    line-height: 1.25 !important;
+    letter-spacing: 0.01em !important;
+    text-transform: uppercase !important;
+}
+
+.app-page-content .btn.btn-sm {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.75rem;
+    line-height: 1.25;
+    border-radius: 0.5rem;
+}
+
+.app-page-content form.subtask-create-form {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 0 1.5rem !important;
+}
+
+.app-page-content .subtask-add-row {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    align-items: center !important;
+    width: 100% !important;
+    gap: 0.5rem !important;
+}
+
+.app-page-content .subtask-add-row > .form-control,
+.app-page-content .subtask-add-row > .btn {
+    min-width: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+    height: 42px !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    align-self: center !important;
+    line-height: 1.25 !important;
+}
+
+.app-page-content .subtask-add-row > .btn {
+    display: inline-flex !important;
+    flex: none !important;
+    flex-grow: 0 !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0.35rem 0.7rem !important;
+    white-space: nowrap !important;
+}
+
+@media (min-width: 640px) {
+    .app-page-content .subtask-add-row {
+        grid-template-columns: minmax(0, 1fr) 8rem max-content !important;
+        grid-template-rows: 42px !important;
+    }
+
+    .app-page-content .subtask-edit-row {
+        grid-template-columns: minmax(0, 1fr) 8rem max-content max-content !important;
+    }
+
+    .app-page-content .subtask-add-row > .subtask-assignee.form-control {
+        max-width: 8rem !important;
+    }
+
+    .app-page-content .subtask-add-row > .btn {
+        width: max-content !important;
+        max-width: max-content !important;
+    }
+}
+
+.app-page-content .subtask-item {
+    padding: 0.625rem 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    background: #f8fafc;
+}
+
+.app-page-content .subtask-item-line,
+.app-page-content .subtask-item-main,
+.app-page-content .subtask-item-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.app-page-content .subtask-item-line {
+    flex-wrap: wrap;
+    justify-content: space-between;
+    min-width: 0;
+}
+
+.app-page-content .subtask-item-main {
+    flex: 1 1 12rem;
+    min-width: 0;
+    flex-wrap: wrap;
+}
+
+.app-page-content .subtask-item-toggle,
+.app-page-content .subtask-item-actions form {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    width: auto;
+    margin: 0;
+}
+
+.app-page-content .subtask-item-actions {
+    flex-shrink: 0;
+}
+
+.app-page-content .subtask-item-title {
+    flex: 1 1 8rem;
+    min-width: 0;
+    margin: 0;
+    overflow: visible;
+    white-space: normal;
+    word-break: break-word;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #1e293b;
+}
+
+.app-page-content .subtask-item-title.is-complete {
+    color: #94a3b8;
+    text-decoration: line-through;
+}
+
+.app-page-content .subtask-item-assignee {
+    flex-shrink: 0;
+    max-width: 10rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 0.125rem 0.5rem;
+    border-radius: 9999px;
+    background: #eef2ff;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #4f46e5;
+}
+
+.app-page-content .subtask-item-status {
+    flex-shrink: 0;
+}
+
+.app-page-content .subtask-item-check {
+    display: inline-flex;
+    width: 1.25rem;
+    height: 1.25rem;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 1px solid #cbd5e1;
+    border-radius: 0.375rem;
+    background: #fff;
+}
+
+.app-page-content .subtask-item-check.is-complete {
+    border-color: #2563eb;
+    background: #2563eb;
+    color: #fff;
+}
+
+.app-page-content .subtask-item-check-icon,
+.app-page-content .subtask-item-delete-icon {
+    width: 1rem;
+    height: 1rem;
+}
+
+.app-page-content .subtask-item-delete {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0.25rem 0.4rem !important;
+}
+
+.app-page-content .subtask-item-edit {
+    padding-top: 0.25rem;
+    width: 100%;
+}
+
+@media (min-width: 640px) {
+    .app-page-content .subtask-item-line,
+    .app-page-content .subtask-item-main {
+        flex-wrap: nowrap;
+    }
+
+    .app-page-content .subtask-item-title {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+
+@media (max-width: 639px) {
+    .app-page-content .subtask-item-line {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .app-page-content .subtask-item-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    .app-page-content .subtask-item-title {
+        flex: 1 1 auto;
+    }
+}
+
+.app-page-content .workspace-search.form-control,
+.app-page-content .workspace-select.form-control {
+    height: 38px;
+    font-size: 0.8125rem;
+}
+
+.app-page-content .workspace-search.form-control {
+    padding-left: 2.25rem;
+}
+
+.app-page-content .fc-event.status-todo,
+.app-page-content .unscheduled-card.status-todo {
+    background-color: #f1f5f9;
+    color: #334155;
+    border-color: #cbd5e1;
+}
+
+.app-page-content .fc-event.status-in_progress,
+.app-page-content .unscheduled-card.status-in_progress {
+    background-color: #e0e7ff;
+    color: #3730a3;
+    border-color: #c7d2fe;
+}
+
+.app-page-content .fc-event.status-completed,
+.app-page-content .unscheduled-card.status-completed {
+    background-color: #d1fae5;
+    color: #065f46;
+    border-color: #a7f3d0;
+}
+
+.app-page-content .fc-event.status-cancelled,
+.app-page-content .unscheduled-card.status-cancelled {
+    background-color: #fee2e2;
+    color: #991b1b;
+    border-color: #fca5a5;
+}

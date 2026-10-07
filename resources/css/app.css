@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@import './workspace.css';
 
 @source '../views/**/*.blade.php';
 @source '../js/**/*.js';

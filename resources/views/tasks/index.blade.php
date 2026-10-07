@@ -13,8 +13,8 @@
     $assigneeHeading = $tasks->getCollection()->contains(
         fn ($task): bool => $task->assignedUsers->count() > 1,
     ) ? 'Team' : 'Assignee';
-    $searchControl = 'h-9 w-full min-w-0 rounded-lg border border-gray-300 bg-gray-50 py-1.5 pr-3 pl-9 text-xs text-gray-700 transition focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:w-64 sm:text-sm';
-    $selectControl = 'h-9 w-full rounded-md border border-gray-200 bg-white px-3 py-1.5 text-sm text-gray-700 transition focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500';
+    $searchControl = 'form-control workspace-search';
+    $selectControl = 'form-control workspace-select';
     $activeFilterCount = collect(['status', 'priority', 'assigned_user_id', 'category_id', 'due_from', 'due_to'])
         ->filter(fn (string $key): bool => filled(request($key)))
         ->count();
@@ -29,11 +29,10 @@
     {{-- ==================== PAGE HEADER ==================== --}}
     <div class="flex flex-col justify-between gap-4 md:flex-row md:items-start">
         <div>
-            <h1 class="text-xl font-semibold tracking-tight text-gray-900">Tasks Workspace</h1>
+            <h1 class="workspace-title">Tasks Workspace</h1>
             <p class="mt-1 text-sm text-gray-500">Search, filter, and track every assignment from one place.</p>
         </div>
-        <a href="{{ route('tasks.create') }}" class="inline-flex h-10 w-full shrink-0 items-center justify-center gap-2 rounded-full px-4 text-sm font-semibold text-white shadow-sm transition md:w-auto" style="background-color: var(--brand)">
-            <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+        <a href="{{ route('tasks.create') }}" class="btn btn-primary">
             Create task
         </a>
     </div>
@@ -51,9 +50,9 @@
         <a href="{{ route('tasks.index') }}" @class(['shrink-0 pb-2.5 text-sm font-medium', 'border-b-2 border-indigo-600 text-indigo-600' => ! request('status'), 'text-slate-500 hover:text-slate-700' => request('status')])>All tasks</a>
         <a href="{{ route('tasks.index', ['status' => 'overdue']) }}" @class(['shrink-0 pb-2.5 text-sm font-medium', 'border-b-2 border-rose-600 text-rose-600' => request('status') === 'overdue', 'text-slate-500 hover:text-slate-700' => request('status') !== 'overdue'])>Overdue</a>
         <a href="{{ route('tasks.index', ['status' => 'completed']) }}" @class(['shrink-0 pb-2.5 text-sm font-medium', 'border-b-2 border-emerald-600 text-emerald-600' => request('status') === 'completed', 'text-slate-500 hover:text-slate-700' => request('status') !== 'completed'])>Completed</a>
-    </div>
+</div>
 
-    <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+    <div class="card flat workspace-card overflow-hidden">
         <form
             method="GET"
             action="{{ route('tasks.index') }}"
@@ -118,16 +117,16 @@
                                     @foreach($users as $user)
                                         <option value="{{ $user->id }}" @selected((string) request('assigned_user_id') === (string) $user->id)>{{ $user->name }}</option>
                                     @endforeach
-                                </select>
+    </select>
                             </label>
                             <label class="block">
                                 <span class="mb-1 block text-xs font-medium text-gray-500">Category</span>
                                 <select name="category_id" class="{{ $selectControl }}">
                                     <option value="">All categories</option>
-                                    @foreach($categories as $category)
+        @foreach($categories as $category)
                                         <option value="{{ $category->id }}" @selected((string) request('category_id') === (string) $category->id)>{{ $category->name }}</option>
-                                    @endforeach
-                                </select>
+        @endforeach
+    </select>
                             </label>
                             <div class="grid grid-cols-2 gap-3">
                                 <label class="block">
@@ -153,12 +152,12 @@
                                 <select name="sort_order" class="{{ $selectControl }}">
                                     <option value="desc" @selected(request('sort_order', 'desc') === 'desc')>Newest / high first</option>
                                     <option value="asc" @selected(request('sort_order') === 'asc')>Oldest / low first</option>
-                                </select>
+    </select>
                             </label>
                         </div>
                         <div class="mt-4 flex items-center justify-between gap-3">
                             <a href="{{ route('tasks.index', ['layout' => $layout]) }}" class="px-2 py-1.5 text-xs font-medium text-gray-500 hover:text-gray-700">Reset</a>
-                            <button type="submit" class="inline-flex h-9 items-center justify-center rounded-lg bg-indigo-600 px-4 text-sm font-medium text-white transition-colors hover:bg-indigo-700">Apply filters</button>
+                            <button type="submit" class="btn btn-sm btn-primary">Apply filters</button>
                         </div>
                     </div>
             </div>
@@ -168,16 +167,16 @@
                 <a href="{{ $gridUrl }}" @class(['inline-flex h-full items-center rounded-md px-3 text-xs font-semibold', 'bg-white text-gray-900 shadow-xs' => $layout === 'grid', 'text-gray-500 hover:text-gray-700' => $layout !== 'grid'])>Grid</a>
             </div>
             </div>
-        </form>
+</form>
 
         @if($layout === 'grid')
             <div class="grid grid-cols-1 items-stretch gap-4 p-4 sm:grid-cols-2 xl:grid-cols-3">
                 @forelse($tasks as $task)
                     @include('tasks.partials.card', ['task' => $task])
-                @empty
+                                @empty
                     <div class="col-span-full py-16 text-center text-gray-500">No tasks match these filters.</div>
-                @endforelse
-            </div>
+                                @endforelse
+                            </div>
         @else
             <div class="grid grid-cols-1 items-stretch gap-4 p-4 sm:grid-cols-2 md:hidden">
                 @forelse($tasks as $task)
@@ -206,9 +205,9 @@
                             <tr>
                                 <td colspan="7" class="px-4 py-10 text-center text-gray-500">No tasks created yet.</td>
                             </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                @endforelse
+            </tbody>
+        </table>
             </div>
         @endif
 

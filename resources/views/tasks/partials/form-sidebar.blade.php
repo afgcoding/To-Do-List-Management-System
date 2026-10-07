@@ -9,7 +9,7 @@
 
 <div>
     <label class="mb-1 block text-sm font-medium text-slate-700">Priority</label>
-    <select name="priority" class="w-full rounded-lg border border-slate-200 p-2 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+    <select name="priority" class="form-control">
         @foreach(\App\Enums\TaskPriority::cases() as $priority)
             <option value="{{ $priority->value }}" @selected($priorityValue === $priority->value)>{{ $priority->label() }}</option>
         @endforeach
@@ -19,7 +19,7 @@
 <div>
     {{-- Completed cannot be chosen here; subtasks drive that status --}}
     <label class="mb-1 block text-sm font-medium text-slate-700">Status</label>
-    <select name="status" class="w-full rounded-lg border border-slate-200 p-2 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+    <select name="status" class="form-control">
         @foreach(\App\Enums\TaskStatus::manualCases() as $status)
             <option value="{{ $status->value }}" @selected($statusValue === $status->value)>{{ $status->label() }}</option>
         @endforeach
@@ -32,7 +32,7 @@
 
 <div>
     <label class="mb-1 block text-sm font-medium text-slate-700">Department</label>
-    <select name="department_id" class="w-full rounded-lg border border-slate-200 p-2 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+    <select name="department_id" class="form-control">
         <option value="">Select department</option>
         @foreach($departments as $department)
             <option value="{{ $department->id }}" @selected((string) old('department_id', $task?->department_id) === (string) $department->id)>{{ $department->name }}</option>
@@ -42,7 +42,7 @@
 
 <div>
     <label class="mb-1 block text-sm font-medium text-slate-700">Category</label>
-    <select name="category_id" class="w-full rounded-lg border border-slate-200 p-2 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+    <select name="category_id" class="form-control">
         <option value="">Select category</option>
         @foreach($categories as $category)
             <option value="{{ $category->id }}" @selected((string) old('category_id', $task?->category_id) === (string) $category->id)>{{ $category->name }}</option>

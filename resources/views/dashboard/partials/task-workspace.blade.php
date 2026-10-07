@@ -6,8 +6,8 @@
     $assigneeHeading = $tasks->getCollection()->contains(
         fn ($task): bool => $task->assignedUsers->count() > 1,
     ) ? 'Team' : 'Assignee';
-    $searchControl = 'h-8 w-full rounded-lg border border-gray-300 bg-gray-50 py-1 pr-2.5 pl-8 text-[11px] text-gray-700 transition focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:h-9 sm:pl-9 sm:text-sm md:w-64';
-    $selectControl = 'h-8 w-full rounded-md border border-gray-200 bg-white px-2 py-1 text-[11px] text-gray-700 transition focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 sm:h-9 sm:px-3 sm:text-sm';
+    $searchControl = 'form-control workspace-search';
+    $selectControl = 'form-control workspace-select';
     $activeFilterCount = collect(['status', 'priority', 'assigned_user_id', 'category_id', 'due_from', 'due_to'])
         ->filter(fn (string $key): bool => filled(request($key)))
         ->count();
@@ -20,9 +20,9 @@
     $activeStatus = request('status');
 @endphp
 
-<section class="space-y-3 rounded-xl border border-gray-200/80 bg-white p-3 shadow-xs sm:space-y-4 sm:p-6">
+<section class="card flat workspace-card space-y-3 sm:space-y-4">
     <div>
-        <h2 style="font-size: 1rem !important; line-height: 1.25rem !important; font-weight: 700 !important;" class="text-base font-bold text-gray-900 tracking-tight">
+        <h2 class="workspace-title-sm">
             Task Management Workspace
         </h2>
         <p class="mt-0.5 hidden text-[11px] text-gray-500 md:block">Search, filter, and manage every assignment without leaving the dashboard.</p>
@@ -125,7 +125,7 @@
                     </div>
                     <div class="mt-3 flex items-center justify-end gap-2 sm:mt-4">
                         <a href="{{ route('dashboard', ['layout' => $layout]) }}" class="inline-flex h-8 items-center px-2 text-[11px] font-medium text-gray-500 hover:text-gray-700 sm:text-xs">Reset</a>
-                        <button type="submit" class="inline-flex h-8 items-center justify-center rounded-lg bg-indigo-600 px-3 text-[11px] font-medium text-white transition-colors hover:bg-indigo-700 sm:h-9 sm:px-4 sm:text-sm">Apply filters</button>
+                        <button type="submit" class="btn btn-sm btn-primary">Apply filters</button>
                     </div>
                 </div>
             </div>

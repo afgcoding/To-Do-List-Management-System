@@ -222,16 +222,22 @@ it('shows progress from completed subtasks', function () {
 
 it('renders the task details page as a stacked layout with a compact back link', function () {
     $task = Task::factory()->create(['title' => 'Show page layout task']);
+    Subtask::factory()->for($task)->create(['title' => 'Visible subtask title']);
 
     $this->get(route('tasks.show', $task))
         ->assertSee('Show page layout task')
         ->assertSee('← Back to Tasks')
-        ->assertSee('grid w-full grid-cols-1 gap-6 lg:grid-cols-3', false)
-        ->assertSee('w-full min-w-0 space-y-3.5 lg:col-span-2', false)
-        ->assertSee('w-full min-w-0 space-y-3.5 self-start lg:sticky lg:top-22 lg:col-span-1', false)
-        ->assertSee('flex: 0 0 120px; width: 120px;', false)
-        ->assertSee('flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between', false)
-        ->assertSee('flex flex-col justify-between gap-3 sm:flex-row sm:items-center', false)
+        ->assertSee('card flat workspace-card', false)
+        ->assertSee('task-show-toolbar', false)
+        ->assertSee('header-actions', false)
+        ->assertSee('subtask-create-row subtask-add-row', false)
+        ->assertSee('subtask-add-row subtask-edit-row', false)
+        ->assertSee('form-control subtask-title', false)
+        ->assertSee('btn btn-primary btn-sm subtask-submit', false)
+        ->assertSee('+ Add Subtask')
+        ->assertSee('Visible subtask title')
+        ->assertSee('subtask-item-title', false)
+        ->assertSee('btn btn-secondary btn-sm', false)
         ->assertDontSee('breadcrumb-header', false);
 });
 
