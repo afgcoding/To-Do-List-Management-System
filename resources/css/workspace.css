@@ -53,6 +53,311 @@
     margin: 0;
 }
 
+.app-page-content .calendar-day-cell {
+    position: relative;
+}
+
+.app-page-content .calendar-day-add {
+    display: inline-flex;
+    width: 1.25rem;
+    height: 1.25rem;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: 0.35rem;
+    background: #eef2ff;
+    color: #4338ca;
+    font-size: 0.875rem;
+    line-height: 1;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.app-page-content .calendar-day-cell:hover .calendar-day-add,
+.app-page-content .calendar-day-add:focus {
+    opacity: 1;
+}
+
+.nozha-calendar-popover-root {
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    pointer-events: none;
+}
+
+.nozha-calendar-popover-backdrop {
+    position: absolute;
+    inset: 0;
+    z-index: 9998;
+    pointer-events: auto;
+    background: transparent;
+}
+
+.nozha-calendar-popover-root.is-hover .nozha-calendar-popover-backdrop {
+    pointer-events: none;
+}
+
+.nozha-calendar-popover {
+    position: fixed !important;
+    z-index: 9999 !important;
+    pointer-events: auto !important;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    box-sizing: border-box;
+    width: min(280px, calc(100vw - 24px));
+    max-width: 280px;
+    padding: 0.875rem;
+    overflow: visible;
+    line-height: 1.3;
+    border: 1px solid #f1f5f9;
+    border-top: 3px solid #94a3b8;
+    border-radius: 1rem;
+    background: #ffffff;
+    box-shadow: 0 25px 50px -12px rgb(15 23 42 / 0.25);
+}
+
+.calendar-preview-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.calendar-preview-body {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.nozha-calendar-popover-close {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 1.75rem;
+    min-width: 1.75rem;
+    height: 1.75rem;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.calendar-preview-actions {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+    width: 100%;
+    margin-top: 0.25rem;
+}
+
+.nozha-calendar-popover .calendar-preview-actions .btn {
+    display: inline-flex;
+    flex: 1 1 0;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    margin: 0;
+    text-align: center;
+    white-space: nowrap;
+    border-radius: 0.75rem;
+}
+
+.nozha-calendar-popover.status-todo {
+    border-top-color: #94a3b8;
+}
+
+.nozha-calendar-popover.status-in_progress {
+    border-top-color: #6366f1;
+}
+
+.nozha-calendar-popover.status-completed {
+    border-top-color: #10b981;
+}
+
+.nozha-calendar-popover.status-cancelled {
+    border-top-color: #e11d48;
+}
+
+.nozha-calendar-popover .calendar-preview-title,
+.calendar-preview-title {
+    margin: 0;
+    overflow: hidden;
+    font-size: 0.875rem;
+    font-weight: 700;
+    line-height: 1.25;
+    color: #0f172a;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.nozha-calendar-popover .calendar-preview-pill,
+.calendar-preview-pill {
+    display: inline-flex;
+    margin-top: 0.35rem;
+    padding: 0.1rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.65rem;
+    font-weight: 600;
+}
+
+.nozha-calendar-popover .calendar-preview-pill.status-todo,
+.calendar-preview-pill.status-todo {
+    background: #f1f5f9;
+    color: #334155;
+}
+
+.nozha-calendar-popover .calendar-preview-pill.status-in_progress,
+.calendar-preview-pill.status-in_progress {
+    background: #e0e7ff;
+    color: #3730a3;
+}
+
+.nozha-calendar-popover .calendar-preview-pill.status-completed,
+.calendar-preview-pill.status-completed {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.nozha-calendar-popover .calendar-preview-pill.status-cancelled,
+.calendar-preview-pill.status-cancelled {
+    background: #fee2e2;
+    color: #9f1239;
+}
+
+.nozha-calendar-popover .calendar-preview-grid,
+.calendar-preview-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem 0.75rem;
+    margin: 0.35rem 0 0;
+    min-width: 0;
+}
+
+.nozha-calendar-popover .calendar-preview-label,
+.calendar-preview-label {
+    margin: 0 0 0.2rem;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #94a3b8;
+}
+
+.calendar-preview-avatars {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+}
+
+.calendar-preview-avatar {
+    display: inline-flex;
+    width: 1.375rem;
+    height: 1.375rem;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    background: #eef2ff;
+    color: #4338ca;
+    font-size: 0.625rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.nozha-calendar-popover .form-control,
+.nozha-calendar-popover-select,
+.nozha-calendar-popover-input {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    height: 2rem;
+    padding: 0 0.5rem;
+    overflow: hidden;
+    border-color: #e2e8f0;
+    border-radius: 0.5rem;
+    background: rgb(248 250 252 / 0.5);
+    font-size: 0.75rem;
+    line-height: 2rem;
+    color: #334155;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.nozha-calendar-popover .calendar-date-badge,
+.calendar-date-badge {
+    display: inline-flex;
+    padding: 0.15rem 0.5rem;
+    border-radius: 9999px;
+    background: #eef2ff;
+    color: #3730a3;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+.nozha-calendar-popover .calendar-icon-toggles,
+.calendar-icon-toggles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    max-height: 4.5rem;
+    margin-top: 0.35rem;
+    overflow: auto;
+}
+
+.calendar-create-popover {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.nozha-calendar-popover .calendar-assignee-chip,
+.calendar-assignee-chip {
+    width: 1.75rem;
+    height: 1.75rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 9999px;
+    background: #fff;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #334155;
+}
+
+.nozha-calendar-popover .calendar-assignee-chip.is-active,
+.calendar-assignee-chip.is-active {
+    border-color: #4f46e5;
+    background: #eef2ff;
+    color: #3730a3;
+}
+
+@media (max-width: 639px) {
+    .app-page-content .calendar-day-add {
+        opacity: 1;
+    }
+
+    .nozha-calendar-popover-root.is-sheet .nozha-calendar-popover-backdrop {
+        pointer-events: auto;
+        background: rgb(15 23 42 / 0.28);
+    }
+
+    .nozha-calendar-popover {
+        top: auto !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        max-width: none !important;
+        border-radius: 1.5rem 1.5rem 0 0;
+        padding-bottom: 1.25rem;
+    }
+
+    .nozha-calendar-popover.is-keyboard {
+        padding-bottom: 50vh;
+    }
+}
+
 .app-page-content .task-show-toolbar {
     display: flex;
     width: 100%;
@@ -307,6 +612,13 @@
 
 .app-page-content .workspace-search.form-control {
     padding-left: 2.25rem;
+}
+
+.app-page-content .fc-event {
+    position: relative;
+    z-index: 2;
+    pointer-events: auto !important;
+    cursor: pointer;
 }
 
 .app-page-content .fc-event.status-todo,

@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\TaskPriority;
 use App\Enums\TaskStatus;
 use App\Models\RecurringTask;
 use App\Models\Task;
@@ -28,7 +29,50 @@ it('renders the task calendar for signed-in users', function () {
         ->assertSee('Recurring Schedules')
         ->assertSee('calendar-sidebar-tabs', false)
         ->assertSee('lg:col-span-1', false)
-        ->assertSee(':draggable="task.canMove"', false);
+        ->assertSee(':draggable="task.canMove"', false)
+        ->assertSee('View Full Details')
+        ->assertSee('calendar-preview', false)
+        ->assertSee('calendar-day-add', false)
+        ->assertSee('x-teleport="body"', false)
+        ->assertSee('nozha-calendar-popover', false)
+        ->assertSee('nozha-calendar-popover-backdrop', false)
+        ->assertSee('closeAll()', false)
+        ->assertSee('Cancel')
+        ->assertSee('getBoundingClientRect()', false)
+        ->assertSee('rect.left - 290', false)
+        ->assertSee('position: fixed', false)
+        ->assertSee('z-index: 9999', false)
+        ->assertSee('pointer-events: auto', false)
+        ->assertSee('eventClick', false)
+        ->assertSee('eventMouseEnter', false)
+        ->assertSee('eventMouseLeave', false);
+});
+
+it('opens in-progress calendar tasks from hover and other statuses from click', function () {
+    $user = User::factory()->manager()->create();
+    Task::factory()->create([
+        'title' => 'Hover progress task',
+        'description' => 'Progress preview body',
+        'due_date' => now()->startOfMonth()->addDays(3),
+        'status' => TaskStatus::InProgress,
+    ]);
+
+    $this->actingAs($user)
+        ->get(route('calendar.index', [
+            'year' => now()->year,
+            'month' => now()->month,
+        ]))
+        ->assertOk()
+        ->assertSee('Hover progress task')
+        ->assertSee('Progress preview body')
+        ->assertSee("task.status === 'in_progress'", false)
+        ->assertSee('@mouseenter="eventMouseEnter(task, $event)"', false)
+        ->assertSee('@mouseleave="eventMouseLeave()"', false)
+        ->assertSee('eventClick(task, $event)', false)
+        ->assertSee('is-keyboard', false)
+        ->assertSee('keyboardOpen', false)
+        ->assertSee('jsEvent.preventDefault()', false)
+        ->assertSee('jsEvent.stopPropagation()', false);
 });
 
 it('lists active recurring templates in the calendar sidebar', function () {
@@ -46,6 +90,40 @@ it('lists active recurring templates in the calendar sidebar', function () {
         ->assertOk()
         ->assertSee('Weekly invoice template')
         ->assertDontSee('Paused archive template');
+});
+
+it('creates a calendar task for a clicked date via ajax', function () {
+    $user = User::factory()->manager()->create();
+    $assignee = User::factory()->create();
+    $due = now()->toDateString();
+
+    $this->actingAs($user)
+        ->postJson(route('calendar.tasks.store'), [
+            'title' => 'Quick calendar add',
+            'due_date' => $due,
+            'priority' => TaskPriority::High->value,
+            'assigned_users' => [$assignee->id],
+        ])
+        ->assertOk()
+        ->assertJsonPath('ok', true)
+        ->assertJsonPath('task.title', 'Quick calendar add')
+        ->assertJsonPath('task.due', $due)
+        ->assertJsonPath('task.priority', TaskPriority::High->value)
+        ->assertJsonPath('task.assignees.0.id', $assignee->id);
+
+    $this->assertDatabaseHas('tasks', [
+        'title' => 'Quick calendar add',
+        'creator_id' => $user->id,
+    ]);
+});
+
+it('validates a calendar quick-create payload', function () {
+    $user = User::factory()->manager()->create();
+
+    $this->actingAs($user)
+        ->postJson(route('calendar.tasks.store'), [])
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors(['title', 'due_date', 'priority']);
 });
 
 it('persists a due date when an unscheduled task is dropped on the calendar', function () {

@@ -61,6 +61,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('recurring-tasks/{recurringTask}', [RecurringTaskController::class, 'destroy'])->name('recurring-tasks.destroy');
 
     Route::get('calendar', [CalendarController::class, 'index'])->name('calendar.index');
+    Route::post('calendar/tasks', [CalendarController::class, 'store'])->name('calendar.tasks.store');
     Route::patch('calendar/tasks/{task}', [CalendarController::class, 'updateDueDate'])->name('calendar.tasks.due-date');
 
     Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
