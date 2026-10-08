@@ -31,6 +31,6 @@ class TagPolicy
 
     public function delete(User $user, Tag $tag): bool
     {
-        return $user->hasPermissionTo('tags.manage');
+        return false;
     }
 }

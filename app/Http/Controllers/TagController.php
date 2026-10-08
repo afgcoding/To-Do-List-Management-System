@@ -64,8 +64,7 @@ class TagController extends Controller
     public function destroy(Tag $tag): RedirectResponse
     {
         $this->authorize('delete', $tag);
-        $tag->delete();
 
-        return redirect()->route('tags.index')->with('success', 'Tag deleted successfully!');
+        abort(403);
     }
 }

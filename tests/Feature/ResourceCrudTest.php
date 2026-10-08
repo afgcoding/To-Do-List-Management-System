@@ -64,7 +64,7 @@ class ResourceCrudTest extends TestCase
         $this->assertDatabaseMissing('categories', ['id' => $category->id]);
     }
 
-    public function test_tag_name_must_be_unique_and_tag_can_be_deleted(): void
+    public function test_tag_name_must_be_unique_and_tag_cannot_be_deleted(): void
     {
         Tag::create(['name' => 'Urgent']);
 
@@ -74,8 +74,8 @@ class ResourceCrudTest extends TestCase
 
         $tag = Tag::where('name', 'Client-facing')->firstOrFail();
 
-        $this->delete(route('tags.destroy', $tag))->assertRedirect(route('tags.index'));
+        $this->delete(route('tags.destroy', $tag))->assertForbidden();
 
-        $this->assertDatabaseMissing('tags', ['id' => $tag->id]);
+        $this->assertDatabaseHas('tags', ['id' => $tag->id]);
     }
 }

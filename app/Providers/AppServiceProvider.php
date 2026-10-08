@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\SystemSetting;
+use App\Models\Tag;
 use App\Models\User;
 use App\Policies\RolePolicy;
 use Illuminate\Support\Facades\Gate;
@@ -33,6 +34,10 @@ class AppServiceProvider extends ServiceProvider
             $model = $arguments[0] ?? null;
 
             if ($ability === 'delete' && $model instanceof User && $model->hasRole('Super Admin')) {
+                return false;
+            }
+
+            if ($ability === 'delete' && $model instanceof Tag) {
                 return false;
             }
 
