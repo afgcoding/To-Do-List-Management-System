@@ -101,6 +101,10 @@ it('renders the recurring tasks index', function () {
     $this->get(route('recurring-tasks.index'))
         ->assertOk()
         ->assertSee('Recurring Tasks')
+        ->assertDontSee('breadcrumb-header', false)
+        ->assertSee('workspace-title', false)
         ->assertSee('Board sync')
-        ->assertSee('Every 1 Month');
+        ->assertSee('Every 1 Month')
+        ->assertSee('Add recurring task')
+        ->assertSee('Back to tasks');
 });
