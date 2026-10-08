@@ -270,11 +270,22 @@
                             @csrf
                             @method('PATCH')
                             <label class="mb-1 block text-xs font-medium text-slate-500">Priority</label>
-                            <select name="priority" onchange="this.form.submit()" class="form-control">
+                            <select
+                                name="priority"
+                                @can('updatePriority', $task)
+                                    onchange="this.form.submit()"
+                                @else
+                                    disabled
+                                @endcan
+                                class="form-control {{ auth()->user()?->can('updatePriority', $task) ? '' : 'cursor-not-allowed bg-slate-100 opacity-75' }}"
+                            >
                                 @foreach(\App\Enums\TaskPriority::cases() as $priority)
                                     <option value="{{ $priority->value }}" @selected($task->priority === $priority)>{{ $priority->label() }}</option>
                                 @endforeach
                             </select>
+                            @cannot('updatePriority', $task)
+                                <p class="mt-1 text-[11px] text-slate-400">Only admins can change priority.</p>
+                            @endcannot
                         </form>
                     </div>
                 </div>

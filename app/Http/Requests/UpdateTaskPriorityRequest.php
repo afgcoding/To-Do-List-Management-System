@@ -13,7 +13,9 @@ class UpdateTaskPriorityRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        $task = $this->route('task');
+
+        return $task !== null && ($this->user()?->can('updatePriority', $task) ?? false);
     }
 
     /**

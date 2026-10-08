@@ -45,7 +45,8 @@ it('renders the task calendar for signed-in users', function () {
         ->assertSee('pointer-events: auto', false)
         ->assertSee('eventClick', false)
         ->assertSee('eventMouseEnter', false)
-        ->assertSee('eventMouseLeave', false);
+        ->assertSee('eventMouseLeave', false)
+        ->assertSee('canUpdatePriority', false);
 });
 
 it('opens in-progress calendar tasks from hover and other statuses from click', function () {

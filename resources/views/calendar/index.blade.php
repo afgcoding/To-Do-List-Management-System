@@ -284,6 +284,9 @@
             if (! task) {
                 return;
             }
+            if (field === 'priority' && ! task.canUpdatePriority) {
+                return;
+            }
             const previous = task[field];
             const previousLabel = field === 'status' ? task.statusLabel : task.priorityLabel;
             task[field] = value;
@@ -555,11 +558,12 @@
                         </div>
                         <div class="min-w-0">
                             <label class="calendar-preview-label text-[10px] font-semibold uppercase tracking-wider text-slate-400">Priority</label>
-                            <select class="form-control nozha-calendar-popover-select" :value="quickView?.priority" :disabled="! quickView?.canUpdate" @change="saveQuickField('priority', $event.target.value)">
+                            <select class="form-control nozha-calendar-popover-select" :class="! quickView?.canUpdatePriority ? 'cursor-not-allowed bg-slate-100 opacity-75' : ''" :value="quickView?.priority" :disabled="! quickView?.canUpdatePriority" @change="saveQuickField('priority', $event.target.value)">
                                 <template x-for="option in priorityOptions" :key="option.value">
                                     <option :value="option.value" :selected="option.value === quickView?.priority" x-text="option.label"></option>
                                 </template>
                             </select>
+                            <p class="mt-1 text-[11px] text-slate-400" x-show="! quickView?.canUpdatePriority">Only admins can change priority.</p>
                         </div>
                     </div>
                     <div class="calendar-preview-actions">

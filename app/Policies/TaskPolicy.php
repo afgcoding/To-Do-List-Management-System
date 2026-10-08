@@ -55,6 +55,13 @@ class TaskPolicy
             && $this->view($user, $task);
     }
 
+    public function updatePriority(User $user, Task $task): bool
+    {
+        return $user->isActive()
+            && $user->isAdmin()
+            && $this->view($user, $task);
+    }
+
     public function assign(User $user, Task $task): bool
     {
         return $user->isActive()

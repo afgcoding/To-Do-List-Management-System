@@ -45,7 +45,7 @@ it('logs task creation and assignment changes', function () {
 });
 
 it('logs status and priority changes from quick actions', function () {
-    $user = User::factory()->manager()->create();
+    $user = User::factory()->admin()->create();
     $task = Task::factory()->for($user, 'creator')->create([
         'status' => TaskStatus::Todo,
         'priority' => TaskPriority::Medium,

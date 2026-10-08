@@ -170,7 +170,7 @@ class TaskController extends Controller
     // Quick priority change from the show-page sidebar.
     public function updatePriority(UpdateTaskPriorityRequest $request, Task $task): RedirectResponse
     {
-        $this->authorize('update', $task);
+        $this->authorize('updatePriority', $task);
         $task->update([
             'priority' => $request->validated('priority'),
         ]);

@@ -219,6 +219,33 @@ it('updates task status and priority from quick actions', function () {
         ->and($task->fresh()->priority)->toBe(TaskPriority::Urgent);
 });
 
+it('forbids employees from updating task priority', function () {
+    $employee = User::factory()->employee()->create();
+    $task = Task::factory()->create([
+        'priority' => TaskPriority::Medium,
+    ]);
+    $task->assignedUsers()->sync([$employee->id]);
+
+    $this->actingAs($employee)
+        ->patch(route('tasks.priority.update', $task), [
+            'priority' => TaskPriority::Urgent->value,
+        ])
+        ->assertForbidden();
+
+    expect($task->fresh()->priority)->toBe(TaskPriority::Medium);
+});
+
+it('disables the priority dropdown for employees on the task show page', function () {
+    $employee = User::factory()->employee()->create();
+    $task = Task::factory()->create();
+    $task->assignedUsers()->sync([$employee->id]);
+
+    $this->actingAs($employee)
+        ->get(route('tasks.show', $task))
+        ->assertOk()
+        ->assertSee('Only admins can change priority.');
+});
+
 it('deletes a task', function () {
     $task = Task::factory()->create();
 

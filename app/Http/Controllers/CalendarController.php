@@ -147,6 +147,7 @@ class CalendarController extends Controller
             'canMove' => $actor->can('update', $task),
             'canUpdate' => $actor->can('update', $task),
             'canUpdateStatus' => $actor->can('updateStatus', $task),
+            'canUpdatePriority' => $actor->can('updatePriority', $task),
             'url' => route('tasks.show', $task),
         ];
     }
