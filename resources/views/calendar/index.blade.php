@@ -379,9 +379,9 @@
     </div>
     <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <h1 class="workspace-title">Calendar</h1>
-        <div class="header-actions">
+        <div class="calendar-month-nav">
             <a href="{{ $previousUrl }}" class="btn btn-sm btn-secondary">Previous</a>
-            <p class="min-w-36 px-2 text-center text-sm font-semibold text-slate-800">{{ $cursor->format('F Y') }}</p>
+            <p class="calendar-month-label">{{ $cursor->format('F Y') }}</p>
             <a href="{{ $nextUrl }}" class="btn btn-sm btn-secondary">Next</a>
         </div>
     </div>

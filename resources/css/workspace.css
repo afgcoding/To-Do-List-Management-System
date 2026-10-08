@@ -366,6 +366,39 @@
     margin-bottom: 0.75rem;
 }
 
+.app-page-content .calendar-month-nav {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    flex-shrink: 0;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 10px;
+    margin-left: auto;
+}
+
+.app-page-content .calendar-month-nav > a,
+.app-page-content .calendar-month-nav > p {
+    display: inline-flex !important;
+    flex: 0 0 auto !important;
+    width: auto !important;
+    max-width: none !important;
+    margin: 0 !important;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    text-align: center !important;
+}
+
+.app-page-content .calendar-month-label {
+    min-width: 9rem;
+    padding: 0 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.25rem;
+    color: #1e293b;
+}
+
 .app-page-content .header-actions {
     display: flex !important;
     flex-shrink: 0 !important;
