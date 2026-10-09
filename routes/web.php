@@ -12,6 +12,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RecurringTaskController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SubtaskController;
 use App\Http\Controllers\SystemSettingController;
 use App\Http\Controllers\TagController;
@@ -59,6 +60,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('recurring-tasks/{recurringTask}', [RecurringTaskController::class, 'update'])->name('recurring-tasks.update');
     Route::patch('recurring-tasks/{recurringTask}/active', [RecurringTaskController::class, 'toggleActive'])->name('recurring-tasks.active.toggle');
     Route::delete('recurring-tasks/{recurringTask}', [RecurringTaskController::class, 'destroy'])->name('recurring-tasks.destroy');
+
+    Route::get('search', SearchController::class)->middleware('throttle:60,1')->name('search.global');
 
     Route::get('calendar', [CalendarController::class, 'index'])->name('calendar.index');
     Route::post('calendar/tasks', [CalendarController::class, 'store'])->name('calendar.tasks.store');

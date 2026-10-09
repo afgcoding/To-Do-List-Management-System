@@ -877,3 +877,22 @@
     color: #991b1b;
     border-color: #fca5a5;
 }
+
+.nozha-global-search {
+    position: relative;
+    min-width: 0;
+}
+
+.nozha-global-search-panel {
+    pointer-events: auto;
+}
+
+.nozha-global-search-panel a {
+    display: flex !important;
+    text-decoration: none;
+}
+
+.nozha-global-search-panel p {
+    display: block !important;
+    margin: 0;
+}

@@ -4,10 +4,7 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="d-none d-md-flex flex-grow-1 items-center px-3">
-            <label class="mb-0 w-100 nozha-quick-search">
-                <span class="sr-only">Quick search</span>
-                <input data-quick-search type="search" placeholder="Search..." class="form-control app-navbar-search" aria-label="Search tasks, people, or projects">
-            </label>
+            <x-global-search />
         </div>
         <ul class="nav navbar-nav items-center">
             <li class="nav-item">
