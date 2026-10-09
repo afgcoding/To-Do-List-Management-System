@@ -6,12 +6,12 @@
 
 @section('content')
 <div class="mx-auto max-w-3xl space-y-6">
-    <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-        <div>
-            <h1 class="text-2xl font-bold tracking-tight text-slate-900">Create user</h1>
-            <p class="mt-1 text-sm text-slate-500">Add a teammate with role, department, and an optional profile photo.</p>
+    <div class="users-form-header">
+        <div class="min-w-0">
+            <h1 class="workspace-title">Create user</h1>
+            <p class="mt-1 text-sm text-gray-500">Add a teammate with role, department, and an optional profile photo.</p>
         </div>
-        <x-back-link :href="route('users.index')">Back to users</x-back-link>
+        <x-back-link class="users-back" :href="route('users.index')">Back to users</x-back-link>
     </div>
 
     <form action="{{ route('users.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">

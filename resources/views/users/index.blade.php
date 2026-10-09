@@ -213,75 +213,84 @@
                 x-transition:leave="transform transition duration-150 ease-in"
                 x-transition:leave-start="translate-x-0"
                 x-transition:leave-end="translate-x-full">
-                <div class="flex items-start justify-between gap-3 border-b border-slate-100 px-6 py-5">
-                    <div class="flex min-w-0 items-start gap-4">
+                <div class="users-drawer-head">
+                    <div class="users-drawer-identity">
                         <template x-if="profile?.avatar">
-                            <img :src="profile.avatar" :alt="profile.name" class="size-16 shrink-0 rounded-2xl object-cover ring-2 ring-white">
+                            <img :src="profile.avatar" :alt="profile.name" class="users-drawer-photo">
                         </template>
                         <template x-if="profile && !profile.avatar">
-                            <div class="users-drawer-avatar grid size-16 shrink-0 place-items-center text-lg font-bold text-white" x-text="profile.name.substring(0, 2).toUpperCase()"></div>
+                            <div class="users-drawer-avatar" x-text="profile.name.substring(0, 2).toUpperCase()"></div>
                         </template>
-                        <div class="min-w-0">
-                            <h2 class="truncate text-lg font-semibold text-slate-900" x-text="profile?.name"></h2>
-                            <p class="truncate text-sm text-slate-500" x-text="profile?.jobTitle"></p>
-                            <div class="mt-2 flex flex-wrap gap-1.5">
-                                <span class="inline-flex items-center rounded-full border border-indigo-200 bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-700" x-text="profile?.role"></span>
-                                <span class="inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold"
-                                    :class="profile?.isActive ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-slate-200 bg-slate-100 text-slate-600'"
+                        <div class="users-drawer-id">
+                            <h2 class="users-drawer-name" x-text="profile?.name"></h2>
+                            <p class="users-drawer-job" x-text="profile?.jobTitle"></p>
+                            <div class="users-drawer-pills">
+                                <span class="users-drawer-pill users-drawer-pill-role" x-text="profile?.role"></span>
+                                <span class="users-drawer-pill"
+                                    :class="profile?.isActive ? 'users-drawer-pill-active' : 'users-drawer-pill-inactive'"
                                     x-text="profile?.status"></span>
                             </div>
                         </div>
                     </div>
                     <button type="button" @click="profileId = null" class="users-icon-btn" aria-label="Close">×</button>
                 </div>
-                <div class="flex-1 space-y-6 overflow-y-auto px-6 py-5" x-show="profile">
-                    <section>
-                        <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-400">Contact details</h3>
-                        <dl class="mt-3 grid grid-cols-1 gap-3 text-sm">
-                            <div><dt class="text-slate-500">Email</dt><dd class="font-medium text-slate-800" x-text="profile?.email"></dd></div>
-                            <div><dt class="text-slate-500">Phone</dt><dd class="font-medium text-slate-800" x-text="profile?.phone"></dd></div>
-                            <div><dt class="text-slate-500">Joined</dt><dd class="font-medium text-slate-800" x-text="profile?.joined"></dd></div>
-                            <div><dt class="text-slate-500">Last login</dt><dd class="font-medium text-slate-800" x-text="profile?.lastLogin"></dd></div>
+                <div class="users-drawer-body" x-show="profile">
+                    <section class="users-drawer-card">
+                        <h3 class="users-drawer-kicker">Contact details</h3>
+                        <dl class="users-drawer-list">
+                            <div><dt>Email</dt><dd x-text="profile?.email"></dd></div>
+                            <div><dt>Phone</dt><dd x-text="profile?.phone"></dd></div>
+                            <div><dt>Joined</dt><dd x-text="profile?.joined"></dd></div>
+                            <div><dt>Last login</dt><dd x-text="profile?.lastLogin"></dd></div>
                         </dl>
                     </section>
-                    <section>
-                        <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-400">Organization</h3>
-                        <dl class="mt-3 grid grid-cols-1 gap-3 text-sm">
-                            <div><dt class="text-slate-500">Department</dt><dd class="font-medium text-slate-800" x-text="profile?.department"></dd></div>
-                            <div><dt class="text-slate-500">Direct manager</dt><dd class="font-medium text-slate-800" x-text="profile?.manager"></dd></div>
+                    <section class="users-drawer-card">
+                        <h3 class="users-drawer-kicker">Organization</h3>
+                        <dl class="users-drawer-list">
+                            <div><dt>Department</dt><dd x-text="profile?.department"></dd></div>
+                            <div><dt>Direct manager</dt><dd x-text="profile?.manager"></dd></div>
                             <div>
-                                <dt class="text-slate-500">Assigned role</dt>
-                                <dd class="mt-1"><span class="inline-flex items-center rounded-full border border-violet-200 bg-violet-50 px-2.5 py-1 text-xs font-semibold text-violet-700" x-text="profile?.role"></span></dd>
+                                <dt>Assigned role</dt>
+                                <dd><span class="users-drawer-pill users-drawer-pill-role" x-text="profile?.role"></span></dd>
                             </div>
                         </dl>
                     </section>
-                    <section>
-                        <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-400">Task summary</h3>
-                        <div class="mt-3 flex flex-wrap gap-2">
-                            <span class="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-semibold text-slate-700" x-text="'Total assigned: ' + (profile?.assignedTasks ?? 0)"></span>
-                            <span class="inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700" x-text="'Completed: ' + (profile?.completedTasks ?? 0)"></span>
-                            <span class="inline-flex items-center rounded-full border border-rose-200 bg-rose-50 px-2.5 py-1 text-xs font-semibold text-rose-700" x-text="'Overdue: ' + (profile?.overdueTasks ?? 0)"></span>
+                    <section class="users-drawer-card">
+                        <h3 class="users-drawer-kicker">Task summary</h3>
+                        <div class="users-drawer-stats">
+                            <div class="users-drawer-stat">
+                                <span class="users-drawer-stat-value" x-text="profile?.assignedTasks ?? 0"></span>
+                                <span class="users-drawer-stat-label">Assigned</span>
+                            </div>
+                            <div class="users-drawer-stat users-drawer-stat-done">
+                                <span class="users-drawer-stat-value" x-text="profile?.completedTasks ?? 0"></span>
+                                <span class="users-drawer-stat-label">Completed</span>
+                            </div>
+                            <div class="users-drawer-stat users-drawer-stat-late">
+                                <span class="users-drawer-stat-value" x-text="profile?.overdueTasks ?? 0"></span>
+                                <span class="users-drawer-stat-label">Overdue</span>
+                            </div>
                         </div>
                     </section>
-                    <details class="rounded-xl border border-slate-200 bg-slate-50/70 p-4" open>
-                        <summary class="cursor-pointer text-sm font-semibold text-slate-800">Permissions</summary>
-                        <div class="mt-3 space-y-3">
+                    <details class="users-drawer-card users-drawer-permissions" open>
+                        <summary>Permissions</summary>
+                        <div class="users-drawer-perm-groups">
                             <div>
-                                <p class="text-xs font-medium text-slate-500">Direct grants</p>
-                                <div class="mt-1.5 flex flex-wrap gap-1.5">
+                                <p>Direct grants</p>
+                                <div class="users-drawer-chips">
                                     <template x-for="name in (profile?.directPermissions ?? [])" :key="'d-' + name">
-                                        <span class="inline-flex rounded-full border border-indigo-200 bg-white px-2 py-0.5 text-[11px] font-medium text-indigo-700" x-text="name"></span>
+                                        <span class="users-drawer-chip users-drawer-chip-direct" x-text="name"></span>
                                     </template>
-                                    <span class="text-xs text-slate-400" x-show="!(profile?.directPermissions?.length)">None</span>
+                                    <span class="users-drawer-none" x-show="!(profile?.directPermissions?.length)">None</span>
                                 </div>
                             </div>
                             <div>
-                                <p class="text-xs font-medium text-slate-500">From role</p>
-                                <div class="mt-1.5 flex flex-wrap gap-1.5">
+                                <p>From role</p>
+                                <div class="users-drawer-chips">
                                     <template x-for="name in (profile?.rolePermissions ?? [])" :key="'r-' + name">
-                                        <span class="inline-flex rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[11px] font-medium text-slate-600" x-text="name"></span>
+                                        <span class="users-drawer-chip" x-text="name"></span>
                                     </template>
-                                    <span class="text-xs text-slate-400" x-show="!(profile?.rolePermissions?.length)">None</span>
+                                    <span class="users-drawer-none" x-show="!(profile?.rolePermissions?.length)">None</span>
                                 </div>
                             </div>
                         </div>

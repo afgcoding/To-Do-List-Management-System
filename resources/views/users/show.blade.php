@@ -6,7 +6,7 @@
 
 @section('content')
 <div class="mx-auto max-w-4xl space-y-6">
-    <x-back-link :href="route('users.index')">Back to users</x-back-link>
+    <x-back-link class="users-back" :href="route('users.index')">Back to users</x-back-link>
     <div class="flex min-w-0 flex-col justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:p-6">
         <div class="flex min-w-0 items-center gap-4">
             <x-user-avatar :user="$user" size="xl" rounded="2xl" />
