@@ -16,7 +16,11 @@ it('renders departments with code badges and active status', function () {
         ->assertOk()
         ->assertSee('Development')
         ->assertSee('DEV-01')
-        ->assertSee('Active');
+        ->assertSee('Active')
+        ->assertSee('Add department')
+        ->assertSee('Search by name or code...')
+        ->assertSee('Filter')
+        ->assertSee('Manage department names, codes, active status, and team assignments.');
 });
 
 it('filters departments by name search and inactive status', function () {
@@ -29,6 +33,11 @@ it('filters departments by name search and inactive status', function () {
         ->assertDontSee('Northwind Ops');
 
     $this->get(route('departments.index', ['active' => '0']))
+        ->assertOk()
+        ->assertSee('Zephyr Labs')
+        ->assertDontSee('Northwind Ops');
+
+    $this->get(route('departments.index', ['search' => 'Zephyr', 'active' => '0']))
         ->assertOk()
         ->assertSee('Zephyr Labs')
         ->assertDontSee('Northwind Ops');
