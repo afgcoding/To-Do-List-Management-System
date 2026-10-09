@@ -1,9 +1,9 @@
-<section>
+<section id="two-factor" class="w-full min-w-0">
     <header>
-        <h2 class="text-lg font-medium text-gray-900">
+        <h2 class="text-base font-bold text-slate-800">
             {{ __('Two-Factor Authentication') }}
         </h2>
-        <p class="mt-1 text-sm text-gray-600">
+        <p class="mt-0.5 text-xs text-slate-500">
             {{ __('Add an authenticator app (such as Google Authenticator) for an extra sign-in step.') }}
         </p>
     </header>
@@ -32,14 +32,14 @@
             @csrf
             @method('DELETE')
             <div>
-                <x-input-label for="two_factor_password" :value="__('Password')" />
-                <x-text-input id="two_factor_password" name="password" type="password" class="mt-1 block w-full" autocomplete="current-password" />
+                <x-input-label for="two_factor_password" :value="__('Password')" :class="$profileLabel" />
+                <x-text-input id="two_factor_password" name="password" type="password" class="mt-1 block {{ $profileInput }}" autocomplete="current-password" />
                 <x-input-error :messages="$errors->get('password')" class="mt-2" />
             </div>
-            <x-danger-button class="w-full justify-center sm:w-auto">{{ __('Disable two-factor authentication') }}</x-danger-button>
+            <button type="submit" class="btn btn-danger h-10 w-full rounded-xl px-5 text-xs font-semibold text-white sm:w-auto">{{ __('Disable two-factor authentication') }}</button>
         </form>
     @elseif (filled($user->two_factor_secret))
-        <div class="mt-6 rounded-xl border border-slate-200 bg-slate-50 p-4">
+        <div class="mt-6 rounded-xl border border-slate-100 bg-slate-50 p-4">
             <p class="text-sm font-semibold text-slate-800">Finish setup</p>
             <p class="mt-1 text-sm text-slate-600">Scan this QR code, then enter the 6-digit code from your app.</p>
             @if ($user->twoFactorQrImageUrl())
@@ -51,17 +51,17 @@
             <form method="POST" action="{{ route('two-factor.confirm') }}" class="mt-4 space-y-3">
                 @csrf
                 <div>
-                    <x-input-label for="two_factor_code" :value="__('Authentication code')" />
-                    <x-text-input id="two_factor_code" name="code" type="text" class="mt-1 block w-full" inputmode="numeric" autocomplete="one-time-code" />
+                    <x-input-label for="two_factor_code" :value="__('Authentication code')" :class="$profileLabel" />
+                    <x-text-input id="two_factor_code" name="code" type="text" class="mt-1 block {{ $profileInput }}" inputmode="numeric" autocomplete="one-time-code" />
                     <x-input-error :messages="$errors->get('code')" class="mt-2" />
                 </div>
-                <x-primary-button>{{ __('Confirm and enable') }}</x-primary-button>
+                <button type="submit" class="btn btn-primary h-10 rounded-xl px-5 text-xs font-semibold text-white shadow-xs transition-all">{{ __('Confirm and enable') }}</button>
             </form>
         </div>
     @else
         <form method="POST" action="{{ route('two-factor.enable') }}" class="mt-6">
             @csrf
-            <x-primary-button>{{ __('Enable two-factor authentication') }}</x-primary-button>
+            <button type="submit" class="btn btn-primary h-10 rounded-xl px-5 text-xs font-semibold text-white shadow-xs transition-all">{{ __('Enable two-factor authentication') }}</button>
         </form>
     @endif
 </section>

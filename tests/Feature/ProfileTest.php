@@ -1,6 +1,9 @@
 <?php
 
+use App\Enums\UserStatus;
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 test('profile page is displayed', function () {
     $user = User::factory()->create();
@@ -9,7 +12,14 @@ test('profile page is displayed', function () {
         ->actingAs($user)
         ->get('/profile');
 
-    $response->assertOk();
+    $response->assertOk()
+        ->assertSee('Account Settings')
+        ->assertSee('Manage your account security, profile information, and active sessions.')
+        ->assertSee('Back to tasks')
+        ->assertSee('Profile Information')
+        ->assertSee('Danger Zone')
+        ->assertSee('Deactivate Account')
+        ->assertDontSee('Delete Account');
 });
 
 test('profile information can be updated', function () {
@@ -33,6 +43,26 @@ test('profile information can be updated', function () {
     $this->assertNull($user->email_verified_at);
 });
 
+test('profile photo can be updated with name and email', function () {
+    Storage::fake('public');
+    $user = User::factory()->create();
+
+    $this
+        ->actingAs($user)
+        ->patch('/profile', [
+            'name' => $user->name,
+            'email' => $user->email,
+            'avatar' => UploadedFile::fake()->image('avatar.jpg'),
+        ])
+        ->assertSessionHasNoErrors()
+        ->assertRedirect('/profile');
+
+    $user->refresh();
+
+    expect($user->avatar)->toStartWith('avatars/');
+    Storage::disk('public')->assertExists($user->avatar);
+});
+
 test('email verification status is unchanged when the email address is unchanged', function () {
     $user = User::factory()->create();
 
@@ -50,7 +80,7 @@ test('email verification status is unchanged when the email address is unchanged
     $this->assertNotNull($user->refresh()->email_verified_at);
 });
 
-test('user can delete their account', function () {
+test('user can deactivate their account', function () {
     $user = User::factory()->create();
 
     $response = $this
@@ -61,10 +91,19 @@ test('user can delete their account', function () {
 
     $response
         ->assertSessionHasNoErrors()
-        ->assertRedirect('/');
+        ->assertRedirect(route('login'))
+        ->assertSessionHas('status', 'Your account has been deactivated.');
 
     $this->assertGuest();
-    $this->assertNull($user->fresh());
+    expect($user->fresh())->not->toBeNull()
+        ->and($user->fresh()->status)->toBe(UserStatus::Inactive);
+
+    $this->post(route('login'), [
+        'email' => $user->email,
+        'password' => 'password',
+    ])->assertSessionHasErrors([
+        'email' => 'Account deactivated. Please contact your Super Admin to reactivate.',
+    ]);
 });
 
 test('correct password must be provided to delete account', function () {

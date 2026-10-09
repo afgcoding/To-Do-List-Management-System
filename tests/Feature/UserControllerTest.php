@@ -137,6 +137,15 @@ it('renders an inline status switch and omits activate from the actions menu', f
         ->assertDontSee("ask(selected.id, 'toggle'");
 });
 
+it('lists deactivated users with a reactivate control', function () {
+    User::factory()->inactive()->create(['name' => 'Paused Colleague']);
+
+    $this->get(route('users.index'))
+        ->assertOk()
+        ->assertSee('Paused Colleague')
+        ->assertSee('Reactivate Account');
+});
+
 it('lets a manager view and edit users without a delete grant', function () {
     $manager = User::factory()->manager()->create();
     $employee = User::factory()->employee()->create(['name' => 'Lina Ahmadi']);

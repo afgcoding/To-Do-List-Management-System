@@ -40,4 +40,17 @@
         ])
         :class="row({{ $user->id }})?.isActive ? 'text-emerald-600' : 'text-rose-600'"
         x-text="row({{ $user->id }})?.isActive ? 'Active' : 'Inactive'">{{ $user->isActive() ? 'Active' : 'Inactive' }}</span>
+    @if ($canToggle)
+        <button
+            type="button"
+            x-show="! row({{ $user->id }})?.isActive"
+            @click="toggleStatus({{ $user->id }})"
+            :disabled="row({{ $user->id }})?.busy"
+            @class([
+                'btn btn-primary btn-sm rounded-xl px-3 text-xs font-semibold',
+                $user->isActive() ? 'hidden' : '',
+            ])>
+            Reactivate Account
+        </button>
+    @endif
 </div>

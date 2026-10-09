@@ -14,7 +14,7 @@ it('rejects inactive users at login', function () {
         'email' => $user->email,
         'password' => 'password',
     ])->assertSessionHasErrors([
-        'email' => 'Your account is deactivated. Please contact an administrator.',
+        'email' => 'Account deactivated. Please contact your Super Admin to reactivate.',
     ]);
 
     $this->assertGuest();
