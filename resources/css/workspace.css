@@ -1640,3 +1640,268 @@
         height: 14px;
     }
 }
+
+.app-page-content .categories-page {
+    min-width: 0;
+    width: 100%;
+}
+
+.app-page-content .categories-header {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.app-page-content .categories-add {
+    display: inline-flex !important;
+    width: 100%;
+    max-width: 100%;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    border-radius: 12px !important;
+    white-space: nowrap;
+    text-transform: none !important;
+}
+
+.app-page-content .categories-actions-cell {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.app-page-content .categories-actions {
+    display: inline-flex !important;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.85rem;
+    width: 100%;
+}
+
+.app-page-content .categories-actions form {
+    display: inline-flex !important;
+    width: auto;
+    margin: 0;
+}
+
+.app-page-content .categories-action {
+    display: inline-flex !important;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: #4f46e5;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.app-page-content .categories-action:hover {
+    color: #3730a3;
+}
+
+.app-page-content .categories-action-danger {
+    color: #f43f5e;
+}
+
+.app-page-content .categories-action-danger:hover {
+    color: #be123c;
+}
+
+.app-page-content .categories-page [role="dialog"] > div[class*="right-0"] {
+    width: 100% !important;
+    max-width: 28rem;
+}
+
+.app-page-content .categories-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    width: 100%;
+    min-width: 0;
+}
+
+.app-page-content .categories-form p,
+.app-page-content .categories-form span {
+    display: block !important;
+    height: auto;
+}
+
+.app-page-content .categories-form-field {
+    width: 100%;
+    min-width: 0;
+}
+
+.app-page-content .categories-form-label {
+    margin: 0 0 0.35rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #334155;
+}
+
+.app-page-content .categories-form-required {
+    color: #f43f5e;
+}
+
+.app-page-content .categories-form-hint {
+    margin: 0.35rem 0 0;
+    font-size: 0.75rem;
+    color: #64748b;
+}
+
+.app-page-content .categories-form-input {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    padding: 0.65rem 0.9rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px !important;
+    background: #fff;
+    color: #1e293b;
+    font-size: 0.875rem;
+    box-shadow: none;
+}
+
+.app-page-content .categories-color-picker .flex.flex-wrap {
+    gap: 0.5rem;
+}
+
+.app-page-content .categories-color-picker .flex.items-center {
+    flex-wrap: wrap;
+}
+
+.app-page-content .categories-color-picker button[title] {
+    width: 2rem !important;
+    height: 2rem !important;
+    border-radius: 10px !important;
+    border: 1px solid #e2e8f0 !important;
+}
+
+.app-page-content .categories-color-picker input[type="color"] {
+    width: 3.5rem;
+    height: 2.75rem;
+    padding: 0.2rem;
+    border-radius: 12px !important;
+    border: 1px solid #cbd5e1 !important;
+    background: #fff;
+    cursor: pointer;
+}
+
+.app-page-content .categories-color-picker input[name="color"] {
+    width: 8.5rem;
+    max-width: 100%;
+    padding: 0.65rem 0.85rem;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 12px !important;
+    box-sizing: border-box;
+}
+
+.app-page-content .categories-form-actions {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 0.5rem;
+    width: 100%;
+    padding-top: 1.25rem;
+    border-top: 1px solid #f1f5f9;
+}
+
+.app-page-content .categories-form-cancel,
+.app-page-content .categories-form-save {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 42px;
+    margin: 0;
+    padding: 0.65rem 1.25rem;
+    border-radius: 12px !important;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.2;
+    text-transform: none !important;
+    text-decoration: none;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+.app-page-content .categories-form-cancel {
+    border: 1px solid #cbd5e1 !important;
+    background: #f8fafc !important;
+    color: #475569 !important;
+}
+
+.app-page-content .categories-form-save {
+    border: 0 !important;
+    background: #4f46e5 !important;
+    color: #fff !important;
+}
+
+.app-page-content .categories-standalone {
+    max-width: 36rem;
+    margin: 0 auto;
+}
+
+.app-page-content .categories-show-back a {
+    display: inline-flex !important;
+    width: auto !important;
+    max-width: 100%;
+    border-radius: 12px !important;
+}
+
+.app-page-content .categories-standalone-card {
+    margin-top: 1rem;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    background: #fff;
+}
+
+.app-page-content .categories-standalone-head {
+    padding: 1.25rem 1.25rem 0.75rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.app-page-content .categories-standalone .categories-form {
+    padding: 1.25rem;
+}
+
+@media (min-width: 640px) {
+    .app-page-content .categories-header {
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: space-between;
+    }
+
+    .app-page-content .categories-add {
+        width: auto;
+    }
+
+    .app-page-content .categories-form-actions {
+        flex-direction: row;
+        justify-content: flex-end;
+        gap: 0.75rem;
+    }
+
+    .app-page-content .categories-form-cancel,
+    .app-page-content .categories-form-save {
+        width: auto;
+        min-width: 6.5rem;
+    }
+}
+
+@media (max-width: 639px) {
+    .app-page-content .categories-page [role="dialog"] > div[class*="right-0"] {
+        max-width: 100%;
+    }
+
+    .app-page-content .categories-color-picker input[name="color"] {
+        width: auto;
+        flex: 1 1 8rem;
+    }
+}

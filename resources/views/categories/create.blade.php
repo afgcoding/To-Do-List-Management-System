@@ -1,33 +1,37 @@
 @extends('layouts.app')
 @php
     $pageTitle = 'Create Category';
-    $field = 'w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-800 shadow-sm placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500';
+    $hideLayoutPageHeader = true;
 @endphp
 
 @section('content')
-<div class="mx-auto max-w-xl space-y-4" x-data="{ name: @js(old('name', '')), color: @js(old('color', '#6366F1')) }">
-    <x-back-link :href="route('categories.index')">Back to categories</x-back-link>
-    <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <div class="border-b border-slate-100 bg-slate-50 px-6 py-4">
-            <h1 class="text-lg font-semibold text-slate-900">Add category</h1>
-            <p class="mt-1 text-sm text-slate-500">Give the category a name and a color.</p>
+<div class="categories-page categories-standalone" x-data="{ name: @js(old('name', '')), color: @js(old('color', '#6366F1')) }">
+    <div class="categories-show-back">
+        <x-back-link :href="route('categories.index')">Back to categories</x-back-link>
+    </div>
+    <div class="categories-standalone-card">
+        <div class="categories-standalone-head">
+            <h1 class="workspace-title">Add category</h1>
+            <p class="mt-1 text-sm text-gray-500">Give the category a name and a color.</p>
         </div>
 
-        <form method="POST" action="{{ route('categories.store') }}" class="space-y-5 p-6">
+        <form method="POST" action="{{ route('categories.store') }}" class="categories-form">
             @csrf
 
-            <div class="space-y-1.5">
-                <label for="name" class="block text-xs font-semibold text-slate-700">Category name <span class="text-rose-500">*</span></label>
-                <input id="name" name="name" x-model="name" required placeholder="Frontend, Database, Recruitment" class="{{ $field }}">
-                <p class="text-xs text-slate-500">Shown on tasks as a colored label.</p>
+            <div class="categories-form-field">
+                <label for="name" class="categories-form-label">Category name <span class="categories-form-required">*</span></label>
+                <input id="name" name="name" x-model="name" required placeholder="Frontend, Database, Recruitment" class="categories-form-input">
+                <p class="categories-form-hint">Shown on tasks as a colored label.</p>
                 <x-input-error :messages="$errors->get('name')" />
             </div>
 
-            <x-color-picker />
+            <div class="categories-color-picker">
+                <x-color-picker />
+            </div>
 
-            <div class="flex flex-col-reverse gap-2 border-t border-slate-100 pt-5 pb-2 sm:flex-row sm:justify-end sm:gap-3">
-                <a href="{{ route('categories.index') }}" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-2.5 text-center text-sm font-semibold text-slate-600 hover:bg-slate-100 sm:w-auto">Cancel</a>
-                <button class="w-full rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 sm:w-auto">Save</button>
+            <div class="categories-form-actions">
+                <a href="{{ route('categories.index') }}" class="categories-form-cancel">Cancel</a>
+                <button type="submit" class="categories-form-save">Save</button>
             </div>
         </form>
     </div>
