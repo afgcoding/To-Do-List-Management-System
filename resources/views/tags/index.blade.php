@@ -24,7 +24,6 @@
         <div class="min-w-0">
             <ol class="breadcrumb mb-2">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}"><i class="fas fa-home"></i></a></li>
-                <li class="breadcrumb-item active">Tags</li>
             </ol>
             <h1 class="workspace-title">Tags</h1>
             <p class="mt-1 text-sm text-gray-500">Unique labels such as Bug, Feature, or Urgent-Fix.</p>
