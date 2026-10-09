@@ -1905,3 +1905,390 @@
         flex: 1 1 8rem;
     }
 }
+
+.app-page-content .users-page,
+.app-page-content .roles-page {
+    min-width: 0;
+    width: 100%;
+}
+
+.app-page-content .users-header,
+.app-page-content .roles-header {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.app-page-content a.btn.btn-primary.users-add,
+.app-page-content a.btn.btn-primary.roles-add {
+    display: inline-flex !important;
+    width: 100%;
+    max-width: 100%;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    border-radius: 12px !important;
+    white-space: nowrap;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+}
+
+.app-page-content .users-card,
+.app-page-content .roles-panel {
+    overflow: visible;
+    border-radius: 16px !important;
+}
+
+.app-page-content .users-page p,
+.app-page-content .users-page h1,
+.app-page-content .users-page h2,
+.app-page-content .roles-page p,
+.app-page-content .roles-page h1,
+.app-page-content .roles-page h2 {
+    display: block !important;
+    height: auto;
+}
+
+.app-page-content .users-person {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 0;
+}
+
+.app-page-content .users-person-name {
+    margin: 0;
+    overflow: hidden;
+    color: #1e293b;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.app-page-content .users-person-meta,
+.app-page-content .users-contact p + p {
+    margin: 0.15rem 0 0;
+    color: #64748b;
+    font-size: 0.75rem;
+}
+
+.app-page-content .users-contact p {
+    margin: 0;
+    color: #334155;
+    font-size: 0.875rem;
+    overflow-wrap: anywhere;
+}
+
+.app-page-content .users-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+}
+
+.app-page-content .users-muted {
+    color: #94a3b8;
+    font-size: 0.75rem;
+}
+
+.app-page-content .users-list-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 0.75rem;
+}
+
+.app-page-content .users-mobile-card,
+.app-page-content .users-empty,
+.app-page-content .roles-card,
+.app-page-content .roles-empty {
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    background: #fff;
+}
+
+.app-page-content .users-mobile-card {
+    padding: 1rem;
+}
+
+.app-page-content .users-mobile-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.app-page-content .users-contact,
+.app-page-content .users-tags,
+.app-page-content .users-mobile-status {
+    margin-top: 0.75rem;
+}
+
+.app-page-content .users-empty,
+.app-page-content .roles-empty {
+    padding: 2.5rem 1rem;
+    border-style: dashed;
+    color: #64748b;
+    font-size: 0.875rem;
+    text-align: center;
+}
+
+.app-page-content .roles-empty {
+    grid-column: 1 / -1;
+}
+
+.app-page-content .users-list-table {
+    display: none;
+}
+
+.app-page-content .users-actions-btn {
+    display: inline-flex !important;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 0.35rem;
+    margin: 0;
+    padding: 0.4rem 0.7rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px !important;
+    background: #fff;
+    color: #475569;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+    cursor: pointer;
+    box-shadow: none;
+}
+
+.app-page-content .users-actions-btn:hover {
+    background: #f8fafc;
+    color: #1e293b;
+}
+
+.app-page-content .user-status {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.55rem;
+}
+
+.app-page-content .user-status-switch {
+    border-radius: 999px !important;
+    box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.16);
+}
+
+.app-page-content .user-status-knob {
+    border-radius: 999px !important;
+}
+
+.app-page-content .user-status .btn.btn-primary.users-reactivate {
+    border-radius: 999px !important;
+    text-transform: none !important;
+    letter-spacing: 0 !important;
+}
+
+.app-page-content .users-menu,
+.app-page-content .users-confirm,
+.app-page-content .users-toast {
+    border-radius: 14px !important;
+}
+
+.app-page-content .users-drawer {
+    border-radius: 0;
+}
+
+.app-page-content .users-drawer-avatar {
+    border-radius: 16px !important;
+    background: var(--brand, #4f46e5);
+}
+
+.app-page-content .users-icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 12px !important;
+    background: transparent;
+    color: #94a3b8;
+    font-size: 1.25rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.app-page-content .users-icon-btn:hover {
+    background: #f1f5f9;
+    color: #334155;
+}
+
+.app-page-content .users-confirm-actions {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 0.5rem;
+    margin-top: 1.25rem;
+}
+
+.app-page-content .users-confirm-actions form {
+    display: block;
+    width: 100%;
+    margin: 0;
+}
+
+.app-page-content .users-confirm-cancel,
+.app-page-content .users-confirm-delete {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 40px;
+    margin: 0;
+    padding: 0.55rem 1rem;
+    border-radius: 12px !important;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: none !important;
+    cursor: pointer;
+}
+
+.app-page-content .users-confirm-cancel {
+    border: 1px solid #e2e8f0;
+    background: #fff;
+    color: #475569;
+}
+
+.app-page-content .users-confirm-delete {
+    border: 0;
+    background: #e11d48;
+    color: #fff;
+}
+
+.app-page-content .users-toast {
+    border: 1px solid #a7f3d0;
+    background: #ecfdf5;
+    color: #065f46;
+}
+
+.app-page-content .roles-grid {
+    display: grid;
+    gap: 0.85rem;
+    padding: 0.85rem;
+}
+
+.app-page-content .roles-card {
+    padding: 1.15rem;
+    box-shadow: none;
+}
+
+.app-page-content .roles-card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.app-page-content .roles-card-title {
+    margin: 0;
+    color: #0f172a;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.app-page-content .roles-card-meta {
+    margin: 0.5rem 0 0;
+    color: #64748b;
+    font-size: 0.875rem;
+}
+
+.app-page-content .roles-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.85rem;
+    margin-top: 1rem;
+}
+
+.app-page-content .roles-actions form {
+    display: inline-flex !important;
+    width: auto;
+    margin: 0;
+}
+
+.app-page-content .roles-action {
+    display: inline-flex !important;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: #64748b;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.app-page-content .roles-action:hover {
+    color: var(--brand, #4f46e5);
+}
+
+.app-page-content .roles-action-danger {
+    color: #f43f5e;
+}
+
+.app-page-content .roles-action-danger:hover {
+    color: #be123c;
+}
+
+@media (min-width: 640px) {
+    .app-page-content .users-header,
+    .app-page-content .roles-header {
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: space-between;
+    }
+
+    .app-page-content a.btn.btn-primary.users-add,
+    .app-page-content a.btn.btn-primary.roles-add {
+        width: auto;
+    }
+
+    .app-page-content .users-confirm-actions {
+        flex-direction: row;
+        justify-content: flex-end;
+    }
+
+    .app-page-content .users-confirm-actions form,
+    .app-page-content .users-confirm-cancel,
+    .app-page-content .users-confirm-delete {
+        width: auto;
+    }
+
+    .app-page-content .users-drawer {
+        border-top-left-radius: 16px;
+        border-bottom-left-radius: 16px;
+    }
+
+    .app-page-content .roles-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 768px) {
+    .app-page-content .users-list-mobile {
+        display: none;
+    }
+
+    .app-page-content .users-list-table {
+        display: block;
+    }
+}
+
+@media (min-width: 1280px) {
+    .app-page-content .roles-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}

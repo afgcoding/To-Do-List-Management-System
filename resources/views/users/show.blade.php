@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @php
     $pageTitle = $user->name;
+    $hideLayoutPageHeader = true;
 @endphp
 
 @section('content')

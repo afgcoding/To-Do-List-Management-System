@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @php
     $pageTitle = 'Create Role';
+    $hideLayoutPageHeader = true;
 @endphp
 
 @section('content')

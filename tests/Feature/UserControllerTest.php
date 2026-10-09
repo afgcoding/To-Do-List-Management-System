@@ -10,6 +10,35 @@ use Illuminate\Support\Facades\Storage;
 
 uses(RefreshDatabase::class);
 
+it('filters users by name search and inactive status', function () {
+    User::factory()->create([
+        'name' => 'Northwind Nora',
+        'email' => 'nora@example.com',
+        'status' => UserStatus::Active,
+    ]);
+    User::factory()->inactive()->create([
+        'name' => 'Zephyr Zain',
+        'email' => 'zain@example.com',
+    ]);
+
+    $this->get(route('users.index', ['search' => 'Zephyr']))
+        ->assertOk()
+        ->assertSee('Zephyr Zain')
+        ->assertDontSee('Northwind Nora');
+
+    $this->get(route('users.index', ['status' => 'inactive']))
+        ->assertOk()
+        ->assertSee('Zephyr Zain')
+        ->assertDontSee('Northwind Nora');
+
+    $this->get(route('users.index', ['status' => 'nope']))
+        ->assertOk()
+        ->assertSee('Zephyr Zain')
+        ->assertSee('Northwind Nora')
+        ->assertSee('Search by name, email, or role...')
+        ->assertSee('Filter');
+});
+
 it('renders users with job title role and contact details', function () {
     $department = Department::factory()->create(['name' => 'Delivery']);
     User::factory()->create([

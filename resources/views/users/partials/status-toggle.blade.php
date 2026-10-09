@@ -1,5 +1,5 @@
 @php($canToggle = auth()->user()?->can('toggleStatus', $user) ?? false)
-<div class="inline-flex items-center gap-2.5">
+<div class="user-status">
     <button
         type="button"
         role="switch"
@@ -12,14 +12,14 @@
         :aria-checked="row({{ $user->id }})?.isActive ? 'true' : 'false'"
         :aria-label="row({{ $user->id }})?.isActive ? 'Set status to Inactive' : 'Set status to Active'"
         @class([
-            'relative inline-flex h-6 w-11 shrink-0 rounded-full border-0 p-0.5 shadow-inner transition focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2',
+            'user-status-switch relative inline-flex h-6 w-11 shrink-0 border-0 p-0.5 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
             $user->isActive() ? 'bg-emerald-500' : 'bg-rose-500',
             $canToggle ? 'cursor-pointer' : 'cursor-not-allowed opacity-60',
         ])
         :class="row({{ $user->id }})?.isActive ? 'bg-emerald-500' : 'bg-rose-500'">
         <span
             @class([
-                'pointer-events-none inline-flex size-5 items-center justify-center rounded-full bg-white shadow transition duration-200',
+                'user-status-knob pointer-events-none inline-flex size-5 items-center justify-center bg-white shadow transition duration-200',
                 $user->isActive() ? 'translate-x-5' : 'translate-x-0',
             ])
             :class="{
@@ -47,7 +47,7 @@
             @click="toggleStatus({{ $user->id }})"
             :disabled="row({{ $user->id }})?.busy"
             @class([
-                'btn btn-primary btn-sm rounded-xl px-3 text-xs font-semibold',
+                'btn btn-primary btn-sm users-reactivate',
                 $user->isActive() ? 'hidden' : '',
             ])>
             Reactivate Account

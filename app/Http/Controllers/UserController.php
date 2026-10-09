@@ -26,6 +26,8 @@ class UserController extends Controller
     {
         $this->authorize('viewAny', User::class);
         $actor = $request->user();
+        $status = $request->string('status')->toString();
+
         $users = User::query()
             ->with(['department', 'roles', 'permissions'])
             ->withCount([
@@ -33,8 +35,21 @@ class UserController extends Controller
                 'assignedTasks as completed_tasks_count' => fn ($query) => $query->where('status', TaskStatus::Completed),
                 'assignedTasks as overdue_tasks_count' => fn ($query) => $query->overdue(),
             ])
+            ->when($request->filled('search'), function ($query) use ($request): void {
+                $term = '%'.$request->string('search')->trim()->toString().'%';
+                $query->where(function ($builder) use ($term): void {
+                    $builder->where('name', 'like', $term)
+                        ->orWhere('email', 'like', $term)
+                        ->orWhere('phone', 'like', $term)
+                        ->orWhere('job_title', 'like', $term)
+                        ->orWhereHas('department', fn ($department) => $department->where('name', 'like', $term))
+                        ->orWhereHas('roles', fn ($roles) => $roles->where('name', 'like', $term));
+                });
+            })
+            ->when(in_array($status, ['active', 'inactive'], true), fn ($query) => $query->where('status', $status))
             ->latest()
-            ->paginate(12);
+            ->paginate(12)
+            ->withQueryString();
 
         $directory = $users->getCollection()->mapWithKeys(function (User $user) use ($actor): array {
             return [$user->id => [
