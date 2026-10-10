@@ -25,6 +25,18 @@ it('lets a Super Admin pass the global gate even without explicit permissions', 
         ->assertOk();
 });
 
+it('renders the create role form with the permission grid', function () {
+    $this->actingAs(User::factory()->admin()->create())
+        ->get(route('roles.create'))
+        ->assertOk()
+        ->assertSee('Create role')
+        ->assertSee('name="name"', false)
+        ->assertSee('name="permissions[]"', false)
+        ->assertSee('View users')
+        ->assertSee('Save role')
+        ->assertSee('Back to roles');
+});
+
 it('creates a custom role from the permission checkbox grid', function () {
     $this->actingAs(User::factory()->admin()->create())
         ->post(route('roles.store'), [
