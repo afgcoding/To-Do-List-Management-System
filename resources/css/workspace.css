@@ -3255,6 +3255,105 @@ body .users-drawer-none {
     }
 }
 
+.app-page-content .workspace-card:has(.task-date-picker) {
+    overflow: visible;
+}
+
+.app-page-content .task-date-picker {
+    position: relative;
+}
+
+.app-page-content .task-date-picker-input {
+    cursor: pointer;
+    background-color: #fff;
+}
+
+.app-page-content .task-date-picker-pop {
+    position: absolute;
+    top: calc(100% + 0.35rem);
+    inset-inline-start: 0;
+    z-index: 40;
+    width: min(18.5rem, 100%);
+    padding: 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    background: #fff;
+    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.12);
+}
+
+.app-page-content .task-date-picker-nav {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 0.5rem;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.app-page-content .task-date-picker-title {
+    margin: 0;
+    text-align: center;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.app-page-content .task-date-picker-week,
+.app-page-content .task-date-picker-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 0.15rem;
+}
+
+.app-page-content .task-date-picker-week {
+    margin-bottom: 0.35rem;
+}
+
+.app-page-content .task-date-picker-week span {
+    text-align: center;
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #94a3b8;
+}
+
+.app-page-content .task-date-picker-day {
+    min-height: 1.85rem;
+    border: 0;
+    border-radius: 0.45rem;
+    background: transparent;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #334155;
+    cursor: pointer;
+}
+
+.app-page-content .task-date-picker-day:hover:not(:disabled) {
+    background: #eef2ff;
+    color: #4338ca;
+}
+
+.app-page-content .task-date-picker-day.is-muted,
+.app-page-content .task-date-picker-day:disabled {
+    color: transparent;
+    cursor: default;
+}
+
+.app-page-content .task-date-picker-day.is-today {
+    box-shadow: inset 0 0 0 1px #c7d2fe;
+}
+
+.app-page-content .task-date-picker-day.is-selected {
+    background: #4f46e5;
+    color: #fff;
+}
+
+.app-page-content .task-date-picker-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
 html[dir="rtl"] .app-page-content {
     direction: rtl;
     text-align: start;

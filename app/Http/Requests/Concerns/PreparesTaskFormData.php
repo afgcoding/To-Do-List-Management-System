@@ -6,6 +6,8 @@ namespace App\Http\Requests\Concerns;
 
 trait PreparesTaskFormData
 {
+    use ConvertsCalendarFormDates;
+
     protected function prepareForValidation(): void
     {
         foreach (['department_id', 'category_id', 'assigned_to'] as $field) {
@@ -17,5 +19,7 @@ trait PreparesTaskFormData
         $this->merge([
             'is_recurring' => $this->boolean('is_recurring'),
         ]);
+
+        $this->convertCalendarDateFields();
     }
 }

@@ -26,10 +26,14 @@ class SystemSettingController extends Controller
     {
         $settings = SystemSetting::getSettings();
         $this->authorize('update', $settings);
-        $data = $request->safe()->only(['company_name', 'date_format', 'time_zone', 'primary_color']);
+        $data = $request->safe()->only(['company_name', 'date_format', 'calendar_type', 'time_zone', 'primary_color']);
 
         if (blank($data['primary_color'] ?? null)) {
             unset($data['primary_color']);
+        }
+
+        if (blank($data['calendar_type'] ?? null)) {
+            unset($data['calendar_type']);
         }
 
         // A new upload replaces the stored file; remove_logo clears branding without a replacement.

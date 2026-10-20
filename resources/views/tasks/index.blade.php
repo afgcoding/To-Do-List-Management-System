@@ -131,11 +131,11 @@
                             <div class="grid grid-cols-2 gap-3">
                                 <label class="block">
                                     <span class="mb-1 block text-xs font-medium text-gray-500">{{ __('Due from') }}</span>
-                                    <input type="date" name="due_from" value="{{ request('due_from') }}" class="{{ $selectControl }}">
+                                    <x-calendar-date-input name="due_from" :value="request('due_from')" class="{{ $selectControl }}" />
                                 </label>
                                 <label class="block">
                                     <span class="mb-1 block text-xs font-medium text-gray-500">{{ __('Due to') }}</span>
-                                    <input type="date" name="due_to" value="{{ request('due_to') }}" class="{{ $selectControl }}">
+                                    <x-calendar-date-input name="due_to" :value="request('due_to')" class="{{ $selectControl }}" />
                                 </label>
                             </div>
                             <label class="block">

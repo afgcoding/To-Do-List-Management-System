@@ -14,7 +14,7 @@
         id: {{ $editing?->id ?? (old('edit_id') ? (int) old('edit_id') : 'null') }},
         recurrenceType: @js(old('recurrence_type', $editing?->recurrence_type?->value ?? 'weekly')),
         repeatInterval: @js(old('repeat_interval', $editing?->repeat_interval ?? 1)),
-        nextDate: @js(old('next_recurring_date', $editing?->next_recurring_date?->format('Y-m-d') ?? ''))
+        nextDate: @js(old('next_recurring_date', $editing?->next_recurring_date ? calendar_input_value($editing->next_recurring_date) : ''))
     }">
     <div class="mb-3">
         <a href="{{ route('tasks.index') }}" class="inline-flex items-center gap-1 text-xs font-semibold text-indigo-600 transition-colors hover:text-indigo-800">
@@ -63,7 +63,7 @@
                         </button>
                     </form>
                     <button type="button"
-                        @click="open = true; id = {{ $schedule->id }}; recurrenceType = @js($schedule->recurrence_type->value); repeatInterval = {{ $schedule->repeat_interval }}; nextDate = @js($schedule->next_recurring_date?->format('Y-m-d'))"
+                        @click="open = true; id = {{ $schedule->id }}; recurrenceType = @js($schedule->recurrence_type->value); repeatInterval = {{ $schedule->repeat_interval }}; nextDate = @js(calendar_input_value($schedule->next_recurring_date))"
                         class="btn btn-sm btn-secondary">Edit schedule</button>
                     @if ($schedule->task)
                         <a href="{{ route('tasks.edit', $schedule->task) }}" class="btn btn-sm btn-secondary">Edit task</a>
@@ -121,7 +121,7 @@
                                     </button>
                                 </form>
                                 <button type="button"
-                                    @click="open = true; id = {{ $schedule->id }}; recurrenceType = @js($schedule->recurrence_type->value); repeatInterval = {{ $schedule->repeat_interval }}; nextDate = @js($schedule->next_recurring_date?->format('Y-m-d'))"
+                                    @click="open = true; id = {{ $schedule->id }}; recurrenceType = @js($schedule->recurrence_type->value); repeatInterval = {{ $schedule->repeat_interval }}; nextDate = @js(calendar_input_value($schedule->next_recurring_date))"
                                     class="btn btn-sm btn-secondary">Edit schedule</button>
                                 @if ($schedule->task)
                                     <a href="{{ route('tasks.edit', $schedule->task) }}" class="btn btn-sm btn-secondary">Edit task</a>
@@ -167,7 +167,7 @@
             </div>
             <div class="space-y-1.5">
                 <label class="block text-xs font-semibold text-slate-700">Next run date</label>
-                <input type="date" name="next_recurring_date" x-model="nextDate" class="form-control">
+                <x-calendar-date-input name="next_recurring_date" :value="old('next_recurring_date', $editing?->next_recurring_date)" x-model="nextDate" class="form-control" />
                 <x-input-error :messages="$errors->get('next_recurring_date')" />
             </div>
             <div class="recurring-slide-actions">

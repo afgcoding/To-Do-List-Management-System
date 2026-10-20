@@ -1,8 +1,11 @@
 import Alpine from 'alpinejs';
+import { registerTaskDatePicker } from './task-date-picker';
 
 window.Alpine = Alpine;
 
 document.addEventListener('alpine:init', () => {
+    registerTaskDatePicker(Alpine);
+
     Alpine.data('usersIndex', (directory = {}) => ({
         directory,
         menu: { id: null, top: 0, right: 0 },

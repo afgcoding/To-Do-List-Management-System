@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Http\Middleware\SetLocale;
 use App\Models\SystemSetting;
+use App\Support\CalendarDateFormatter;
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
 
@@ -25,9 +26,9 @@ if (! function_exists('setting')) {
 
 if (! function_exists('format_date')) {
     /**
-     * Format a timestamp with the saved system timezone and date format.
+     * Format a timestamp with the saved timezone, date format, and calendar type.
      */
-    function format_date(mixed $date, ?string $format = null): ?string
+    function format_date(mixed $date, ?string $format = null, ?string $calendarType = null): ?string
     {
         if ($date === null || $date === '') {
             return null;
@@ -51,7 +52,86 @@ if (! function_exists('format_date')) {
             $format = SystemSetting::DEFAULT_DATE_FORMAT;
         }
 
-        return $carbon->timezone($timezone)->format($format);
+        $calendarType ??= (string) setting('calendar_type', SystemSetting::DEFAULT_CALENDAR_TYPE);
+        if (! in_array($calendarType, SystemSetting::CALENDAR_TYPES, true)) {
+            $calendarType = SystemSetting::DEFAULT_CALENDAR_TYPE;
+        }
+
+        return CalendarDateFormatter::format($carbon->timezone($timezone), $format, $calendarType);
+    }
+}
+
+if (! function_exists('calendar_type')) {
+    /**
+     * Active calendar system from System Settings (gregorian, jalali, or hijri).
+     */
+    function calendar_type(): string
+    {
+        return CalendarDateFormatter::active();
+    }
+}
+
+if (! function_exists('parse_calendar_date')) {
+    /**
+     * Convert a UI date in the active calendar to a Gregorian Y-m-d string.
+     */
+    function parse_calendar_date(?string $value): ?string
+    {
+        return CalendarDateFormatter::parseToGregorianYmd($value);
+    }
+}
+
+if (! function_exists('to_calendar_ymd')) {
+    /**
+     * Format a stored Gregorian date as Y-m-d in the active calendar (western digits).
+     */
+    function to_calendar_ymd(mixed $date): ?string
+    {
+        return CalendarDateFormatter::toInputYmd($date);
+    }
+}
+
+if (! function_exists('calendar_input_value')) {
+    /**
+     * Value for date inputs: calendar Y-m-d, round-tripping merged Gregorian old input.
+     */
+    function calendar_input_value(mixed $value): string
+    {
+        if ($value === null || $value === '') {
+            return '';
+        }
+
+        if ($value instanceof CarbonInterface) {
+            return CalendarDateFormatter::toInputYmd($value) ?? '';
+        }
+
+        $parsed = CalendarDateFormatter::parseToGregorianYmd((string) $value);
+
+        return $parsed !== null
+            ? (CalendarDateFormatter::toInputYmd($parsed) ?? '')
+            : CalendarDateFormatter::toWesternDigits((string) $value);
+    }
+}
+
+if (! function_exists('localized_relative_time')) {
+    /**
+     * Relative time such as "2 days ago", using the active locale.
+     */
+    function localized_relative_time(mixed $date): ?string
+    {
+        if ($date === null || $date === '') {
+            return null;
+        }
+
+        try {
+            $carbon = $date instanceof CarbonInterface
+                ? $date->copy()
+                : Carbon::parse($date);
+        } catch (Throwable) {
+            return null;
+        }
+
+        return $carbon->locale(app()->getLocale())->diffForHumans();
     }
 }
 

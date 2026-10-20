@@ -106,7 +106,7 @@
 
         <section class="card flat workspace-card">
             <h2 class="settings-section-title">Localization</h2>
-            <p class="settings-section-copy">Timezone defaults to Asia/Kabul. Date formats include a live preview.</p>
+            <p class="settings-section-copy">Timezone defaults to Asia/Kabul. Calendar type and date formats include a live preview.</p>
 
             <div class="settings-fields">
                 <div class="settings-field settings-timezone" @click.outside="timezoneOpen = false">
@@ -133,14 +133,34 @@
                 </div>
 
                 <fieldset class="settings-field">
+                    <legend class="settings-label">{{ __('Calendar Type') }}</legend>
+                    <div class="settings-formats">
+                        @foreach (\App\Support\CalendarDateFormatter::types() as $value => $label)
+                            <label class="settings-format">
+                                <input type="radio" name="calendar_type" value="{{ $value }}"
+                                    @checked(old('calendar_type', $settings->calendar_type ?? \App\Models\SystemSetting::DEFAULT_CALENDAR_TYPE) === $value)>
+                                <span>
+                                    <span class="settings-format-preview">{{ __($label) }}</span>
+                                    <span class="settings-format-code">{{ format_date($sampleDate, old('date_format', $settings->date_format), $value) }}</span>
+                                </span>
+                            </label>
+                        @endforeach
+                    </div>
+                    <x-input-error :messages="$errors->get('calendar_type')" />
+                </fieldset>
+
+                <fieldset class="settings-field">
                     <legend class="settings-label">Date format</legend>
                     <div class="settings-formats">
+                        @php
+                            $activeCalendar = old('calendar_type', $settings->calendar_type ?? \App\Models\SystemSetting::DEFAULT_CALENDAR_TYPE);
+                        @endphp
                         @foreach (\App\Models\SystemSetting::DATE_FORMATS as $format)
                             <label class="settings-format">
                                 <input type="radio" name="date_format" value="{{ $format }}"
                                     @checked(old('date_format', $settings->date_format) === $format)>
                                 <span>
-                                    <span class="settings-format-preview">{{ $sampleDate->format($format) }}</span>
+                                    <span class="settings-format-preview">{{ format_date($sampleDate, $format, is_string($activeCalendar) ? $activeCalendar : \App\Models\SystemSetting::DEFAULT_CALENDAR_TYPE) }}</span>
                                     <span class="settings-format-code">{{ $format }}</span>
                                 </span>
                             </label>

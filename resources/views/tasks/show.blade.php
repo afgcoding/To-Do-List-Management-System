@@ -75,7 +75,7 @@
             <span>{{ __('Created :date', ['date' => format_date($task->created_at)]) }}</span>
             <span>{{ __('by') }} <strong class="font-medium text-slate-700">{{ $task->creator->name ?? __('System') }}</strong></span>
             <span class="hidden text-slate-300 sm:inline">•</span>
-            <span>{{ __('Updated :time', ['time' => $task->updated_at->diffForHumans()]) }}</span>
+            <span>{{ __('Updated :time', ['time' => localized_relative_time($task->updated_at)]) }}</span>
         </div>
 
         {{-- Overall progress (from completed subtasks) --}}
@@ -347,7 +347,7 @@
                                     <div class="min-w-0 ps-3">
                                         <p class="truncate text-xs font-medium text-gray-800 sm:text-sm">{{ $user->name }}</p>
                                         @if($user->pivot->assigned_at)
-                                            <p class="text-xs text-gray-400">{{ __('Assigned :time', ['time' => \Illuminate\Support\Carbon::parse($user->pivot->assigned_at)->diffForHumans()]) }}</p>
+                                            <p class="text-xs text-gray-400">{{ __('Assigned :time', ['time' => localized_relative_time($user->pivot->assigned_at)]) }}</p>
                                         @endif
                                     </div>
                                 </div>

@@ -10,6 +10,7 @@ use App\Http\Requests\UpdateCalendarDueDateRequest;
 use App\Models\RecurringTask;
 use App\Models\Task;
 use App\Models\User;
+use App\Support\CalendarDateFormatter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -24,9 +25,13 @@ class CalendarController extends Controller
         $this->authorize('viewAny', Task::class);
 
         $actor = $request->user();
-        $cursor = $this->cursor($request);
-        $start = $cursor->copy()->startOfMonth()->startOfWeek(Carbon::MONDAY);
-        $end = $cursor->copy()->endOfMonth()->endOfWeek(Carbon::SUNDAY);
+        $monthView = CalendarDateFormatter::monthView(
+            $request->filled('year') ? $request->integer('year') : null,
+            $request->filled('month') ? $request->integer('month') : null,
+        );
+        $days = $monthView['days'];
+        $rangeStart = Carbon::parse($days->first()['iso'])->startOfDay();
+        $rangeEnd = Carbon::parse($days->last()['iso'])->endOfDay();
 
         $tasks = Task::query()
             ->visibleTo($actor)
@@ -35,20 +40,13 @@ class CalendarController extends Controller
                 'subtasks',
                 'subtasks as completed_subtasks_count' => fn (Builder $query) => $query->where('is_completed', true),
             ])
-            ->where(function ($query) use ($start, $end): void {
+            ->where(function ($query) use ($rangeStart, $rangeEnd): void {
                 $query->whereNull('due_date')
-                    ->orWhereBetween('due_date', [$start->copy()->startOfDay(), $end->copy()->endOfDay()]);
+                    ->orWhereBetween('due_date', [$rangeStart, $rangeEnd]);
             })
             ->orderBy('due_date')
             ->orderBy('id')
             ->get();
-
-        $days = collect();
-        $day = $start->copy();
-        while ($day->lte($end)) {
-            $days->push($day->copy());
-            $day->addDay();
-        }
 
         $recurringSchedules = RecurringTask::query()
             ->with(['task:id,title,status,priority'])
@@ -59,15 +57,15 @@ class CalendarController extends Controller
 
         return view('calendar.index', [
             'pageTitle' => 'Calendar',
-            'cursor' => $cursor,
+            'monthLabel' => $monthView['title'],
             'days' => $days,
             'previousUrl' => route('calendar.index', [
-                'year' => $cursor->copy()->subMonth()->year,
-                'month' => $cursor->copy()->subMonth()->month,
+                'year' => $monthView['previousYear'],
+                'month' => $monthView['previousMonth'],
             ]),
             'nextUrl' => route('calendar.index', [
-                'year' => $cursor->copy()->addMonth()->year,
-                'month' => $cursor->copy()->addMonth()->month,
+                'year' => $monthView['nextYear'],
+                'month' => $monthView['nextMonth'],
             ]),
             'calendarTasks' => $tasks->map(fn (Task $task): array => $this->calendarTaskPayload($task, $actor))->values(),
             'recurringSchedules' => $recurringSchedules,
@@ -150,17 +148,5 @@ class CalendarController extends Controller
             'canUpdatePriority' => $actor->can('updatePriority', $task),
             'url' => route('tasks.show', $task),
         ];
-    }
-
-    private function cursor(Request $request): Carbon
-    {
-        $year = $request->integer('year', (int) now()->year);
-        $month = $request->integer('month', (int) now()->month);
-
-        if ($year < 2000 || $year > 2100 || $month < 1 || $month > 12) {
-            return now()->startOfMonth();
-        }
-
-        return Carbon::createFromDate($year, $month, 1)->startOfMonth();
     }
 }

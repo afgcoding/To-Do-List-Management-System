@@ -5,12 +5,14 @@ use App\Enums\TaskStatus;
 use App\Models\Category;
 use App\Models\Department;
 use App\Models\Subtask;
+use App\Models\SystemSetting;
 use App\Models\Tag;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Morilog\Jalali\Jalalian;
 
 uses(RefreshDatabase::class);
 
@@ -369,4 +371,47 @@ it('collapses extra tags on the task list row with a more badge', function () {
         ->assertSee('#Beta', false)
         ->assertSee('+1 more')
         ->assertDontSee('#Gamma', false);
+});
+
+it('opens a date picker on the task start and due date fields', function () {
+    $this->get(route('tasks.create'))
+        ->assertOk()
+        ->assertSee('task-date-picker', false)
+        ->assertSee('taskDatePicker', false)
+        ->assertSee('name="start_date"', false)
+        ->assertSee('name="due_date"', false);
+});
+
+it('stores shamsi form dates as gregorian and redisplays them in jalali', function () {
+    SystemSetting::query()->updateOrCreate(['id' => 1], [
+        'company_name' => 'Task Management Enterprise',
+        'date_format' => 'Y-m-d',
+        'time_zone' => 'UTC',
+        'calendar_type' => 'jalali',
+    ]);
+    SystemSetting::forgetCache();
+
+    $start = '2026-09-20';
+    $due = '2026-09-27';
+    $jalaliStart = Jalalian::fromDateTime($start)->format('%Y-%m-%d');
+    $jalaliDue = Jalalian::fromDateTime($due)->format('%Y-%m-%d');
+
+    $this->post(route('tasks.store'), [
+        'title' => 'Jalali dates',
+        'priority' => TaskPriority::Medium->value,
+        'status' => TaskStatus::Todo->value,
+        'start_date' => $jalaliStart,
+        'due_date' => $jalaliDue,
+    ])->assertRedirect();
+
+    $task = Task::query()->where('title', 'Jalali dates')->first();
+
+    expect($task)->not->toBeNull()
+        ->and($task->start_date->toDateString())->toBe($start)
+        ->and($task->due_date->toDateString())->toBe($due);
+
+    $this->get(route('tasks.edit', $task))
+        ->assertOk()
+        ->assertSee($jalaliStart, false)
+        ->assertSee($jalaliDue, false);
 });

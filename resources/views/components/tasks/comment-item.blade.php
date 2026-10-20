@@ -12,7 +12,7 @@
             <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
                 <p class="text-sm font-semibold text-slate-800">{{ $comment->user->name ?? __('Unknown') }}</p>
                 <time class="text-[11px] text-slate-400" datetime="{{ $comment->created_at?->toIso8601String() }}" title="{{ $commentDate }}">
-                    {{ $comment->created_at?->diffForHumans() }}
+                    {{ localized_relative_time($comment->created_at) }}
                     @if ($commentDate)
                         · {{ $commentDate }}
                     @endif

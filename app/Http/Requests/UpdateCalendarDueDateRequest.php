@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\Http\Requests\Concerns\ConvertsCalendarFormDates;
 use App\Models\Task;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -12,12 +13,27 @@ use Illuminate\Validation\Validator;
 
 class UpdateCalendarDueDateRequest extends FormRequest
 {
+    use ConvertsCalendarFormDates;
+
     public function authorize(): bool
     {
         $task = $this->route('task');
 
         return $task instanceof Task
             && ($this->user()?->can('update', $task) ?? false);
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $this->convertCalendarDateFields();
+    }
+
+    /**
+     * @return list<string>
+     */
+    protected function calendarDateFields(): array
+    {
+        return ['due_date'];
     }
 
     /**

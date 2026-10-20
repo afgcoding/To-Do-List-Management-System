@@ -406,7 +406,7 @@
         <h1 class="workspace-title">{{ __('Calendar') }}</h1>
         <div class="calendar-month-nav">
             <a href="{{ $previousUrl }}" class="btn btn-sm btn-secondary">{{ __('Previous') }}</a>
-            <p class="calendar-month-label">{{ $cursor->locale(app()->getLocale())->translatedFormat('F Y') }}</p>
+            <p class="calendar-month-label">{{ $monthLabel }}</p>
             <a href="{{ $nextUrl }}" class="btn btn-sm btn-secondary">{{ __('Next') }}</a>
         </div>
     </div>
@@ -490,17 +490,17 @@
             <div class="mt-px grid grid-cols-7 gap-px bg-slate-200">
                 @foreach ($days as $day)
                     @php
-                        $dateKey = $day->toDateString();
-                        $inMonth = $day->isSameMonth($cursor);
+                        $dateKey = $day['iso'];
+                        $inMonth = $day['inMonth'];
                     @endphp
                     <div
-                        class="calendar-day-cell min-h-28 bg-white p-1.5 {{ $inMonth ? '' : 'bg-slate-50' }} {{ $day->isToday() ? 'ring-1 ring-inset ring-indigo-200' : '' }}"
+                        class="calendar-day-cell min-h-28 bg-white p-1.5 {{ $inMonth ? '' : 'bg-slate-50' }} {{ $day['isToday'] ? 'ring-1 ring-inset ring-indigo-200' : '' }}"
                         @dragover.prevent
                         @drop.prevent="dropOn(@js($dateKey), $event)"
                         @click="openCreate($event, @js($dateKey))"
                     >
                         <div class="mb-1 flex items-center justify-between gap-1">
-                            <p class="text-[11px] font-semibold {{ $inMonth ? 'text-slate-600' : 'text-slate-300' }}">{{ $day->day }}</p>
+                            <p class="text-[11px] font-semibold {{ $inMonth ? 'text-slate-600' : 'text-slate-300' }}">{{ \App\Support\CalendarDateFormatter::localizeDigits((string) $day['day']) }}</p>
                             @if ($canCreateTask)
                                 <button type="button" class="calendar-day-add" aria-label="{{ __('Add task on :date', ['date' => $dateKey]) }}" @click="openCreate($event, @js($dateKey))">+</button>
                             @endif

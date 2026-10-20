@@ -48,8 +48,8 @@ class TaskController extends Controller
                     : ($request->filled('user_id') ? $request->integer('user_id') : null),
             )
             ->dueBetween(
-                $request->string('due_from')->toString() ?: null,
-                $request->string('due_to')->toString() ?: null,
+                parse_calendar_date($request->string('due_from')->toString() ?: null),
+                parse_calendar_date($request->string('due_to')->toString() ?: null),
             )
             ->sortedBy(
                 $request->string('sort_by', 'created_at')->toString(),

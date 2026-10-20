@@ -51,7 +51,7 @@
             </p>
             @if ($when)
                 <time datetime="{{ $when->toIso8601String() }}" class="mt-0.5 block text-[11px] text-slate-400" title="{{ $absoluteTime }}">
-                    {{ $when->diffForHumans() }}
+                    {{ localized_relative_time($when) }}
                 </time>
             @endif
         </div>

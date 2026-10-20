@@ -25,6 +25,7 @@ class UpdateSystemSettingRequest extends FormRequest
             'company_name' => ['required', 'string', 'max:255'],
             'logo' => ['nullable', 'file', 'mimes:png,jpg,jpeg,svg,webp', 'max:2048'],
             'date_format' => ['required', 'string', Rule::in(SystemSetting::DATE_FORMATS)],
+            'calendar_type' => ['nullable', 'string', Rule::in(SystemSetting::CALENDAR_TYPES)],
             'time_zone' => ['required', 'timezone:all'],
             'remove_logo' => ['sometimes', 'boolean'],
             'primary_color' => ['nullable', 'regex:/^#[0-9A-Fa-f]{6}$/'],

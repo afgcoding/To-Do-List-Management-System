@@ -3,8 +3,10 @@
 use App\Enums\TaskPriority;
 use App\Enums\TaskStatus;
 use App\Models\RecurringTask;
+use App\Models\SystemSetting;
 use App\Models\Task;
 use App\Models\User;
+use App\Support\CalendarDateFormatter;
 
 it('renders the task calendar for signed-in users', function () {
     $user = User::factory()->manager()->create();
@@ -200,4 +202,54 @@ it('forbids employees from rescheduling tasks they cannot edit', function () {
         ->assertForbidden();
 
     expect($task->fresh()->due_date->toDateString())->toBe($original);
+});
+
+it('renders the calendar month in shamsi when jalali is selected', function () {
+    $user = User::factory()->manager()->create();
+
+    SystemSetting::query()->updateOrCreate(['id' => 1], [
+        'company_name' => 'Task Management Enterprise',
+        'date_format' => 'Y-m-d',
+        'time_zone' => 'UTC',
+        'calendar_type' => 'jalali',
+    ]);
+    SystemSetting::forgetCache();
+
+    $month = CalendarDateFormatter::monthView(null, null);
+
+    $this->actingAs($user)
+        ->get(route('calendar.index', [
+            'year' => $month['year'],
+            'month' => $month['month'],
+        ]))
+        ->assertOk()
+        ->assertSee($month['title'], false)
+        ->assertDontSee(now()->translatedFormat('F Y'), false);
+});
+
+it('keeps calendar ajax due dates as gregorian iso when shamsi is active', function () {
+    $user = User::factory()->manager()->create();
+    $task = Task::factory()->create([
+        'start_date' => now()->subDay(),
+        'due_date' => null,
+        'status' => TaskStatus::Todo,
+    ]);
+    $due = now()->toDateString();
+
+    SystemSetting::query()->updateOrCreate(['id' => 1], [
+        'company_name' => 'Task Management Enterprise',
+        'date_format' => 'Y-m-d',
+        'time_zone' => 'UTC',
+        'calendar_type' => 'jalali',
+    ]);
+    SystemSetting::forgetCache();
+
+    $this->actingAs($user)
+        ->patchJson(route('calendar.tasks.due-date', $task), [
+            'due_date' => $due,
+        ])
+        ->assertOk()
+        ->assertJsonPath('due_date', $due);
+
+    expect($task->fresh()->due_date->toDateString())->toBe($due);
 });

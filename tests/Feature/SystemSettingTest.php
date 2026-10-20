@@ -9,6 +9,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
+use Morilog\Jalali\Jalalian;
 
 uses(RefreshDatabase::class);
 
@@ -49,7 +50,11 @@ it('serves the same settings panel at the /settings alias', function () {
         ->assertViewIs('settings.index')
         ->assertSee('Company name')
         ->assertSee('Timezone')
-        ->assertSee('Date format');
+        ->assertSee('Date format')
+        ->assertSee('Calendar Type')
+        ->assertSee('Miladi (Gregorian)')
+        ->assertSee('Shamsi (Jalali)')
+        ->assertSee('Qamari (Hijri)');
 });
 
 it('updates the primary accent color', function () {
@@ -147,9 +152,66 @@ it('rejects an invalid timezone and date format', function () {
             'company_name' => 'Task Management Enterprise',
             'date_format' => 'not-a-format',
             'time_zone' => 'Not/AZone',
+            'calendar_type' => 'lunar-wrong',
         ])
         ->assertRedirect(route('system-settings.index'))
-        ->assertSessionHasErrors(['date_format', 'time_zone']);
+        ->assertSessionHasErrors(['date_format', 'time_zone', 'calendar_type']);
+});
+
+it('saves the calendar type and formats dates as shamsi', function () {
+    $this->actingAs(User::factory()->superAdmin()->create());
+    SystemSetting::getSettings();
+
+    $this->from(route('system-settings.index'))
+        ->put(route('system-settings.update'), [
+            'company_name' => 'Task Management Enterprise',
+            'date_format' => 'Y-m-d',
+            'time_zone' => 'UTC',
+            'calendar_type' => 'jalali',
+        ])
+        ->assertRedirect(route('system-settings.index'));
+
+    $this->assertDatabaseHas('system_settings', [
+        'id' => 1,
+        'calendar_type' => 'jalali',
+    ]);
+
+    SystemSetting::forgetCache();
+
+    expect(format_date('2026-09-12'))->toBe(Jalalian::fromDateTime('2026-09-12')->format('%Y-%m-%d'));
+});
+
+it('formats dates as qamari when hijri is selected', function () {
+    SystemSetting::query()->updateOrCreate(['id' => 1], [
+        'company_name' => 'Task Management Enterprise',
+        'date_format' => 'Y-m-d',
+        'time_zone' => 'UTC',
+        'calendar_type' => 'hijri',
+    ]);
+    SystemSetting::forgetCache();
+
+    $formatted = format_date('2026-09-12');
+
+    expect($formatted)->not->toBe('2026-09-12')
+        ->and($formatted)->toMatch('/^\d{4}-\d{2}-\d{2}$/');
+
+    expect(parse_calendar_date($formatted))->toBe('2026-09-12');
+});
+
+it('round-trips shamsi ymd back to the stored gregorian date', function () {
+    SystemSetting::query()->updateOrCreate(['id' => 1], [
+        'company_name' => 'Task Management Enterprise',
+        'date_format' => 'Y-m-d',
+        'time_zone' => 'UTC',
+        'calendar_type' => 'jalali',
+    ]);
+    SystemSetting::forgetCache();
+
+    $jalali = Jalalian::fromDateTime('2026-09-12')->format('%Y-%m-%d');
+
+    expect($jalali)->not->toBe('2026-09-12')
+        ->and(parse_calendar_date($jalali))->toBe('2026-09-12')
+        ->and(to_calendar_ymd('2026-09-12'))->toBe($jalali);
 });
 
 it('formats task comment and activity dates with the saved timezone and format', function () {

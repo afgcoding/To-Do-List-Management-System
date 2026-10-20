@@ -18,16 +18,22 @@ class SystemSetting extends Model
 
     public const DEFAULT_DATE_FORMAT = 'Y-m-d';
 
+    public const DEFAULT_CALENDAR_TYPE = 'gregorian';
+
     public const DEFAULT_TIME_ZONE = 'Asia/Kabul';
 
     /** @var list<string> */
     public const DATE_FORMATS = ['Y-m-d', 'm/d/Y', 'd-m-Y', 'd M Y'];
+
+    /** @var list<string> */
+    public const CALENDAR_TYPES = ['gregorian', 'jalali', 'hijri'];
 
     protected $fillable = [
         'company_name',
         'logo',
         'primary_color',
         'date_format',
+        'calendar_type',
         'time_zone',
     ];
 
@@ -70,6 +76,7 @@ class SystemSetting extends Model
             'id' => 1,
             'company_name' => self::DEFAULT_COMPANY_NAME,
             'date_format' => self::DEFAULT_DATE_FORMAT,
+            'calendar_type' => self::DEFAULT_CALENDAR_TYPE,
             'time_zone' => self::DEFAULT_TIME_ZONE,
             'logo' => null,
             'primary_color' => self::DEFAULT_PRIMARY_COLOR,

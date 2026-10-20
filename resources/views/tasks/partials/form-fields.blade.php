@@ -23,16 +23,12 @@
 <div class="grid grid-cols-1 gap-4 min-[400px]:grid-cols-2">
     <div class="min-w-0">
         <label class="mb-1 block text-sm font-medium text-slate-700">{{ __('Start Date') }}</label>
-        <input type="date" name="start_date"
-            value="{{ old('start_date', $task?->start_date?->format('Y-m-d')) }}"
-            class="form-control">
+        <x-calendar-date-input name="start_date" :value="old('start_date', $task?->start_date)" :picker="true" class="form-control" />
         <x-input-error class="mt-1" :messages="$errors->get('start_date')" />
     </div>
     <div class="min-w-0">
         <label class="mb-1 block text-sm font-medium text-slate-700">{{ __('Due Date') }}</label>
-        <input type="date" name="due_date"
-            value="{{ old('due_date', $task?->due_date?->format('Y-m-d')) }}"
-            class="form-control">
+        <x-calendar-date-input name="due_date" :value="old('due_date', $task?->due_date)" :picker="true" class="form-control" />
         <x-input-error class="mt-1" :messages="$errors->get('due_date')" />
     </div>
 </div>
@@ -69,9 +65,7 @@
         </div>
         <div>
             <label class="mb-1 block text-sm font-medium text-slate-700">{{ __('Next run date') }}</label>
-            <input type="date" name="next_recurring_date"
-                value="{{ old('next_recurring_date', $schedule?->next_recurring_date?->format('Y-m-d') ?? now()->addDay()->toDateString()) }}"
-                class="form-control">
+            <x-calendar-date-input name="next_recurring_date" :value="old('next_recurring_date', $schedule?->next_recurring_date ?? now()->addDay())" class="form-control" />
             <x-input-error class="mt-1" :messages="$errors->get('next_recurring_date')" />
         </div>
     </div>
