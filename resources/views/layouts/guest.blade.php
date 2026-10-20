@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" style="--brand: {{ brand_color() }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ locale_is_rtl() ? 'rtl' : 'ltr' }}" data-locale-dir="{{ locale_is_rtl() ? 'rtl' : 'ltr' }}" class="{{ locale_is_rtl() ? 'rtl' : '' }}" style="--brand: {{ brand_color() }}">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -13,7 +13,7 @@
         <link rel="apple-touch-icon" href="{{ $tabIcon }}">
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="min-h-screen bg-slate-100 font-sans text-slate-800 antialiased">
+    <body class="min-h-screen bg-slate-100 font-sans text-slate-800 antialiased{{ locale_is_rtl() ? ' rtl' : '' }}">
         <div class="grid min-h-screen lg:grid-cols-2">
             <aside class="relative hidden overflow-hidden text-white lg:flex lg:flex-col lg:justify-between lg:p-12"
                 style="background: linear-gradient(165deg, var(--brand) 0%, #0f172a 78%);">

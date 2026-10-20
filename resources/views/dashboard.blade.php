@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @php
-    $pageTitle = 'Dashboard';
+    $pageTitle = __('Dashboard');
     $hideLayoutPageHeader = true;
     $trend = $kpis['activeTrend'];
     $statusSlices = collect($distribution)->reject(fn (array $item): bool => $item['key'] === 'overdue');
@@ -15,10 +15,10 @@
 <div class="space-y-6">
     <div class="mb-4 flex items-center justify-between gap-3 sm:mb-6">
         <div class="min-w-0">
-            <h1 class="workspace-title">Dashboard</h1>
+            <h1 class="workspace-title">{{ __('Dashboard') }}</h1>
             <p class="mt-0.5 text-[11px] text-gray-500 sm:text-sm">{{ setting('company_name', config('app.name', 'TaskFlow')) }}</p>
         </div>
-        <a href="{{ route('tasks.index') }}" class="btn btn-sm btn-secondary">Open tasks</a>
+        <a href="{{ route('tasks.index') }}" class="btn btn-sm btn-secondary">{{ __('Open tasks') }}</a>
     </div>
 
     @include('dashboard.partials.task-workspace', [
@@ -35,10 +35,10 @@
                     <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12"/></svg>
                 </span>
                 <div class="min-w-0">
-                    <p class="text-xs font-medium uppercase tracking-wider text-slate-500">Total Active Tasks</p>
+                    <p class="text-xs font-medium uppercase tracking-wider text-slate-500">{{ __('Total Active Tasks') }}</p>
                     <p class="mt-1 text-2xl font-bold tracking-tight text-slate-900">{{ $kpis['active'] }}</p>
                     <p @class(['mt-1 inline-flex rounded-full px-2 py-0.5 text-[11px] font-semibold', 'bg-emerald-50 text-emerald-700' => $trend >= 0, 'bg-rose-50 text-rose-700' => $trend < 0])>
-                        {{ $trend >= 0 ? '+' : '' }}{{ $trend }}% from last week
+                        {{ $trend >= 0 ? '+' : '' }}{{ $trend }}% {{ __('from last week') }}
                     </p>
                 </div>
             </div>
@@ -49,9 +49,9 @@
                     <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.5 20.118a7.5 7.5 0 0 1 15 0"/></svg>
                 </span>
                 <div class="min-w-0">
-                    <p class="text-xs font-medium uppercase tracking-wider text-slate-500">{{ $canViewTeamAnalytics ? 'My Assigned Tasks' : 'Assigned to Me' }}</p>
+                    <p class="text-xs font-medium uppercase tracking-wider text-slate-500">{{ $canViewTeamAnalytics ? __('My Assigned Tasks') : __('Assigned to Me') }}</p>
                     <p class="mt-1 text-2xl font-bold tracking-tight text-slate-900">{{ $kpis['assigned'] }}</p>
-                    <p class="mt-1 text-[11px] text-slate-400">Open tasks assigned to you</p>
+                    <p class="mt-1 text-[11px] text-slate-400">{{ __('Open tasks assigned to you') }}</p>
                 </div>
             </div>
         </article>
@@ -61,9 +61,9 @@
                     <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3.75 13.5 7.5 9.75m0 0 3.75 3.75M7.5 9.75v9m12.75-3-3.75-3.75m0 0-3.75 3.75M16.5 12v9"/></svg>
                 </span>
                 <div class="min-w-0">
-                    <p class="text-xs font-medium uppercase tracking-wider text-slate-500">{{ $canViewTeamAnalytics ? 'Team Workload' : 'Pending Tasks' }}</p>
+                    <p class="text-xs font-medium uppercase tracking-wider text-slate-500">{{ $canViewTeamAnalytics ? __('Team Workload') : __('Pending Tasks') }}</p>
                     <p class="mt-1 text-2xl font-bold tracking-tight text-slate-900">{{ $kpis['pending'] }}</p>
-                    <p class="mt-1 text-[11px] text-slate-400">To Do and In Progress</p>
+                    <p class="mt-1 text-[11px] text-slate-400">{{ __('To Do and In Progress') }}</p>
                 </div>
             </div>
         </article>
@@ -73,9 +73,9 @@
                     <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/></svg>
                 </span>
                 <div class="min-w-0">
-                    <p class="text-xs font-medium uppercase tracking-wider text-rose-700">Critical Overdue</p>
+                    <p class="text-xs font-medium uppercase tracking-wider text-rose-700">{{ __('Critical Overdue') }}</p>
                     <p class="mt-1 text-2xl font-bold tracking-tight text-rose-700">{{ $kpis['overdue'] }}</p>
-                    <p class="mt-1 text-[11px] text-rose-600">Past deadline and still open</p>
+                    <p class="mt-1 text-[11px] text-rose-600">{{ __('Past deadline and still open') }}</p>
                 </div>
             </div>
         </article>
@@ -83,7 +83,7 @@
 
     <div class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
         <section class="card flat workspace-card lg:col-span-2">
-            <h2 class="text-sm font-semibold text-slate-900">Task distribution by status</h2>
+            <h2 class="text-sm font-semibold text-slate-900">{{ __('Task distribution by status') }}</h2>
             <div class="mt-5 flex flex-col gap-6 sm:flex-row sm:items-center">
                 <svg viewBox="0 0 96 96" class="mx-auto size-32 shrink-0" aria-hidden="true">
                     <circle cx="48" cy="48" r="{{ $radius }}" fill="none" stroke="#e2e8f0" stroke-width="12" />
@@ -110,7 +110,7 @@
                     @foreach ($distribution as $item)
                         <div>
                             <div class="mb-1 flex items-center justify-between text-xs">
-                                <span class="font-medium text-slate-600">{{ $item['label'] }}</span>
+                                <span class="font-medium text-slate-600">{{ __($item['label']) }}</span>
                                 <span class="font-semibold text-slate-800">{{ $item['count'] }}</span>
                             </div>
                             <div class="h-1.5 overflow-hidden rounded-full bg-slate-100">
@@ -123,8 +123,8 @@
         </section>
 
         <section class="card flat workspace-card lg:col-span-1">
-            <h2 class="text-sm font-semibold text-slate-900">Task completion velocity</h2>
-            <p class="mt-1 text-xs text-slate-500">Completed tasks and subtasks versus remaining work.</p>
+            <h2 class="text-sm font-semibold text-slate-900">{{ __('Task completion velocity') }}</h2>
+            <p class="mt-1 text-xs text-slate-500">{{ __('Completed tasks and subtasks versus remaining work.') }}</p>
             @php
                 $gauge = 2 * 3.1416 * 42;
                 $filled = ($velocity / 100) * $gauge;
@@ -136,14 +136,14 @@
                         stroke-dasharray="{{ $filled }} {{ $gauge }}" />
                     <text x="60" y="62" text-anchor="middle" class="fill-slate-900" font-size="18" font-weight="700">{{ $velocity }}%</text>
                 </svg>
-                <p class="text-xs text-slate-500">Overall completion</p>
+                <p class="text-xs text-slate-500">{{ __('Overall completion') }}</p>
             </div>
         </section>
     </div>
 
     @if ($canViewTeamAnalytics)
         <section class="card flat workspace-card">
-            <h2 class="text-sm font-semibold text-slate-900">Employee workload &amp; performance</h2>
+            <h2 class="text-sm font-semibold text-slate-900">{{ __('Employee workload & performance') }}</h2>
             <div class="mt-4 space-y-4">
                 @forelse ($workload as $member)
                     @php
@@ -157,12 +157,12 @@
                             <x-user-avatar :user="$member" size="md" />
                             <div class="min-w-0">
                                 <p class="truncate text-sm font-medium text-slate-800">{{ $member->name }}</p>
-                                <p class="text-[11px] text-slate-400">{{ $member->assigned_count }} assigned · {{ $member->completed_count }} completed · {{ $pending }} pending</p>
+                                <p class="text-[11px] text-slate-400">{{ $member->assigned_count }} {{ __('assigned') }} · {{ $member->completed_count }} {{ __('completed') }} · {{ $pending }} {{ __('pending') }}</p>
                             </div>
                         </div>
                         <div class="w-full sm:w-48">
                             <div class="mb-1 flex justify-between text-[10px] font-semibold uppercase tracking-wide">
-                                <span @class(['text-emerald-700' => $load === 'balanced', 'text-amber-700' => $load === 'high', 'text-rose-700' => $load === 'overloaded'])>{{ $load }}</span>
+                                <span @class(['text-emerald-700' => $load === 'balanced', 'text-amber-700' => $load === 'high', 'text-rose-700' => $load === 'overloaded'])>{{ __($load) }}</span>
                                 <span class="text-slate-400">{{ $bar }}%</span>
                             </div>
                             <div class="h-1.5 overflow-hidden rounded-full bg-slate-100">
@@ -171,14 +171,14 @@
                         </div>
                     </div>
                 @empty
-                    <p class="text-sm text-slate-400">No assigned team members yet.</p>
+                    <p class="text-sm text-slate-400">{{ __('No assigned team members yet.') }}</p>
                 @endforelse
             </div>
         </section>
 
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
             <section class="card flat workspace-card">
-                <h2 class="text-sm font-semibold text-slate-900">Department breakdown</h2>
+                <h2 class="text-sm font-semibold text-slate-900">{{ __('Department breakdown') }}</h2>
                 <div class="mt-4 space-y-2">
                     @forelse ($departments as $department)
                         <div class="flex items-center justify-between gap-3">
@@ -186,12 +186,12 @@
                             <span class="rounded-md bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-600">{{ $department->tasks_count }}</span>
                         </div>
                     @empty
-                        <p class="text-sm text-slate-400">No department activity yet.</p>
+                        <p class="text-sm text-slate-400">{{ __('No department activity yet.') }}</p>
                     @endforelse
                 </div>
             </section>
             <section class="card flat workspace-card">
-                <h2 class="text-sm font-semibold text-slate-900">Category breakdown</h2>
+                <h2 class="text-sm font-semibold text-slate-900">{{ __('Category breakdown') }}</h2>
                 <div class="mt-4 flex flex-wrap gap-2">
                     @forelse ($categories as $category)
                         <span class="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700">
@@ -199,7 +199,7 @@
                             <span class="rounded-full bg-white px-1.5 text-[10px] font-semibold text-slate-500">{{ $category->tasks_count }}</span>
                         </span>
                     @empty
-                        <p class="text-sm text-slate-400">No category activity yet.</p>
+                        <p class="text-sm text-slate-400">{{ __('No category activity yet.') }}</p>
                     @endforelse
                 </div>
             </section>
@@ -208,11 +208,11 @@
 
     <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
         <section class="card flat workspace-card lg:col-span-1">
-            <h2 class="text-sm font-semibold text-slate-900">Upcoming deadlines</h2>
+            <h2 class="text-sm font-semibold text-slate-900">{{ __('Upcoming deadlines') }}</h2>
             <div class="mt-4 space-y-3">
                 @forelse ($upcoming as $task)
                     @php
-                        $dueLabel = $task->due_date?->isToday() ? 'Due Today' : 'Due Tomorrow';
+                        $dueLabel = $task->due_date?->isToday() ? __('Due Today') : __('Due Tomorrow');
                     @endphp
                     <a href="{{ route('tasks.show', $task) }}" class="block rounded-lg border border-slate-100 p-3 hover:border-indigo-100 hover:bg-slate-50">
                         <p dir="auto" class="bidi-auto truncate text-sm font-medium text-slate-800">{{ $task->title }}</p>
@@ -222,20 +222,20 @@
                         </div>
                     </a>
                 @empty
-                    <p class="text-sm text-slate-400">No tasks due in the next 48 hours.</p>
+                    <p class="text-sm text-slate-400">{{ __('No tasks due in the next 48 hours.') }}</p>
                 @endforelse
             </div>
         </section>
         <section class="card flat workspace-card lg:col-span-2">
-            <h2 class="text-sm font-semibold text-slate-900">Recent activity</h2>
+            <h2 class="text-sm font-semibold text-slate-900">{{ __('Recent activity') }}</h2>
             <div class="custom-scrollbar mt-4 max-h-[350px] space-y-3 overflow-y-auto pr-1">
                 @forelse ($activities as $log)
                     <div class="flex gap-3">
                         <x-user-avatar :user="$log->user" size="sm" />
                         <div class="min-w-0">
                             <p class="text-sm text-slate-700">
-                                <span class="font-medium text-slate-900">{{ $log->user->name ?? 'System' }}</span>
-                                {{ $log->description }}
+                                <span class="font-medium text-slate-900">{{ $log->user->name ?? __('System') }}</span>
+                                {{ localized_activity($log->description) }}
                             </p>
                             @if ($log->task)
                                 <a href="{{ route('tasks.show', $log->task) }}" dir="auto" class="bidi-auto mt-0.5 block truncate text-xs text-indigo-600 hover:text-indigo-800">{{ $log->task->title }}</a>
@@ -244,7 +244,7 @@
                         </div>
                     </div>
                 @empty
-                    <p class="text-sm text-slate-400">No recent updates.</p>
+                    <p class="text-sm text-slate-400">{{ __('No recent updates.') }}</p>
                 @endforelse
             </div>
         </section>

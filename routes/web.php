@@ -19,7 +19,16 @@ use App\Http\Controllers\TagController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TwoFactorAuthenticationController;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\SetLocale;
 use Illuminate\Support\Facades\Route;
+
+Route::get('locale/{lang}', function (string $lang) {
+    if (in_array($lang, SetLocale::SUPPORTED, true)) {
+        session(['locale' => $lang]);
+    }
+
+    return back();
+})->name('locale.change');
 
 Route::get('/', function () {
     return redirect()->route('tasks.index');

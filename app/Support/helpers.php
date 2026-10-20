@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Middleware\SetLocale;
 use App\Models\SystemSetting;
 use Carbon\Carbon;
 use Carbon\CarbonInterface;
@@ -65,5 +66,69 @@ if (! function_exists('brand_color')) {
         return preg_match('/^#[0-9A-Fa-f]{6}$/', $color) === 1
             ? $color
             : SystemSetting::DEFAULT_PRIMARY_COLOR;
+    }
+}
+
+if (! function_exists('locale_is_rtl')) {
+    /**
+     * Pashto and Dari use a right-to-left document direction.
+     */
+    function locale_is_rtl(): bool
+    {
+        return SetLocale::isRtl();
+    }
+}
+
+if (! function_exists('localized_activity')) {
+    /**
+     * Translate a stored English activity phrase at render time without changing the database value.
+     */
+    function localized_activity(?string $description): string
+    {
+        if ($description === null || $description === '') {
+            return '';
+        }
+
+        $localizeToken = static function (string $token): string {
+            $translated = __($token);
+
+            return is_string($translated) ? $translated : $token;
+        };
+
+        if (preg_match('/^changed status from (.+) to (.+)$/u', $description, $matches) === 1) {
+            return __('changed status from :from to :to', [
+                'from' => $localizeToken($matches[1]),
+                'to' => $localizeToken($matches[2]),
+            ]);
+        }
+
+        if (preg_match('/^changed status to (.+)$/u', $description, $matches) === 1) {
+            return __('changed status to :to', [
+                'to' => $localizeToken($matches[1]),
+            ]);
+        }
+
+        if (preg_match('/^changed priority from (.+) to (.+)$/u', $description, $matches) === 1) {
+            return __('changed priority from :from to :to', [
+                'from' => $localizeToken($matches[1]),
+                'to' => $localizeToken($matches[2]),
+            ]);
+        }
+
+        if (preg_match('/^changed due date to (.+)$/u', $description, $matches) === 1) {
+            return __('changed due date to :date', [
+                'date' => $matches[1],
+            ]);
+        }
+
+        if (preg_match('/^attached file (.+)$/u', $description, $matches) === 1) {
+            return __('attached file :name', [
+                'name' => $matches[1],
+            ]);
+        }
+
+        $translated = __($description);
+
+        return is_string($translated) ? $translated : $description;
     }
 }

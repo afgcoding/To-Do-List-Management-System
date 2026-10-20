@@ -5,4 +5,4 @@
         ? $priority
         : \App\Enums\TaskPriority::from((string) $priority);
 @endphp
-<x-badge :tone="$priority->tone()" {{ $attributes }}>{{ $priority->label() }}</x-badge>
+<x-badge :tone="$priority->tone()" {{ $attributes }}>{{ __($priority->label()) }}</x-badge>

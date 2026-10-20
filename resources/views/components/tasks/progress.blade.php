@@ -23,8 +23,8 @@
         <span class="w-10 shrink-0 text-right text-xs font-semibold {{ $textClass }}">{{ $percent }}%</span>
     @else
         <div class="flex items-center justify-between text-xs">
-            <span class="font-semibold tracking-wide text-slate-500">{{ $label ?? 'Progress' }}</span>
-            <span class="font-semibold {{ $textClass }}">{{ $percent }}%{{ $percent === 100 ? ' Completed' : '' }}</span>
+            <span class="font-semibold tracking-wide text-slate-500">{{ $label ?? __('Progress') }}</span>
+            <span class="font-semibold {{ $textClass }}">{{ $percent }}%{{ $percent === 100 ? ' '.__('Completed') : '' }}</span>
         </div>
         <div class="h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
             <div class="h-1.5 rounded-full transition-all duration-500 ease-out {{ $barClass }}" style="width: {{ $percent }}%"></div>

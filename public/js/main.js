@@ -1,5 +1,22 @@
 function rtl() {
+  var html = document.documentElement;
   var body = document.body;
+  var locked = html.getAttribute("data-locale-dir");
+
+  if (locked === "rtl") {
+    html.classList.add("rtl");
+    body.classList.add("rtl");
+    html.setAttribute("dir", "rtl");
+    return;
+  }
+
+  if (locked === "ltr") {
+    html.classList.remove("rtl");
+    body.classList.remove("rtl");
+    html.setAttribute("dir", "ltr");
+    return;
+  }
+
   body.classList.toggle("rtl");
 }
 

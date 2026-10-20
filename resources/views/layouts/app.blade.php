@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html class="no-js h-screen overflow-hidden" lang="{{ str_replace('_', '-', app()->getLocale()) }}" style="--brand: {{ brand_color() }}">
+<html class="no-js h-screen overflow-hidden{{ locale_is_rtl() ? ' rtl' : '' }}" lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ locale_is_rtl() ? 'rtl' : 'ltr' }}" data-locale-dir="{{ locale_is_rtl() ? 'rtl' : 'ltr' }}" style="--brand: {{ brand_color() }}">
 @include('layouts.partials.header')
 
-<body class="h-screen overflow-hidden">
+<body class="h-screen overflow-hidden{{ locale_is_rtl() ? ' rtl' : '' }}">
     <div class="bmd-layout-container bmd-drawer-f-l avam-container animated bmd-drawer-in h-screen overflow-hidden">
         @include('layouts.partials.navbar')
         @include('layouts.partials.sidebar')

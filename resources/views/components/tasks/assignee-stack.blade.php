@@ -5,7 +5,7 @@
     $extra = max(0, $assignees->count() - $visible->count());
 @endphp
 @if ($assignees->isEmpty())
-    <span class="text-xs italic text-slate-400">Unassigned</span>
+    <span class="text-xs italic text-slate-400">{{ __('Unassigned') }}</span>
 @else
     <div {{ $attributes->merge(['class' => 'flex items-center']) }}>
         <div class="flex items-center -space-x-2 overflow-hidden p-0.5">

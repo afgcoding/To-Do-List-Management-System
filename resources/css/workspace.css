@@ -3254,3 +3254,13 @@ body .users-drawer-none {
         justify-content: flex-end;
     }
 }
+
+html[dir="rtl"] .app-page-content {
+    direction: rtl;
+    text-align: start;
+}
+
+html[dir="ltr"] .app-page-content {
+    direction: ltr;
+    text-align: start;
+}

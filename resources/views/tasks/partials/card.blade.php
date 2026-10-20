@@ -10,7 +10,7 @@
     <div class="mt-3 flex flex-wrap items-center gap-2">
         <x-tasks.status-badge :status="$task->status" />
         @if($task->is_overdue)
-            <x-badge tone="rose">Overdue</x-badge>
+            <x-badge tone="rose">{{ __('Overdue') }}</x-badge>
         @endif
     </div>
     <div class="mt-4">
@@ -28,18 +28,18 @@
                 </p>
             @endif
         </div>
-        <span class="shrink-0 text-[11px] font-medium text-slate-500 sm:text-xs">{{ format_date($task->due_date) ?? 'No due date' }}</span>
+        <span class="shrink-0 text-[11px] font-medium text-slate-500 sm:text-xs">{{ format_date($task->due_date) ?? __('No due date') }}</span>
     </div>
     <div class="mt-4 flex items-stretch gap-2 border-t border-slate-100 pt-4">
-        <a href="{{ route('tasks.show', $task) }}" class="{{ $action }} flex-1 border-slate-200 bg-white text-slate-600 hover:bg-slate-50">View</a>
+        <a href="{{ route('tasks.show', $task) }}" class="{{ $action }} flex-1 border-slate-200 bg-white text-slate-600 hover:bg-slate-50">{{ __('View') }}</a>
         @can('update', $task)
-            <a href="{{ route('tasks.edit', $task) }}" class="{{ $action }} flex-1 border-slate-200 bg-white text-slate-600 hover:bg-slate-50">Edit</a>
+            <a href="{{ route('tasks.edit', $task) }}" class="{{ $action }} flex-1 border-slate-200 bg-white text-slate-600 hover:bg-slate-50">{{ __('Edit') }}</a>
         @endcan
         @can('delete', $task)
-            <form action="{{ route('tasks.destroy', $task) }}" method="POST" onsubmit="return confirm('Delete this task?');" class="min-w-0 flex-1">
+            <form action="{{ route('tasks.destroy', $task) }}" method="POST" onsubmit="return confirm({{ \Illuminate\Support\Js::from(__('Delete this task?')) }});" class="min-w-0 flex-1">
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="{{ $action }} border-rose-200 bg-white text-rose-500 hover:bg-rose-50">Delete</button>
+                <button type="submit" class="{{ $action }} border-rose-200 bg-white text-rose-500 hover:bg-rose-50">{{ __('Delete') }}</button>
             </form>
         @endcan
     </div>
