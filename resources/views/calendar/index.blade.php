@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @php
-    $pageTitle = 'Calendar';
+    $pageTitle = __('Calendar');
     $hideLayoutPageHeader = true;
 @endphp
 
@@ -32,8 +32,24 @@
         calendarUsers: {{ \Illuminate\Support\Js::from($calendarUsers) }},
         storeUrl: @js(route('calendar.tasks.store')),
         csrf: document.querySelector('meta[name=csrf-token]') ? document.querySelector('meta[name=csrf-token]').getAttribute('content') : '',
-        statusOptions: {{ \Illuminate\Support\Js::from(collect(\App\Enums\TaskStatus::cases())->map(fn ($status) => ['value' => $status->value, 'label' => $status->label()])) }},
-        priorityOptions: {{ \Illuminate\Support\Js::from(collect(\App\Enums\TaskPriority::cases())->map(fn ($priority) => ['value' => $priority->value, 'label' => $priority->label()])) }},
+        statusOptions: {{ \Illuminate\Support\Js::from(collect(\App\Enums\TaskStatus::cases())->map(fn ($status) => ['value' => $status->value, 'label' => __($status->label())])) }},
+        priorityOptions: {{ \Illuminate\Support\Js::from(collect(\App\Enums\TaskPriority::cases())->map(fn ($priority) => ['value' => $priority->value, 'label' => __($priority->label())])) }},
+        labels: {{ \Illuminate\Support\Js::from([
+            'To Do' => __('To Do'),
+            'In Progress' => __('In Progress'),
+            'Completed' => __('Completed'),
+            'Cancelled' => __('Cancelled'),
+            'Low' => __('Low'),
+            'Medium' => __('Medium'),
+            'High' => __('High'),
+            'Urgent' => __('Urgent'),
+            'No due date' => __('No due date'),
+        ]) }},
+        messages: {{ \Illuminate\Support\Js::from([
+            'createFailed' => __('Could not create the task.'),
+            'updateFailed' => __('Could not update the task.'),
+            'deadlineFailed' => __('Could not update the deadline.'),
+        ]) }},
         statusUrl: @js(route('tasks.status.update', ['task' => 0])),
         priorityUrl: @js(route('tasks.priority.update', ['task' => 0])),
         tasksOn(date) {
@@ -264,20 +280,26 @@
                 });
                 const payload = await response.json().catch(() => ({}));
                 if (! response.ok) {
-                    this.error = payload.message || (payload.errors && payload.errors.title && payload.errors.title[0]) || 'Could not create the task.';
+                    this.error = payload.message || (payload.errors && payload.errors.title && payload.errors.title[0]) || this.messages.createFailed;
                     return;
                 }
                 this.tasks.push(payload.task);
                 this.closeCreate();
             } catch (error) {
-                this.error = 'Could not create the task.';
+                this.error = this.messages.createFailed;
             } finally {
                 this.createSaving = false;
             }
         },
         optionLabel(options, value) {
             const match = options.find((item) => item.value === value);
-            return match ? match.label : value;
+            return match ? match.label : this.translateLabel(value);
+        },
+        translateLabel(value) {
+            if (! value) {
+                return value;
+            }
+            return this.labels[value] || value;
         },
         async saveQuickField(field, value) {
             const task = this.quickView;
@@ -315,7 +337,7 @@
                     } else {
                         task.priorityLabel = previousLabel;
                     }
-                    this.error = 'Could not update the task.';
+                    this.error = this.messages.updateFailed;
                 }
             } catch (error) {
                 task[field] = previous;
@@ -324,7 +346,7 @@
                 } else {
                     task.priorityLabel = previousLabel;
                 }
-                this.error = 'Could not update the task.';
+                this.error = this.messages.updateFailed;
             }
         },
         statusClass(task) {
@@ -366,26 +388,26 @@
                 if (! response.ok) {
                     task.due = previous;
                     const payload = await response.json().catch(() => ({}));
-                    this.error = payload.message || (payload.errors && payload.errors.due_date && payload.errors.due_date[0]) || 'Could not update the deadline.';
+                    this.error = payload.message || (payload.errors && payload.errors.due_date && payload.errors.due_date[0]) || this.messages.deadlineFailed;
                 }
             } catch (error) {
                 task.due = previous;
-                this.error = 'Could not update the deadline.';
+                this.error = this.messages.deadlineFailed;
             }
         },
     }"
 >
     <div class="mb-3">
         <a href="{{ route('dashboard') }}" class="inline-flex items-center gap-1 text-xs font-semibold text-indigo-600 transition-colors hover:text-indigo-800">
-            ← Back to Dashboard
+            ← {{ __('Back to Dashboard') }}
         </a>
     </div>
     <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <h1 class="workspace-title">Calendar</h1>
+        <h1 class="workspace-title">{{ __('Calendar') }}</h1>
         <div class="calendar-month-nav">
-            <a href="{{ $previousUrl }}" class="btn btn-sm btn-secondary">Previous</a>
-            <p class="calendar-month-label">{{ $cursor->format('F Y') }}</p>
-            <a href="{{ $nextUrl }}" class="btn btn-sm btn-secondary">Next</a>
+            <a href="{{ $previousUrl }}" class="btn btn-sm btn-secondary">{{ __('Previous') }}</a>
+            <p class="calendar-month-label">{{ $cursor->locale(app()->getLocale())->translatedFormat('F Y') }}</p>
+            <a href="{{ $nextUrl }}" class="btn btn-sm btn-secondary">{{ __('Next') }}</a>
         </div>
     </div>
 
@@ -395,16 +417,16 @@
         <section class="card flat workspace-card lg:col-span-1">
             <div class="calendar-sidebar-tabs">
                 <button type="button" class="btn btn-sm" :class="sidebarTab === 'unscheduled' ? 'btn-primary' : 'btn-secondary'" @click="sidebarTab = 'unscheduled'">
-                    Unscheduled
+                    {{ __('Unscheduled') }}
                 </button>
                 <button type="button" class="btn btn-sm" :class="sidebarTab === 'recurring' ? 'btn-primary' : 'btn-secondary'" @click="sidebarTab = 'recurring'">
-                    Recurring Schedules
+                    {{ __('Recurring Schedules') }}
                 </button>
             </div>
 
             <div x-show="sidebarTab === 'unscheduled'">
-                <h2 class="text-sm font-semibold text-slate-900">Unscheduled</h2>
-                <p class="mt-1 text-xs text-slate-400">Drop onto a day to set a deadline.</p>
+                <h2 class="text-sm font-semibold text-slate-900">{{ __('Unscheduled') }}</h2>
+                <p class="mt-1 text-xs text-slate-400">{{ __('Drop onto a day to set a deadline.') }}</p>
                 <div class="mt-3 min-h-24 space-y-2">
                     <template x-for="task in unscheduled()" :key="task.id">
                         <button type="button" class="unscheduled-card mb-2 w-full rounded-lg border p-3 text-left text-sm shadow-xs"
@@ -416,25 +438,39 @@
                             @mouseleave="eventMouseLeave()"
                             @click="eventClick(task, $event)">
                             <span class="block truncate font-medium" x-text="task.title"></span>
-                            <span class="text-[11px] opacity-80" x-text="task.priorityLabel"></span>
+                            <span class="text-[11px] opacity-80" x-text="translateLabel(task.priorityLabel)"></span>
                         </button>
                     </template>
                 </div>
             </div>
 
             <div x-show="sidebarTab === 'recurring'" x-cloak>
-                <h2 class="text-sm font-semibold text-slate-900">Recurring Schedules</h2>
-                <p class="mt-1 text-xs text-slate-400">Active templates. These are not draggable.</p>
+                <h2 class="text-sm font-semibold text-slate-900">{{ __('Recurring Schedules') }}</h2>
+                <p class="mt-1 text-xs text-slate-400">{{ __('Active templates. These are not draggable.') }}</p>
                 <div class="mt-3 min-h-24 space-y-2">
                     @forelse ($recurringSchedules as $schedule)
                         @continue($schedule->task === null)
                         <a href="{{ route('tasks.show', $schedule->task) }}" class="unscheduled-card mb-2 block w-full rounded-lg border p-3 text-left text-sm shadow-xs status-{{ $schedule->task->status->value }}">
                             <span class="block truncate font-medium">{{ $schedule->task->title }}</span>
-                            <span class="block text-[11px] opacity-80">{{ $schedule->frequencyLabel() }}</span>
-                            <span class="block text-[11px] opacity-80">Next: {{ format_date($schedule->next_recurring_date) ?? '—' }}</span>
+                            <span class="block text-[11px] opacity-80">
+                                @php
+                                    $repeatInterval = max(1, (int) $schedule->repeat_interval);
+                                    $recurrenceType = $schedule->recurrence_type instanceof \App\Enums\RecurrenceType
+                                        ? $schedule->recurrence_type
+                                        : \App\Enums\RecurrenceType::from((string) $schedule->recurrence_type);
+                                    $unit = match ($recurrenceType) {
+                                        \App\Enums\RecurrenceType::Daily => $repeatInterval === 1 ? 'Day' : 'Days',
+                                        \App\Enums\RecurrenceType::Weekly => $repeatInterval === 1 ? 'Week' : 'Weeks',
+                                        \App\Enums\RecurrenceType::Monthly => $repeatInterval === 1 ? 'Month' : 'Months',
+                                        \App\Enums\RecurrenceType::Yearly => $repeatInterval === 1 ? 'Year' : 'Years',
+                                    };
+                                @endphp
+                                {{ __('Every :interval :unit', ['interval' => $repeatInterval, 'unit' => __($unit)]) }}
+                            </span>
+                            <span class="block text-[11px] opacity-80">{{ __('Next: :date', ['date' => format_date($schedule->next_recurring_date) ?? '—']) }}</span>
                         </a>
                     @empty
-                        <p class="text-xs text-slate-400">No active recurring schedules.</p>
+                        <p class="text-xs text-slate-400">{{ __('No active recurring schedules.') }}</p>
                     @endforelse
                 </div>
             </div>
@@ -443,13 +479,13 @@
         <section class="card flat workspace-card overflow-x-auto lg:col-span-3">
             <div class="min-w-[600px] lg:min-w-0">
             <div class="grid grid-cols-7 gap-px rounded-lg bg-slate-200 text-center text-[11px] font-semibold uppercase tracking-wide text-slate-500">
-                <div class="bg-white py-2">Mon</div>
-                <div class="bg-white py-2">Tue</div>
-                <div class="bg-white py-2">Wed</div>
-                <div class="bg-white py-2">Thu</div>
-                <div class="bg-white py-2">Fri</div>
-                <div class="bg-white py-2">Sat</div>
-                <div class="bg-white py-2">Sun</div>
+                <div class="bg-white py-2">{{ __('Mon') }}</div>
+                <div class="bg-white py-2">{{ __('Tue') }}</div>
+                <div class="bg-white py-2">{{ __('Wed') }}</div>
+                <div class="bg-white py-2">{{ __('Thu') }}</div>
+                <div class="bg-white py-2">{{ __('Fri') }}</div>
+                <div class="bg-white py-2">{{ __('Sat') }}</div>
+                <div class="bg-white py-2">{{ __('Sun') }}</div>
             </div>
             <div class="mt-px grid grid-cols-7 gap-px bg-slate-200">
                 @foreach ($days as $day)
@@ -466,7 +502,7 @@
                         <div class="mb-1 flex items-center justify-between gap-1">
                             <p class="text-[11px] font-semibold {{ $inMonth ? 'text-slate-600' : 'text-slate-300' }}">{{ $day->day }}</p>
                             @if ($canCreateTask)
-                                <button type="button" class="calendar-day-add" aria-label="Add task on {{ $dateKey }}" @click="openCreate($event, @js($dateKey))">+</button>
+                                <button type="button" class="calendar-day-add" aria-label="{{ __('Add task on :date', ['date' => $dateKey]) }}" @click="openCreate($event, @js($dateKey))">+</button>
                             @endif
                         </div>
                         <div class="space-y-1">
@@ -512,9 +548,9 @@
                     <div class="calendar-preview-head">
                         <div class="flex min-w-0 items-center gap-2">
                             <h2 class="calendar-preview-title min-w-0 truncate text-sm font-bold text-slate-900" x-text="quickView?.title"></h2>
-                            <span class="calendar-preview-pill shrink-0" :class="statusClass(quickView)" x-text="quickView?.statusLabel"></span>
+                            <span class="calendar-preview-pill shrink-0" :class="statusClass(quickView)" x-text="translateLabel(quickView?.statusLabel)"></span>
                         </div>
-                        <button type="button" class="nozha-calendar-popover-close flex h-7 w-7 items-center justify-center rounded-full text-slate-400 transition-all hover:bg-slate-100 hover:text-slate-600" @click.stop="closeAll()" aria-label="Close preview">
+                        <button type="button" class="nozha-calendar-popover-close flex h-7 w-7 items-center justify-center rounded-full text-slate-400 transition-all hover:bg-slate-100 hover:text-slate-600" @click.stop="closeAll()" aria-label="{{ __('Close preview') }}">
                             <svg xmlns="http://www.w3.org/2000/svg" class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
                             </svg>
@@ -522,24 +558,24 @@
                     </div>
                     <div class="calendar-preview-grid">
                         <div class="min-w-0">
-                            <p class="calendar-preview-label text-[10px] font-semibold uppercase tracking-wider text-slate-400">Team</p>
+                            <p class="calendar-preview-label text-[10px] font-semibold uppercase tracking-wider text-slate-400">{{ __('Team') }}</p>
                             <div class="calendar-preview-avatars" x-show="quickView?.assignees && quickView.assignees.length">
                                 <template x-for="user in (quickView?.assignees || [])" :key="user.id">
                                     <span class="calendar-preview-avatar" :title="user.name" x-text="assigneeInitials(user.name)"></span>
                                 </template>
                             </div>
-                            <p class="text-xs font-medium text-slate-700" x-show="! quickView?.assignees || ! quickView.assignees.length">Unassigned</p>
+                            <p class="text-xs font-medium text-slate-700" x-show="! quickView?.assignees || ! quickView.assignees.length">{{ __('Unassigned') }}</p>
                         </div>
                         <div class="min-w-0">
-                            <p class="calendar-preview-label text-[10px] font-semibold uppercase tracking-wider text-slate-400">Start</p>
+                            <p class="calendar-preview-label text-[10px] font-semibold uppercase tracking-wider text-slate-400">{{ __('Start') }}</p>
                             <p class="truncate text-xs font-medium text-slate-700" x-text="quickView?.startLabel"></p>
                         </div>
                         <div class="min-w-0">
-                            <p class="calendar-preview-label text-[10px] font-semibold uppercase tracking-wider text-slate-400">Due</p>
-                            <p class="truncate text-xs font-medium text-slate-700" x-text="quickView?.dueLabel"></p>
+                            <p class="calendar-preview-label text-[10px] font-semibold uppercase tracking-wider text-slate-400">{{ __('Due') }}</p>
+                            <p class="truncate text-xs font-medium text-slate-700" x-text="translateLabel(quickView?.dueLabel)"></p>
                         </div>
                         <div class="min-w-0">
-                            <p class="calendar-preview-label text-[10px] font-semibold uppercase tracking-wider text-slate-400">Progress</p>
+                            <p class="calendar-preview-label text-[10px] font-semibold uppercase tracking-wider text-slate-400">{{ __('Progress') }}</p>
                             <p class="text-xs font-medium text-slate-700"><span x-text="quickView?.completedSubtasks || 0"></span>/<span x-text="quickView?.subtasksCount || 0"></span></p>
                         </div>
                     </div>
@@ -549,7 +585,7 @@
                     <div class="my-2.5 border-t border-slate-100"></div>
                     <div class="calendar-preview-grid">
                         <div class="min-w-0">
-                            <label class="calendar-preview-label text-[10px] font-semibold uppercase tracking-wider text-slate-400">Status</label>
+                            <label class="calendar-preview-label text-[10px] font-semibold uppercase tracking-wider text-slate-400">{{ __('Status') }}</label>
                             <select class="form-control nozha-calendar-popover-select" :value="quickView?.status" :disabled="! quickView?.canUpdateStatus" @change="saveQuickField('status', $event.target.value)">
                                 <template x-for="option in statusOptions" :key="option.value">
                                     <option :value="option.value" :selected="option.value === quickView?.status" x-text="option.label"></option>
@@ -557,32 +593,32 @@
                             </select>
                         </div>
                         <div class="min-w-0">
-                            <label class="calendar-preview-label text-[10px] font-semibold uppercase tracking-wider text-slate-400">Priority</label>
+                            <label class="calendar-preview-label text-[10px] font-semibold uppercase tracking-wider text-slate-400">{{ __('Priority') }}</label>
                             <select class="form-control nozha-calendar-popover-select" :class="! quickView?.canUpdatePriority ? 'cursor-not-allowed bg-slate-100 opacity-75' : ''" :value="quickView?.priority" :disabled="! quickView?.canUpdatePriority" @change="saveQuickField('priority', $event.target.value)">
                                 <template x-for="option in priorityOptions" :key="option.value">
                                     <option :value="option.value" :selected="option.value === quickView?.priority" x-text="option.label"></option>
                                 </template>
                             </select>
-                            <p class="mt-1 text-[11px] text-slate-400" x-show="! quickView?.canUpdatePriority">Only admins can change priority.</p>
+                            <p class="mt-1 text-[11px] text-slate-400" x-show="! quickView?.canUpdatePriority">{{ __('Only admins can change priority.') }}</p>
                         </div>
                     </div>
                     <div class="calendar-preview-actions">
-                        <a :href="quickView?.url" class="btn btn-primary btn-sm">View Full Details</a>
+                        <a :href="quickView?.url" class="btn btn-primary btn-sm">{{ __('View Full Details') }}</a>
                     </div>
                 </div>
 
                 <div x-show="popover === 'create'" class="calendar-create-popover">
                     <div class="calendar-preview-head">
                         <span class="calendar-date-badge" x-text="createDate"></span>
-                        <button type="button" class="nozha-calendar-popover-close flex h-7 w-7 items-center justify-center rounded-full text-slate-400 transition-all hover:bg-slate-100 hover:text-slate-600" @click.stop="closeAll()" aria-label="Close create">
+                        <button type="button" class="nozha-calendar-popover-close flex h-7 w-7 items-center justify-center rounded-full text-slate-400 transition-all hover:bg-slate-100 hover:text-slate-600" @click.stop="closeAll()" aria-label="{{ __('Close create') }}">
                             <svg xmlns="http://www.w3.org/2000/svg" class="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
                             </svg>
                         </button>
                     </div>
-                    <input type="text" class="form-control nozha-calendar-popover-input" placeholder="Task title" x-model="createTitle" @focus="keyboardOpen = true" @blur="keyboardOpen = false" @keydown.enter.prevent="saveQuickCreate()">
+                    <input type="text" class="form-control nozha-calendar-popover-input" placeholder="{{ __('Task title') }}" x-model="createTitle" @focus="keyboardOpen = true" @blur="keyboardOpen = false" @keydown.enter.prevent="saveQuickCreate()">
                     <div>
-                        <p class="calendar-preview-label">Priority</p>
+                        <p class="calendar-preview-label">{{ __('Priority') }}</p>
                         <div class="calendar-icon-toggles">
                             <template x-for="option in priorityOptions" :key="option.value">
                                 <button type="button" class="btn btn-sm" :class="createPriority === option.value ? 'btn-primary' : 'btn-light'" @click="createPriority = option.value" x-text="option.label"></button>
@@ -590,7 +626,7 @@
                         </div>
                     </div>
                     <div>
-                        <p class="calendar-preview-label">Assignees</p>
+                        <p class="calendar-preview-label">{{ __('Assignees') }}</p>
                         <div class="calendar-icon-toggles">
                             <template x-for="user in calendarUsers" :key="user.id">
                                 <button type="button" class="calendar-assignee-chip" :class="createAssigneeIds.includes(Number(user.id)) ? 'is-active' : ''" :title="user.name" @click="toggleAssignee(user.id)" x-text="user.name.charAt(0).toUpperCase()"></button>
@@ -598,8 +634,8 @@
                         </div>
                     </div>
                     <div class="calendar-preview-actions">
-                        <button type="button" class="btn btn-light btn-sm" @click.stop="closeAll()">Cancel</button>
-                        <button type="button" class="btn btn-primary btn-sm" :disabled="createSaving" @click="saveQuickCreate()">Save</button>
+                        <button type="button" class="btn btn-light btn-sm" @click.stop="closeAll()">{{ __('Cancel') }}</button>
+                        <button type="button" class="btn btn-primary btn-sm" :disabled="createSaving" @click="saveQuickCreate()">{{ __('Save') }}</button>
                     </div>
                 </div>
             </div>
