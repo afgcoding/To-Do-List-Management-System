@@ -2921,3 +2921,336 @@ body .users-drawer-none {
         row-gap: 1.15rem;
     }
 }
+
+.app-page-content .settings-page {
+    width: 100%;
+    max-width: 48rem;
+    min-width: 0;
+    margin-inline: auto;
+}
+
+.app-page-content .settings-header,
+.app-page-content .settings-form,
+.app-page-content .settings-fields,
+.app-page-content .settings-field,
+.app-page-content .settings-intro {
+    width: 100%;
+    min-width: 0;
+}
+
+.app-page-content .settings-header {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.85rem;
+    margin-bottom: 1.15rem;
+}
+
+.app-page-content .settings-page h1.workspace-title {
+    text-align: start !important;
+    overflow-wrap: anywhere;
+}
+
+.app-page-content .settings-lead,
+.app-page-content .settings-section-copy,
+.app-page-content .settings-hint,
+.app-page-content .settings-label,
+.app-page-content .settings-format-preview,
+.app-page-content .settings-format-code {
+    display: block !important;
+    overflow-wrap: anywhere;
+}
+
+.app-page-content .settings-lead,
+.app-page-content .settings-section-copy {
+    margin: 0.35rem 0 0;
+    color: #64748b;
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.45;
+}
+
+.app-page-content .settings-actions {
+    width: 100%;
+}
+
+.app-page-content a.settings-back {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 40px;
+    box-sizing: border-box;
+}
+
+.app-page-content .settings-form {
+    display: grid;
+    gap: 1rem;
+}
+
+.app-page-content .settings-page .card.flat.workspace-card {
+    overflow: visible;
+}
+
+.app-page-content .settings-section-title {
+    margin: 0;
+    color: #64748b !important;
+    font-size: 0.75rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.06em;
+    line-height: 1.2 !important;
+    text-align: start !important;
+    text-transform: uppercase;
+}
+
+.app-page-content .settings-fields {
+    display: grid;
+    gap: 1.1rem;
+    margin-top: 1.15rem;
+}
+
+.app-page-content .settings-label {
+    margin: 0 0 0.45rem;
+    color: #334155;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.app-page-content .settings-page .form-control {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100%;
+    min-width: 0;
+    height: auto !important;
+    min-height: 42px;
+    box-sizing: border-box;
+    padding: 0.6rem 0.85rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 0.5rem;
+    background: #fff;
+    color: #1e293b;
+    font-size: 0.875rem;
+    line-height: 1.4;
+}
+
+.app-page-content .settings-hint {
+    margin: 0.4rem 0 0;
+    color: #94a3b8;
+    font-size: 0.75rem;
+    line-height: 1.45;
+}
+
+.app-page-content .settings-logo-row,
+.app-page-content .settings-logo-actions,
+.app-page-content .settings-color-row {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.65rem;
+    min-width: 0;
+}
+
+.app-page-content .settings-logo-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 4.5rem;
+    height: 4.5rem;
+    min-width: 4.5rem;
+    overflow: hidden;
+    box-sizing: border-box;
+    padding: 0.4rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    background: #f8fafc;
+}
+
+.app-page-content .settings-logo-box img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.app-page-content .settings-logo-box span {
+    color: #94a3b8;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.app-page-content .settings-page .settings-upload,
+.app-page-content .settings-logo-actions .btn,
+.app-page-content .settings-save .btn {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 40px;
+    margin: 0;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+.app-page-content .settings-color {
+    width: 3rem;
+    height: 2.4rem;
+    padding: 0.2rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 0.5rem;
+    background: #fff;
+    cursor: pointer;
+}
+
+.app-page-content .settings-timezone {
+    position: relative;
+}
+
+.app-page-content .settings-tz-trigger {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    text-align: start;
+}
+
+.app-page-content .settings-tz-value {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.app-page-content .settings-tz-caret {
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+    color: #94a3b8;
+}
+
+.app-page-content .settings-tz-menu {
+    position: absolute;
+    z-index: 40;
+    top: calc(100% + 0.3rem);
+    right: 0;
+    left: 0;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    background: #fff;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+}
+
+.app-page-content .settings-tz-menu .form-control {
+    min-height: 38px;
+    margin: 0.4rem;
+    width: calc(100% - 0.8rem) !important;
+}
+
+.app-page-content .settings-tz-list {
+    max-height: 14rem;
+    margin: 0;
+    padding: 0.25rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+    list-style: none;
+}
+
+.app-page-content .settings-tz-option {
+    display: block !important;
+    width: 100%;
+    margin: 0;
+    padding: 0.55rem 0.7rem;
+    border: 0;
+    border-radius: 0.4rem;
+    background: transparent;
+    color: #334155;
+    font-size: 0.8125rem;
+    line-height: 1.35;
+    text-align: start;
+    overflow-wrap: anywhere;
+    cursor: pointer;
+}
+
+.app-page-content .settings-tz-option:hover,
+.app-page-content .settings-tz-option.is-active {
+    background: #eef2ff;
+    color: var(--brand, #4f46e5);
+    font-weight: 600;
+}
+
+.app-page-content .settings-formats {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.5rem;
+}
+
+.app-page-content .settings-format {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+    min-width: 0;
+    margin: 0;
+    box-sizing: border-box;
+    padding: 0.7rem 0.8rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+    background: #fff;
+    cursor: pointer;
+}
+
+.app-page-content .settings-format:has(input:checked) {
+    border-color: var(--brand, #4f46e5);
+    background: rgb(238 242 255 / 0.7);
+}
+
+.app-page-content .settings-format-preview {
+    color: #1e293b;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.app-page-content .settings-format-code {
+    margin-top: 0.15rem;
+    color: #94a3b8;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size: 0.6875rem;
+}
+
+.app-page-content .settings-save {
+    display: flex;
+    justify-content: stretch;
+}
+
+@media (min-width: 640px) {
+    .app-page-content .settings-header {
+        flex-direction: row;
+        align-items: flex-end;
+        justify-content: space-between;
+    }
+
+    .app-page-content .settings-actions,
+    .app-page-content a.settings-back,
+    .app-page-content .settings-logo-actions .btn,
+    .app-page-content .settings-page .settings-upload,
+    .app-page-content .settings-save .btn {
+        width: auto;
+    }
+
+    .app-page-content .settings-logo-row,
+    .app-page-content .settings-logo-actions,
+    .app-page-content .settings-color-row {
+        flex-direction: row;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .app-page-content .settings-formats {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+
+    .app-page-content .settings-save {
+        justify-content: flex-end;
+    }
+}
