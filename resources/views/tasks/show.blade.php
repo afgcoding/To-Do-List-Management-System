@@ -27,20 +27,20 @@
     @endphp
     <div class="task-show-toolbar">
         <a href="{{ route('tasks.index') }}" class="btn btn-secondary btn-sm">
-            ← Back to Tasks
+            ← {{ __('Back to Tasks') }}
         </a>
         <div class="header-actions">
             @can('update', $task)
                 <a href="{{ route('tasks.edit', $task) }}" class="btn btn-secondary btn-sm">
-                    Edit Task
+                    {{ __('Edit Task') }}
                 </a>
             @endcan
             @can('delete', $task)
-                <form action="{{ route('tasks.destroy', $task) }}" method="POST" onsubmit="return confirm('Delete this task?');">
+                <form action="{{ route('tasks.destroy', $task) }}" method="POST" onsubmit="return confirm({{ \Illuminate\Support\Js::from(__('Delete this task?')) }});">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="btn btn-danger btn-sm" aria-label="Delete task">
-                        Delete
+                    <button type="submit" class="btn btn-danger btn-sm" aria-label="{{ __('Delete task') }}">
+                        {{ __('Delete') }}
                     </button>
                 </form>
             @endcan
@@ -53,14 +53,14 @@
         <div class="mt-3 flex flex-wrap items-center gap-2">
             <span class="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-semibold sm:text-sm {{ $statusStyle['wrap'] }}">
                 <span @class(['size-1.5 rounded-full', $statusStyle['dot'], 'animate-pulse' => $task->status === \App\Enums\TaskStatus::InProgress])></span>
-                {{ $task->status->label() }}
+                {{ __($task->status->label()) }}
             </span>
             @if($task->status === \App\Enums\TaskStatus::Completed)
-                <span class="text-[11px] italic text-slate-400">Automated by subtasks</span>
+                <span class="text-[11px] italic text-slate-400">{{ __('Automated by subtasks') }}</span>
             @endif
-            <span class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold sm:text-sm {{ $priorityStyle }}">{{ $task->priority->label() }}</span>
+            <span class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold sm:text-sm {{ $priorityStyle }}">{{ __($task->priority->label()) }}</span>
             @if($task->is_overdue)
-                <span class="inline-flex items-center rounded-full border border-rose-200 bg-rose-50 px-2.5 py-0.5 text-xs font-semibold text-rose-700 sm:text-sm">Overdue</span>
+                <span class="inline-flex items-center rounded-full border border-rose-200 bg-rose-50 px-2.5 py-0.5 text-xs font-semibold text-rose-700 sm:text-sm">{{ __('Overdue') }}</span>
             @endif
             @if($task->category)
                 <x-color-pill :label="$task->category->name" :color="$task->category->color" />
@@ -72,15 +72,15 @@
 
         {{-- Created / updated --}}
         <div class="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-slate-500">
-            <span>Created {{ format_date($task->created_at) }}</span>
-            <span>by <strong class="font-medium text-slate-700">{{ $task->creator->name ?? 'System' }}</strong></span>
+            <span>{{ __('Created :date', ['date' => format_date($task->created_at)]) }}</span>
+            <span>{{ __('by') }} <strong class="font-medium text-slate-700">{{ $task->creator->name ?? __('System') }}</strong></span>
             <span class="hidden text-slate-300 sm:inline">•</span>
-            <span>Updated {{ $task->updated_at->diffForHumans() }}</span>
+            <span>{{ __('Updated :time', ['time' => $task->updated_at->diffForHumans()]) }}</span>
         </div>
 
         {{-- Overall progress (from completed subtasks) --}}
         <div class="mt-4 border-t border-gray-100 pt-4">
-            <x-tasks.progress :percent="$task->progress" label="Overall progress" />
+            <x-tasks.progress :percent="$task->progress" :label="__('Overall progress')" />
         </div>
     </section>
 
@@ -94,10 +94,10 @@
                     <span class="{{ $iconBadge }} bg-indigo-50 text-indigo-600">
                         <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
                     </span>
-                    Description
+                    {{ __('Description') }}
                 </h2>
                 <div dir="auto" class="bidi-auto whitespace-pre-line break-words text-left text-sm leading-relaxed text-slate-700 sm:text-[15px] rtl:text-right">
-                    {{ $task->description ?: 'No detailed description provided.' }}
+                    {{ $task->description ?: __('No detailed description provided.') }}
                 </div>
             </section>
 
@@ -107,7 +107,7 @@
                     <span class="{{ $iconBadge }} bg-blue-50 text-blue-600">
                         <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     </span>
-                    Subtasks
+                    {{ __('Subtasks') }}
                     <span class="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-semibold text-gray-600">{{ $task->completed_subtasks_count }}/{{ $task->subtasks_count }}</span>
                 </h2>
 
@@ -117,18 +117,18 @@
                     <input type="hidden" name="task_id" value="{{ $task->id }}">
 
                     <div class="subtask-create-row subtask-add-row">
-                        <input type="text" name="title" placeholder="Add a new subtask..." required dir="auto"
+                        <input type="text" name="title" placeholder="{{ __('Add a new subtask...') }}" required dir="auto"
                             class="form-control subtask-title">
 
                         <select name="assigned_to" class="form-control subtask-assignee">
-                            <option value="">Assignee</option>
+                            <option value="">{{ __('Assignee') }}</option>
                             @foreach($task->assignedUsers as $user)
                                 <option value="{{ $user->id }}">{{ $user->name }}</option>
                             @endforeach
                         </select>
 
                         <button type="submit" class="btn btn-primary btn-sm subtask-submit">
-                            + Add Subtask
+                            + {{ __('Add Subtask') }}
                         </button>
                     </div>
                 </form>
@@ -139,7 +139,7 @@
                     @forelse($task->subtasks as $subtask)
                         <x-tasks.subtask-item :subtask="$subtask" :assignees="$task->assignedUsers" />
                     @empty
-                        <p class="rounded-xl bg-slate-50/80 py-8 text-center text-sm text-slate-400">No subtasks yet. Add the first one above.</p>
+                        <p class="rounded-xl bg-slate-50/80 py-8 text-center text-sm text-slate-400">{{ __('No subtasks yet. Add the first one above.') }}</p>
                     @endforelse
                 </div>
             </section>
@@ -150,7 +150,7 @@
                     <span class="{{ $iconBadge }} bg-violet-50 text-violet-600">
                         <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M7.5 8.25h9m-9 3H12m-6.75 3.75h12.75A2.25 2.25 0 0 0 21 12.75v-7.5A2.25 2.25 0 0 0 18.75 3H5.25A2.25 2.25 0 0 0 3 5.25v10.5A2.25 2.25 0 0 0 5.25 18Z"/></svg>
                     </span>
-                    Discussion
+                    {{ __('Discussion') }}
                     <span class="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-semibold text-gray-600">{{ $task->comments->count() }}</span>
                 </h2>
 
@@ -158,23 +158,23 @@
                 <form method="POST" action="{{ route('comments.store') }}" enctype="multipart/form-data" class="mb-5 space-y-3" x-data="{ fileCount: 0 }">
                     @csrf
                     <input type="hidden" name="task_id" value="{{ $task->id }}">
-                    <textarea name="comment" rows="3" required dir="auto" placeholder="Write a comment… use @Name to mention someone"
+                    <textarea name="comment" rows="3" required dir="auto" placeholder="{{ __('Write a comment… use @Name to mention someone') }}"
                         class="form-control bidi-auto">{{ old('comment') }}</textarea>
                     <x-input-error :messages="$errors->get('comment')" />
                     <div class="mt-3 flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
                         <label class="inline-flex min-w-0 flex-wrap cursor-pointer items-center gap-2 text-xs font-medium text-gray-500 hover:text-indigo-600">
                             <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32m.009-.01l-.01.01m5.699-9.941l-7.81 7.81a1.5 1.5 0 002.112 2.13"/></svg>
-                            Attach files
+                            {{ __('Attach files') }}
                             <input type="file" name="files[]" multiple class="sr-only"
                                 accept=".jpg,.jpeg,.png,.gif,.webp,.pdf,.doc,.docx,.xls,.xlsx,.zip,.txt"
                                 @change="fileCount = $event.target.files.length">
-                            <span class="text-[11px] text-gray-400" x-show="fileCount > 0" x-text="fileCount + ' file(s) selected'"></span>
+                            <span class="text-[11px] text-gray-400" x-show="fileCount > 0" x-text="fileCount + {{ \Illuminate\Support\Js::from(' '.__('file(s) selected')) }}"></span>
                         </label>
-                        <button type="submit" class="btn btn-primary btn-sm">Post comment</button>
+                        <button type="submit" class="btn btn-primary btn-sm">{{ __('Post comment') }}</button>
                     </div>
                     <x-input-error :messages="$errors->get('files')" />
                     <x-input-error :messages="$errors->get('files.0')" />
-                    <p class="text-[11px] text-slate-400">Images, PDF, Word, Excel, ZIP, or TXT. Max 10MB each.</p>
+                    <p class="text-[11px] text-slate-400">{{ __('Images, PDF, Word, Excel, ZIP, or TXT. Max 10MB each.') }}</p>
                 </form>
 
                 {{-- Thread --}}
@@ -182,7 +182,7 @@
                     @forelse ($task->comments as $comment)
                         <x-tasks.comment-item :comment="$comment" :mention-names="$mentionNames" :current-user-id="$currentUserId" />
                     @empty
-                        <p class="rounded-xl bg-slate-50/80 py-8 text-center text-sm text-slate-400">No comments yet. Start the discussion above.</p>
+                        <p class="rounded-xl bg-slate-50/80 py-8 text-center text-sm text-slate-400">{{ __('No comments yet. Start the discussion above.') }}</p>
                     @endforelse
                 </div>
             </section>
@@ -193,7 +193,7 @@
                     <span class="{{ $iconBadge }} bg-sky-50 text-sky-600">
                         <svg class="size-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
                     </span>
-                    Attachments
+                    {{ __('Attachments') }}
                     <span class="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-semibold text-gray-600">{{ $task->attachments->count() }}</span>
                 </h2>
 
@@ -202,8 +202,8 @@
                     @csrf
                     <input type="hidden" name="task_id" value="{{ $task->id }}">
                     <label class="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-200 bg-gray-50/50 p-4 text-center transition-colors hover:border-indigo-500 sm:p-6">
-                        <p class="text-sm font-medium text-slate-700">Drop files here or click to upload</p>
-                        <p class="mt-1 text-[11px] text-slate-400">JPG, PNG, GIF, WEBP, PDF, DOC, XLS, ZIP, TXT • 10MB max</p>
+                        <p class="text-sm font-medium text-slate-700">{{ __('Drop files here or click to upload') }}</p>
+                        <p class="mt-1 text-[11px] text-slate-400">{{ __('JPG, PNG, GIF, WEBP, PDF, DOC, XLS, ZIP, TXT • 10MB max') }}</p>
                         <input type="file" name="files[]" multiple required class="sr-only"
                             accept=".jpg,.jpeg,.png,.gif,.webp,.pdf,.doc,.docx,.xls,.xlsx,.zip,.txt"
                             onchange="this.form.submit()">
@@ -217,12 +217,12 @@
                         <div class="min-w-0">
                             <x-tasks.attachment-chip :attachment="$attachment" :can-delete="(int) $attachment->user_id === (int) $currentUserId" />
                             <p class="mt-1 text-[11px] text-slate-400">
-                                {{ $attachment->user->name ?? 'Unknown' }}
+                                {{ $attachment->user->name ?? __('Unknown') }}
                                 · {{ format_date($attachment->created_at) }}
                             </p>
                         </div>
                     @empty
-                        <p class="rounded-xl bg-slate-50/80 py-6 text-center text-sm text-slate-400">No files attached to this task yet.</p>
+                        <p class="rounded-xl bg-slate-50/80 py-6 text-center text-sm text-slate-400">{{ __('No files attached to this task yet.') }}</p>
                     @endforelse
                 </div>
             </section>
@@ -233,12 +233,12 @@
             <div class="{{ $cardClass }}">
                 {{-- --- Quick Status & Priority Actions --- --}}
                 <div>
-                    <h3 class="mb-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Quick actions</h3>
+                    <h3 class="mb-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">{{ __('Quick actions') }}</h3>
                     <div class="space-y-3">
                         <form action="{{ route('tasks.status.update', $task) }}" method="POST">
                             @csrf
                             @method('PATCH')
-                            <label class="mb-1 block text-xs font-medium text-slate-500">Status</label>
+                            <label class="mb-1 block text-xs font-medium text-slate-500">{{ __('Status') }}</label>
                             @php
                                 $isAllSubtasksComplete = $task->subtasks_count > 0
                                     && $task->completed_subtasks_count === $task->subtasks_count;
@@ -257,19 +257,19 @@
                                 @endcan
                                 class="form-control {{ ($isTaskLocked || ! auth()->user()?->can('updateStatus', $task)) ? 'cursor-not-allowed bg-slate-50' : '' }}">
                                 @foreach(\App\Enums\TaskStatus::cases() as $status)
-                                    <option value="{{ $status->value }}" @selected($task->status === $status)>{{ $status->label() }}</option>
+                                    <option value="{{ $status->value }}" @selected($task->status === $status)>{{ __($status->label()) }}</option>
                                 @endforeach
                             </select>
                             @if($isTaskLocked)
-                                <p class="mt-1 text-[11px] text-emerald-600 font-medium">✓ Task is 100% complete. Uncheck any subtask to re-enable manual status change.</p>
+                                <p class="mt-1 text-[11px] text-emerald-600 font-medium">✓ {{ __('Task is 100% complete. Uncheck any subtask to re-enable manual status change.') }}</p>
                             @else
-                                <p class="mt-1 text-[11px] text-slate-400">Choosing Completed marks every subtask done. Completing all subtasks sets this to Completed.</p>
+                                <p class="mt-1 text-[11px] text-slate-400">{{ __('Choosing Completed marks every subtask done. Completing all subtasks sets this to Completed.') }}</p>
                             @endif
                         </form>
                         <form action="{{ route('tasks.priority.update', $task) }}" method="POST">
                             @csrf
                             @method('PATCH')
-                            <label class="mb-1 block text-xs font-medium text-slate-500">Priority</label>
+                            <label class="mb-1 block text-xs font-medium text-slate-500">{{ __('Priority') }}</label>
                             <select
                                 name="priority"
                                 @can('updatePriority', $task)
@@ -280,11 +280,11 @@
                                 class="form-control {{ auth()->user()?->can('updatePriority', $task) ? '' : 'cursor-not-allowed bg-slate-100 opacity-75' }}"
                             >
                                 @foreach(\App\Enums\TaskPriority::cases() as $priority)
-                                    <option value="{{ $priority->value }}" @selected($task->priority === $priority)>{{ $priority->label() }}</option>
+                                    <option value="{{ $priority->value }}" @selected($task->priority === $priority)>{{ __($priority->label()) }}</option>
                                 @endforeach
                             </select>
                             @cannot('updatePriority', $task)
-                                <p class="mt-1 text-[11px] text-slate-400">Only admins can change priority.</p>
+                                <p class="mt-1 text-[11px] text-slate-400">{{ __('Only admins can change priority.') }}</p>
                             @endcannot
                         </form>
                     </div>
@@ -294,14 +294,14 @@
             <div class="{{ $cardClass }}">
                 {{-- --- Task Metadata Properties (Dates, Category, Department) --- --}}
                 <div>
-                    <h3 class="mb-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Properties</h3>
+                    <h3 class="mb-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">{{ __('Properties') }}</h3>
                     <dl class="grid grid-cols-1 gap-3 text-xs sm:grid-cols-2 sm:text-sm">
                         <div>
-                            <dt class="text-[11px] font-medium uppercase tracking-wide text-slate-400">Department</dt>
+                            <dt class="text-[11px] font-medium uppercase tracking-wide text-slate-400">{{ __('Department') }}</dt>
                             <dd class="mt-0.5 font-medium break-words text-slate-800">{{ $task->department->name ?? '—' }}</dd>
                         </div>
                         <div>
-                            <dt class="text-[11px] font-medium uppercase tracking-wide text-slate-400">Category</dt>
+                            <dt class="text-[11px] font-medium uppercase tracking-wide text-slate-400">{{ __('Category') }}</dt>
                             <dd class="mt-0.5">
                                 @if($task->category)
                                     <x-color-pill :label="$task->category->name" :color="$task->category->color" />
@@ -311,21 +311,21 @@
                             </dd>
                         </div>
                         <div>
-                            <dt class="text-[11px] font-medium uppercase tracking-wide text-slate-400">Start</dt>
+                            <dt class="text-[11px] font-medium uppercase tracking-wide text-slate-400">{{ __('Start') }}</dt>
                             <dd class="mt-0.5 font-medium break-words text-slate-800">{{ format_date($task->start_date) ?? '—' }}</dd>
                         </div>
                         <div>
-                            <dt class="text-[11px] font-medium uppercase tracking-wide text-slate-400">Due</dt>
+                            <dt class="text-[11px] font-medium uppercase tracking-wide text-slate-400">{{ __('Due') }}</dt>
                             <dd @class(['mt-0.5 font-medium break-words', 'text-rose-600' => $task->is_overdue, 'text-slate-800' => ! $task->is_overdue])>
                                 {{ format_date($task->due_date) ?? '—' }}
                             </dd>
                         </div>
                         <div>
-                            <dt class="text-[11px] font-medium uppercase tracking-wide text-slate-400">Created</dt>
+                            <dt class="text-[11px] font-medium uppercase tracking-wide text-slate-400">{{ __('Created') }}</dt>
                             <dd class="mt-0.5 font-medium break-words text-slate-800">{{ format_date($task->created_at) }}</dd>
                         </div>
                         <div>
-                            <dt class="text-[11px] font-medium uppercase tracking-wide text-slate-400">Updated</dt>
+                            <dt class="text-[11px] font-medium uppercase tracking-wide text-slate-400">{{ __('Updated') }}</dt>
                             <dd class="mt-0.5 font-medium break-words text-slate-800">{{ format_date($task->updated_at) }}</dd>
                         </div>
                     </dl>
@@ -336,8 +336,8 @@
                 {{-- --- Assigned Team Members List --- --}}
                 <div>
                     <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
-                        <h3 class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">Assigned team</h3>
-                        <button type="button" data-modal-open="assign-team-modal" class="text-xs font-semibold text-indigo-600 hover:text-indigo-800">Assign / Reassign</button>
+                        <h3 class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">{{ __('Assigned team') }}</h3>
+                        <button type="button" data-modal-open="assign-team-modal" class="text-xs font-semibold text-indigo-600 hover:text-indigo-800">{{ __('Assign / Reassign') }}</button>
                     </div>
                     <div>
                         @forelse($task->assignedUsers as $user)
@@ -347,13 +347,13 @@
                                     <div class="min-w-0 ps-3">
                                         <p class="truncate text-xs font-medium text-gray-800 sm:text-sm">{{ $user->name }}</p>
                                         @if($user->pivot->assigned_at)
-                                            <p class="text-xs text-gray-400">Assigned {{ \Illuminate\Support\Carbon::parse($user->pivot->assigned_at)->diffForHumans() }}</p>
+                                            <p class="text-xs text-gray-400">{{ __('Assigned :time', ['time' => \Illuminate\Support\Carbon::parse($user->pivot->assigned_at)->diffForHumans()]) }}</p>
                                         @endif
                                     </div>
                                 </div>
                             </div>
                         @empty
-                            <p class="text-sm text-slate-400">No assigned members</p>
+                            <p class="text-sm text-slate-400">{{ __('No assigned members') }}</p>
                         @endforelse
                     </div>
                 </div>
@@ -361,9 +361,9 @@
 
             {{-- --- Activity & History Timeline --- --}}
             <div class="{{ $cardClass }}">
-                <h3 class="mb-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Activity &amp; History</h3>
+                <h3 class="mb-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">{{ __('Activity & History') }}</h3>
                 @if ($task->activityLogs->isEmpty())
-                    <p class="break-words text-xs text-slate-400 sm:text-sm">No activity recorded yet.</p>
+                    <p class="break-words text-xs text-slate-400 sm:text-sm">{{ __('No activity recorded yet.') }}</p>
                 @else
                     <div class="custom-scrollbar max-h-[400px] space-y-4 overflow-y-auto pr-2 [scrollbar-width:thin]">
                         <ol class="ml-3 space-y-3 border-l-2 border-slate-200 pl-4 break-words text-xs sm:text-sm">
@@ -379,11 +379,11 @@
 </div>
 
 {{-- --- Assign / Reassign modal (opens edit screen) --- --}}
-<x-modal id="assign-team-modal" title="Assign / Reassign">
-    <p class="text-sm leading-relaxed text-slate-600">Update the people responsible for this task from the edit screen. You can add or remove teammates without changing other task details.</p>
+<x-modal id="assign-team-modal" :title="__('Assign / Reassign')">
+    <p class="text-sm leading-relaxed text-slate-600">{{ __('Update the people responsible for this task from the edit screen. You can add or remove teammates without changing other task details.') }}</p>
     <div class="mt-5 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-2">
-        <button type="button" data-modal-close="assign-team-modal" class="w-full rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 sm:w-auto">Cancel</button>
-        <a href="{{ route('tasks.edit', $task) }}" class="inline-flex w-full items-center justify-center rounded-lg bg-indigo-600 px-3.5 py-2 text-sm font-medium text-white hover:bg-indigo-700 sm:w-auto">Open edit task</a>
+        <button type="button" data-modal-close="assign-team-modal" class="w-full rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 sm:w-auto">{{ __('Cancel') }}</button>
+        <a href="{{ route('tasks.edit', $task) }}" class="inline-flex w-full items-center justify-center rounded-lg bg-indigo-600 px-3.5 py-2 text-sm font-medium text-white hover:bg-indigo-700 sm:w-auto">{{ __('Open edit task') }}</a>
     </div>
 </x-modal>
 @endsection

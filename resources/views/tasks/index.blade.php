@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @php
-    $pageTitle = 'Tasks Workspace';
+    $pageTitle = __('Tasks Workspace');
     $hideLayoutPageHeader = true;
 @endphp
 
@@ -29,27 +29,27 @@
     {{-- ==================== PAGE HEADER ==================== --}}
     <div class="flex flex-col justify-between gap-4 md:flex-row md:items-start">
         <div>
-            <h1 class="workspace-title">Tasks Workspace</h1>
-            <p class="mt-1 text-sm text-gray-500">Search, filter, and track every assignment from one place.</p>
+            <h1 class="workspace-title">{{ __('Tasks Workspace') }}</h1>
+            <p class="mt-1 text-sm text-gray-500">{{ __('Search, filter, and track every assignment from one place.') }}</p>
         </div>
         <a href="{{ route('tasks.create') }}" class="btn btn-primary">
-            Create task
+            {{ __('Create task') }}
         </a>
     </div>
 
     {{-- ==================== STATS COUNTERS ==================== --}}
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <x-tasks.stat-card label="Total tasks" :value="$stats['total']" tone="indigo" :href="route('tasks.index')" />
-        <x-tasks.stat-card label="In progress" :value="$stats['in_progress']" tone="sky" :href="route('tasks.index', ['status' => 'in_progress'])" />
-        <x-tasks.stat-card label="Completed" :value="$stats['completed']" tone="emerald" :href="route('tasks.index', ['status' => 'completed'])" />
-        <x-tasks.stat-card label="Overdue" :value="$stats['overdue']" tone="rose" :href="route('tasks.index', ['status' => 'overdue'])" />
+        <x-tasks.stat-card :label="__('Total tasks')" :value="$stats['total']" tone="indigo" :href="route('tasks.index')" />
+        <x-tasks.stat-card :label="__('In progress')" :value="$stats['in_progress']" tone="sky" :href="route('tasks.index', ['status' => 'in_progress'])" />
+        <x-tasks.stat-card :label="__('Completed')" :value="$stats['completed']" tone="emerald" :href="route('tasks.index', ['status' => 'completed'])" />
+        <x-tasks.stat-card :label="__('Overdue')" :value="$stats['overdue']" tone="rose" :href="route('tasks.index', ['status' => 'overdue'])" />
     </div>
 
     {{-- ==================== QUICK STATUS TABS ==================== --}}
     <div class="flex gap-5 overflow-x-auto border-b border-slate-200">
-        <a href="{{ route('tasks.index') }}" @class(['shrink-0 pb-2.5 text-sm font-medium', 'border-b-2 border-indigo-600 text-indigo-600' => ! request('status'), 'text-slate-500 hover:text-slate-700' => request('status')])>All tasks</a>
-        <a href="{{ route('tasks.index', ['status' => 'overdue']) }}" @class(['shrink-0 pb-2.5 text-sm font-medium', 'border-b-2 border-rose-600 text-rose-600' => request('status') === 'overdue', 'text-slate-500 hover:text-slate-700' => request('status') !== 'overdue'])>Overdue</a>
-        <a href="{{ route('tasks.index', ['status' => 'completed']) }}" @class(['shrink-0 pb-2.5 text-sm font-medium', 'border-b-2 border-emerald-600 text-emerald-600' => request('status') === 'completed', 'text-slate-500 hover:text-slate-700' => request('status') !== 'completed'])>Completed</a>
+        <a href="{{ route('tasks.index') }}" @class(['shrink-0 pb-2.5 text-sm font-medium', 'border-b-2 border-indigo-600 text-indigo-600' => ! request('status'), 'text-slate-500 hover:text-slate-700' => request('status')])>{{ __('All tasks') }}</a>
+        <a href="{{ route('tasks.index', ['status' => 'overdue']) }}" @class(['shrink-0 pb-2.5 text-sm font-medium', 'border-b-2 border-rose-600 text-rose-600' => request('status') === 'overdue', 'text-slate-500 hover:text-slate-700' => request('status') !== 'overdue'])>{{ __('Overdue') }}</a>
+        <a href="{{ route('tasks.index', ['status' => 'completed']) }}" @class(['shrink-0 pb-2.5 text-sm font-medium', 'border-b-2 border-emerald-600 text-emerald-600' => request('status') === 'completed', 'text-slate-500 hover:text-slate-700' => request('status') !== 'completed'])>{{ __('Completed') }}</a>
 </div>
 
     <div class="card flat workspace-card overflow-hidden">
@@ -63,8 +63,8 @@
                 <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
                     <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="m21 21-4.35-4.35M11 18a7 7 0 1 1 0-14 7 7 0 0 1 0 14Z"/></svg>
                 </span>
-                <span class="sr-only">Search tasks</span>
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search tasks..."
+                <span class="sr-only">{{ __('Search tasks') }}</span>
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="{{ __('Search tasks...') }}"
                     class="{{ $searchControl }}">
             </label>
 
@@ -76,7 +76,7 @@
                     class="flex h-9 w-full items-center justify-center gap-2 rounded-lg border border-gray-300 bg-gray-50 px-3 text-xs font-medium text-gray-700 hover:bg-gray-100 sm:w-auto"
                 >
                     <svg class="size-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 4.5h18l-6.75 7.89v4.86L9.75 19.5v-7.11L3 4.5Z"/></svg>
-                    Filters
+                    {{ __('Filters') }}
                     <span class="rounded-full bg-indigo-100 px-2 py-0.5 text-xs font-semibold text-indigo-700">{{ $activeFilterCount }}</span>
                 </button>
 
@@ -87,42 +87,42 @@
                         class="absolute left-0 right-0 z-50 mt-2 max-h-[min(22rem,70vh)] w-full overflow-y-auto rounded-xl border border-gray-200 bg-white p-3 shadow-lg sm:left-auto sm:right-0 sm:w-[22rem] sm:max-w-[calc(100vw-2rem)] sm:p-4"
                     >
                         <div class="mb-3 flex items-center justify-between">
-                            <p class="text-sm font-semibold text-gray-900">Filters</p>
-                            <a href="{{ route('tasks.index', ['layout' => $layout]) }}" class="text-xs font-medium text-gray-500 hover:text-gray-700">Reset</a>
+                            <p class="text-sm font-semibold text-gray-900">{{ __('Filters') }}</p>
+                            <a href="{{ route('tasks.index', ['layout' => $layout]) }}" class="text-xs font-medium text-gray-500 hover:text-gray-700">{{ __('Reset') }}</a>
                         </div>
                         <div class="grid grid-cols-1 gap-3">
                             <label class="block">
-                                <span class="mb-1 block text-xs font-medium text-gray-500">Status</span>
+                                <span class="mb-1 block text-xs font-medium text-gray-500">{{ __('Status') }}</span>
                                 <select name="status" class="{{ $selectControl }}">
-                                    <option value="">All statuses</option>
+                                    <option value="">{{ __('All statuses') }}</option>
                                     @foreach(\App\Enums\TaskStatus::cases() as $status)
-                                        <option value="{{ $status->value }}" @selected(request('status') === $status->value)>{{ $status->label() }}</option>
+                                        <option value="{{ $status->value }}" @selected(request('status') === $status->value)>{{ __($status->label()) }}</option>
                                     @endforeach
-                                    <option value="overdue" @selected(request('status') === 'overdue')>Overdue</option>
+                                    <option value="overdue" @selected(request('status') === 'overdue')>{{ __('Overdue') }}</option>
                                 </select>
                             </label>
                             <label class="block">
-                                <span class="mb-1 block text-xs font-medium text-gray-500">Priority</span>
+                                <span class="mb-1 block text-xs font-medium text-gray-500">{{ __('Priority') }}</span>
                                 <select name="priority" class="{{ $selectControl }}">
-                                    <option value="">All priorities</option>
+                                    <option value="">{{ __('All priorities') }}</option>
                                     @foreach(\App\Enums\TaskPriority::cases() as $priority)
-                                        <option value="{{ $priority->value }}" @selected(request('priority') === $priority->value)>{{ $priority->label() }}</option>
+                                        <option value="{{ $priority->value }}" @selected(request('priority') === $priority->value)>{{ __($priority->label()) }}</option>
                                     @endforeach
                                 </select>
                             </label>
                             <label class="block">
-                                <span class="mb-1 block text-xs font-medium text-gray-500">Assignee</span>
+                                <span class="mb-1 block text-xs font-medium text-gray-500">{{ __('Assignee') }}</span>
                                 <select name="assigned_user_id" class="{{ $selectControl }}">
-                                    <option value="">All assignees</option>
+                                    <option value="">{{ __('All assignees') }}</option>
                                     @foreach($users as $user)
                                         <option value="{{ $user->id }}" @selected((string) request('assigned_user_id') === (string) $user->id)>{{ $user->name }}</option>
                                     @endforeach
     </select>
                             </label>
                             <label class="block">
-                                <span class="mb-1 block text-xs font-medium text-gray-500">Category</span>
+                                <span class="mb-1 block text-xs font-medium text-gray-500">{{ __('Category') }}</span>
                                 <select name="category_id" class="{{ $selectControl }}">
-                                    <option value="">All categories</option>
+                                    <option value="">{{ __('All categories') }}</option>
         @foreach($categories as $category)
                                         <option value="{{ $category->id }}" @selected((string) request('category_id') === (string) $category->id)>{{ $category->name }}</option>
         @endforeach
@@ -130,41 +130,41 @@
                             </label>
                             <div class="grid grid-cols-2 gap-3">
                                 <label class="block">
-                                    <span class="mb-1 block text-xs font-medium text-gray-500">Due from</span>
+                                    <span class="mb-1 block text-xs font-medium text-gray-500">{{ __('Due from') }}</span>
                                     <input type="date" name="due_from" value="{{ request('due_from') }}" class="{{ $selectControl }}">
                                 </label>
                                 <label class="block">
-                                    <span class="mb-1 block text-xs font-medium text-gray-500">Due to</span>
+                                    <span class="mb-1 block text-xs font-medium text-gray-500">{{ __('Due to') }}</span>
                                     <input type="date" name="due_to" value="{{ request('due_to') }}" class="{{ $selectControl }}">
                                 </label>
                             </div>
                             <label class="block">
-                                <span class="mb-1 block text-xs font-medium text-gray-500">Sort by</span>
+                                <span class="mb-1 block text-xs font-medium text-gray-500">{{ __('Sort by') }}</span>
                                 <select name="sort_by" class="{{ $selectControl }}">
-                                    <option value="created_at" @selected(request('sort_by', 'created_at') === 'created_at')>Created</option>
-                                    <option value="due_date" @selected(request('sort_by') === 'due_date')>Due date</option>
-                                    <option value="priority" @selected(request('sort_by') === 'priority')>Priority</option>
-                                    <option value="status" @selected(request('sort_by') === 'status')>Status</option>
+                                    <option value="created_at" @selected(request('sort_by', 'created_at') === 'created_at')>{{ __('Created') }}</option>
+                                    <option value="due_date" @selected(request('sort_by') === 'due_date')>{{ __('Due date') }}</option>
+                                    <option value="priority" @selected(request('sort_by') === 'priority')>{{ __('Priority') }}</option>
+                                    <option value="status" @selected(request('sort_by') === 'status')>{{ __('Status') }}</option>
                                 </select>
                             </label>
                             <label class="block">
-                                <span class="mb-1 block text-xs font-medium text-gray-500">Order</span>
+                                <span class="mb-1 block text-xs font-medium text-gray-500">{{ __('Order') }}</span>
                                 <select name="sort_order" class="{{ $selectControl }}">
-                                    <option value="desc" @selected(request('sort_order', 'desc') === 'desc')>Newest / high first</option>
-                                    <option value="asc" @selected(request('sort_order') === 'asc')>Oldest / low first</option>
+                                    <option value="desc" @selected(request('sort_order', 'desc') === 'desc')>{{ __('Newest / high first') }}</option>
+                                    <option value="asc" @selected(request('sort_order') === 'asc')>{{ __('Oldest / low first') }}</option>
     </select>
                             </label>
                         </div>
                         <div class="mt-4 flex items-center justify-between gap-3">
-                            <a href="{{ route('tasks.index', ['layout' => $layout]) }}" class="px-2 py-1.5 text-xs font-medium text-gray-500 hover:text-gray-700">Reset</a>
-                            <button type="submit" class="btn btn-sm btn-primary">Apply filters</button>
+                            <a href="{{ route('tasks.index', ['layout' => $layout]) }}" class="px-2 py-1.5 text-xs font-medium text-gray-500 hover:text-gray-700">{{ __('Reset') }}</a>
+                            <button type="submit" class="btn btn-sm btn-primary">{{ __('Apply filters') }}</button>
                         </div>
                     </div>
             </div>
 
             <div class="inline-flex h-9 shrink-0 items-center rounded-lg border border-gray-200 bg-gray-100 p-0.5">
-                <a href="{{ $listUrl }}" @class(['inline-flex h-full items-center rounded-md px-3 text-xs font-semibold', 'bg-white text-gray-900 shadow-xs' => $layout === 'list', 'text-gray-500 hover:text-gray-700' => $layout !== 'list'])>List</a>
-                <a href="{{ $gridUrl }}" @class(['inline-flex h-full items-center rounded-md px-3 text-xs font-semibold', 'bg-white text-gray-900 shadow-xs' => $layout === 'grid', 'text-gray-500 hover:text-gray-700' => $layout !== 'grid'])>Grid</a>
+                <a href="{{ $listUrl }}" @class(['inline-flex h-full items-center rounded-md px-3 text-xs font-semibold', 'bg-white text-gray-900 shadow-xs' => $layout === 'list', 'text-gray-500 hover:text-gray-700' => $layout !== 'list'])>{{ __('List') }}</a>
+                <a href="{{ $gridUrl }}" @class(['inline-flex h-full items-center rounded-md px-3 text-xs font-semibold', 'bg-white text-gray-900 shadow-xs' => $layout === 'grid', 'text-gray-500 hover:text-gray-700' => $layout !== 'grid'])>{{ __('Grid') }}</a>
             </div>
             </div>
 </form>
@@ -174,7 +174,7 @@
                 @forelse($tasks as $task)
                     @include('tasks.partials.card', ['task' => $task])
                                 @empty
-                    <div class="col-span-full py-16 text-center text-gray-500">No tasks match these filters.</div>
+                    <div class="col-span-full py-16 text-center text-gray-500">{{ __('No tasks match these filters.') }}</div>
                                 @endforelse
                             </div>
         @else
@@ -182,20 +182,20 @@
                 @forelse($tasks as $task)
                     @include('tasks.partials.card', ['task' => $task])
                 @empty
-                    <div class="py-16 text-center text-gray-500">No tasks created yet.</div>
+                    <div class="py-16 text-center text-gray-500">{{ __('No tasks created yet.') }}</div>
                 @endforelse
             </div>
             <div class="hidden w-full overflow-x-auto md:block">
                 <table class="w-full min-w-[880px] border-collapse text-left text-sm">
                     <thead>
                         <tr class="border-b border-gray-200 bg-gray-50 text-[11px] font-semibold uppercase tracking-wider text-gray-500">
-                            <th class="min-w-[220px] px-4 py-2.5">Task</th>
-                            <th class="min-w-[120px] px-4 py-2.5">{{ $assigneeHeading }}</th>
-                            <th class="min-w-[110px] px-4 py-2.5">Priority</th>
-                            <th class="min-w-[120px] px-4 py-2.5">Status</th>
-                            <th class="min-w-[120px] px-4 py-2.5">Due</th>
-                            <th class="min-w-[140px] px-4 py-2.5">Progress</th>
-                            <th class="min-w-[72px] px-4 py-2.5 text-right">Actions</th>
+                            <th class="min-w-[220px] px-4 py-2.5">{{ __('Task') }}</th>
+                            <th class="min-w-[120px] px-4 py-2.5">{{ __($assigneeHeading) }}</th>
+                            <th class="min-w-[110px] px-4 py-2.5">{{ __('Priority') }}</th>
+                            <th class="min-w-[120px] px-4 py-2.5">{{ __('Status') }}</th>
+                            <th class="min-w-[120px] px-4 py-2.5">{{ __('Due') }}</th>
+                            <th class="min-w-[140px] px-4 py-2.5">{{ __('Progress') }}</th>
+                            <th class="min-w-[72px] px-4 py-2.5 text-right">{{ __('Actions') }}</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
@@ -203,7 +203,7 @@
                             @include('tasks.partials.row', ['task' => $task])
                         @empty
                             <tr>
-                                <td colspan="7" class="px-4 py-10 text-center text-gray-500">No tasks created yet.</td>
+                                <td colspan="7" class="px-4 py-10 text-center text-gray-500">{{ __('No tasks created yet.') }}</td>
                             </tr>
                 @endforelse
             </tbody>
@@ -213,7 +213,7 @@
 
         <div class="flex flex-col gap-3 border-t border-gray-200 bg-white px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-4">
             <p class="text-xs font-medium leading-7 text-gray-600 sm:text-sm sm:leading-9">
-                Showing {{ $tasks->firstItem() ?? 0 }} to {{ $tasks->lastItem() ?? 0 }} of {{ $tasks->total() }} results
+                {{ __('Showing :from to :to of :total results', ['from' => $tasks->firstItem() ?? 0, 'to' => $tasks->lastItem() ?? 0, 'total' => $tasks->total()]) }}
             </p>
             <div class="flex items-center">{{ $tasks->links('pagination.task-table') }}</div>
         </div>

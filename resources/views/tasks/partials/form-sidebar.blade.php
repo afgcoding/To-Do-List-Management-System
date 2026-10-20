@@ -8,32 +8,32 @@
 @endphp
 
 <div>
-    <label class="mb-1 block text-sm font-medium text-slate-700">Priority</label>
+    <label class="mb-1 block text-sm font-medium text-slate-700">{{ __('Priority') }}</label>
     <select name="priority" class="form-control">
         @foreach(\App\Enums\TaskPriority::cases() as $priority)
-            <option value="{{ $priority->value }}" @selected($priorityValue === $priority->value)>{{ $priority->label() }}</option>
+            <option value="{{ $priority->value }}" @selected($priorityValue === $priority->value)>{{ __($priority->label()) }}</option>
         @endforeach
     </select>
 </div>
 
 <div>
     {{-- Completed cannot be chosen here; subtasks drive that status --}}
-    <label class="mb-1 block text-sm font-medium text-slate-700">Status</label>
+    <label class="mb-1 block text-sm font-medium text-slate-700">{{ __('Status') }}</label>
     <select name="status" class="form-control">
         @foreach(\App\Enums\TaskStatus::manualCases() as $status)
-            <option value="{{ $status->value }}" @selected($statusValue === $status->value)>{{ $status->label() }}</option>
+            <option value="{{ $status->value }}" @selected($statusValue === $status->value)>{{ __($status->label()) }}</option>
         @endforeach
         @if($statusValue === 'completed')
-            <option value="" disabled selected>Completed — Automated by Subtasks</option>
+            <option value="" disabled selected>{{ __('Completed — Automated by Subtasks') }}</option>
         @endif
     </select>
-    <p class="mt-1 text-[11px] text-slate-400">Completed is automated by subtask progress.</p>
+    <p class="mt-1 text-[11px] text-slate-400">{{ __('Completed is automated by subtask progress.') }}</p>
 </div>
 
 <div>
-    <label class="mb-1 block text-sm font-medium text-slate-700">Department</label>
+    <label class="mb-1 block text-sm font-medium text-slate-700">{{ __('Department') }}</label>
     <select name="department_id" class="form-control">
-        <option value="">Select department</option>
+        <option value="">{{ __('Select department') }}</option>
         @foreach($departments as $department)
             <option value="{{ $department->id }}" @selected((string) old('department_id', $task?->department_id) === (string) $department->id)>{{ $department->name }}</option>
         @endforeach
@@ -41,9 +41,9 @@
 </div>
 
 <div>
-    <label class="mb-1 block text-sm font-medium text-slate-700">Category</label>
+    <label class="mb-1 block text-sm font-medium text-slate-700">{{ __('Category') }}</label>
     <select name="category_id" class="form-control">
-        <option value="">Select category</option>
+        <option value="">{{ __('Select category') }}</option>
         @foreach($categories as $category)
             <option value="{{ $category->id }}" @selected((string) old('category_id', $task?->category_id) === (string) $category->id)>{{ $category->name }}</option>
         @endforeach
@@ -52,7 +52,7 @@
 
 @if(isset($tags) && $tags->isNotEmpty())
     <div>
-        <label class="mb-2 block text-sm font-medium text-slate-700">Tags</label>
+        <label class="mb-2 block text-sm font-medium text-slate-700">{{ __('Tags') }}</label>
         <div class="max-h-28 overflow-y-auto rounded-lg border border-slate-200 p-2.5">
             <div class="flex flex-wrap gap-x-3 gap-y-1.5">
             @foreach($tags as $tag)
@@ -69,7 +69,7 @@
 @endif
 
 <div>
-    <label class="mb-2 block text-sm font-medium text-slate-700">Assign / reassign team</label>
+    <label class="mb-2 block text-sm font-medium text-slate-700">{{ __('Assign / reassign team') }}</label>
     <div class="max-h-44 overflow-y-auto rounded-lg border border-slate-200">
         @forelse($users as $user)
             <label class="!flex w-full min-w-0 cursor-pointer items-center gap-2 border-b border-slate-100 px-2.5 py-2 text-xs font-medium text-slate-700 last:border-b-0 hover:bg-slate-50">
@@ -78,7 +78,7 @@
                 <span class="min-w-0 flex-1 truncate">{{ $user->name }}</span>
             </label>
         @empty
-            <p class="px-2.5 py-2 text-xs text-slate-400">No active users available.</p>
+            <p class="px-2.5 py-2 text-xs text-slate-400">{{ __('No active users available.') }}</p>
         @endforelse
     </div>
 </div>

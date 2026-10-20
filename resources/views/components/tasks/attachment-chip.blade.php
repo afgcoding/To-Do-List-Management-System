@@ -21,14 +21,14 @@
         <div class="flex items-center justify-between gap-2 bg-slate-100/60 p-2 text-xs text-slate-500">
             <span class="min-w-0 flex-1 truncate">{{ $attachment->file_name }}</span>
             <div class="flex shrink-0 items-center gap-2">
-                <a href="{{ route('attachments.download', $attachment) }}" class="text-slate-500 hover:text-indigo-600" title="Download">
+                <a href="{{ route('attachments.download', $attachment) }}" class="text-slate-500 hover:text-indigo-600" title="{{ __('Download') }}">
                     <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M7.5 12l4.5 4.5m0 0l4.5-4.5M12 16.5V3"/></svg>
                 </a>
                 @if ($canDelete)
-                    <form method="POST" action="{{ route('attachments.destroy', $attachment) }}" onsubmit="return confirm('Remove this file?')">
+                    <form method="POST" action="{{ route('attachments.destroy', $attachment) }}" onsubmit="return confirm({{ \Illuminate\Support\Js::from(__('Remove this file?')) }})">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="font-medium text-rose-600 hover:text-rose-800">Remove</button>
+                        <button type="submit" class="font-medium text-rose-600 hover:text-rose-800">{{ __('Remove') }}</button>
                     </form>
                 @endif
             </div>
@@ -50,14 +50,14 @@
             </div>
         </div>
         <div class="ml-2 flex shrink-0 items-center gap-2">
-            <a href="{{ route('attachments.download', $attachment) }}" class="text-slate-500 hover:text-indigo-600" title="Download">
+            <a href="{{ route('attachments.download', $attachment) }}" class="text-slate-500 hover:text-indigo-600" title="{{ __('Download') }}">
                 <svg class="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M7.5 12l4.5 4.5m0 0l4.5-4.5M12 16.5V3"/></svg>
             </a>
             @if ($canDelete)
-                <form method="POST" action="{{ route('attachments.destroy', $attachment) }}" onsubmit="return confirm('Remove this file?')">
+                <form method="POST" action="{{ route('attachments.destroy', $attachment) }}" onsubmit="return confirm({{ \Illuminate\Support\Js::from(__('Remove this file?')) }})">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="text-xs font-medium text-rose-600 hover:text-rose-800">Remove</button>
+                    <button type="submit" class="text-xs font-medium text-rose-600 hover:text-rose-800">{{ __('Remove') }}</button>
                 </form>
             @endif
         </div>

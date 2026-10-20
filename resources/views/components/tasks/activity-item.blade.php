@@ -22,7 +22,7 @@
         $action === 'added_comment' => 'bg-purple-500',
         default => 'bg-slate-400',
     };
-    $name = $log->user->name ?? 'System';
+    $name = $log->user->name ?? __('System');
     $when = $log->created_at;
     $absoluteTime = format_date($when);
 @endphp
@@ -47,7 +47,7 @@
         <div class="min-w-0 flex-1 pt-0.5">
             <p class="break-words text-xs leading-relaxed text-slate-600 sm:text-sm">
                 <span dir="auto" class="bidi-auto font-semibold text-slate-800">{{ $name }}</span>
-                <span dir="auto" class="bidi-auto"> {{ $log->description }}</span>
+                <span dir="auto" class="bidi-auto"> {{ localized_activity($log->description) }}</span>
             </p>
             @if ($when)
                 <time datetime="{{ $when->toIso8601String() }}" class="mt-0.5 block text-[11px] text-slate-400" title="{{ $absoluteTime }}">

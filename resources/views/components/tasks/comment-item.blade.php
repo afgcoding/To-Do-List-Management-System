@@ -7,10 +7,10 @@
 @endphp
 <article x-data="{ editing: false }" class="w-full overflow-hidden rounded-xl border border-slate-200/80 bg-white p-4 shadow-sm">
     <div class="flex min-w-0 items-start gap-3">
-        <x-user-avatar :user="$comment->user" :name="$comment->user->name ?? 'User'" size="md" />
+        <x-user-avatar :user="$comment->user" :name="$comment->user->name ?? __('User')" size="md" />
         <div class="w-full min-w-0 flex-1 overflow-hidden break-words">
             <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
-                <p class="text-sm font-semibold text-slate-800">{{ $comment->user->name ?? 'Unknown' }}</p>
+                <p class="text-sm font-semibold text-slate-800">{{ $comment->user->name ?? __('Unknown') }}</p>
                 <time class="text-[11px] text-slate-400" datetime="{{ $comment->created_at?->toIso8601String() }}" title="{{ $commentDate }}">
                     {{ $comment->created_at?->diffForHumans() }}
                     @if ($commentDate)
@@ -18,15 +18,15 @@
                     @endif
                 </time>
                 @if ($comment->created_at?->ne($comment->updated_at))
-                    <span class="text-[11px] italic text-slate-400">edited</span>
+                    <span class="text-[11px] italic text-slate-400">{{ __('edited') }}</span>
                 @endif
                 @if ($isOwner)
                     <div class="ml-auto flex items-center gap-2">
-                        <button type="button" @click="editing = !editing" class="text-xs font-medium text-indigo-600 hover:text-indigo-800">Edit</button>
-                        <form method="POST" action="{{ route('comments.destroy', $comment) }}" onsubmit="return confirm('Delete this comment?')">
+                        <button type="button" @click="editing = !editing" class="text-xs font-medium text-indigo-600 hover:text-indigo-800">{{ __('Edit') }}</button>
+                        <form method="POST" action="{{ route('comments.destroy', $comment) }}" onsubmit="return confirm({{ \Illuminate\Support\Js::from(__('Delete this comment?')) }})">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="text-xs font-medium text-rose-600 hover:text-rose-800">Delete</button>
+                            <button type="submit" class="text-xs font-medium text-rose-600 hover:text-rose-800">{{ __('Delete') }}</button>
                         </form>
                     </div>
                 @endif
@@ -42,8 +42,8 @@
                 <textarea name="comment" rows="3" required dir="auto"
                     class="bidi-auto w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500">{{ $comment->comment }}</textarea>
                 <div class="flex flex-col justify-end gap-2 sm:flex-row">
-                    <button type="button" @click="editing = false" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-600 sm:w-auto">Cancel</button>
-                    <button class="w-full rounded-xl bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-700 sm:w-auto">Save</button>
+                    <button type="button" @click="editing = false" class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-600 sm:w-auto">{{ __('Cancel') }}</button>
+                    <button class="w-full rounded-xl bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-700 sm:w-auto">{{ __('Save') }}</button>
                 </div>
             </form>
 
