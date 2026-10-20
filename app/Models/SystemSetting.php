@@ -7,7 +7,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\Storage;
 
 class SystemSetting extends Model
 {
@@ -100,6 +99,17 @@ class SystemSetting extends Model
             return null;
         }
 
-        return Storage::disk('public')->url($this->logo);
+        $path = str_replace('\\', '/', trim((string) $this->logo));
+        $path = ltrim($path, '/');
+
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+            return $path;
+        }
+
+        if (str_starts_with($path, 'storage/')) {
+            $path = substr($path, strlen('storage/'));
+        }
+
+        return asset('storage/'.$path);
     }
 }
